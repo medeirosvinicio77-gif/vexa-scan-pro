@@ -27,7 +27,6 @@ body {
   min-height: 100vh;
 }
 
-/* AUTH */
 .auth-screen {
   display: flex;
   align-items: center;
@@ -134,7 +133,6 @@ body {
   text-decoration: none;
 }
 
-/* APP */
 .app { display: none; height: 100vh; }
 .app.active { display: grid; grid-template-columns: 240px 1fr; }
 .sidebar {
@@ -196,7 +194,6 @@ body {
 }
 .page-header h2 { font-size: 22px; }
 
-/* DASHBOARD */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -251,7 +248,6 @@ body {
 .status.processing { background: var(--warning); color: #1a1a1a; }
 .status.ready { background: var(--success); color: white; }
 
-/* VIEWER */
 .viewer-container {
   background: var(--surface);
   border-radius: 12px;
@@ -271,7 +267,19 @@ body {
     repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(79, 70, 229, 0.25) 39px, rgba(79, 70, 229, 0.25) 40px),
     repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(79, 70, 229, 0.25) 39px, rgba(79, 70, 229, 0.25) 40px);
   background-size: 100% 100%, 40px 40px, 40px 40px;
+  cursor: crosshair;
 }
+
+/* PAREDES SVG */
+.walls-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 .viewer-controls {
   position: absolute;
   bottom: 16px;
@@ -284,6 +292,7 @@ body {
   padding: 8px;
   border-radius: var(--radius);
   backdrop-filter: blur(8px);
+  z-index: 10;
 }
 .view-btn {
   padding: 6px 10px;
@@ -305,6 +314,7 @@ body {
   font-size: 12px;
   display: flex;
   gap: 12px;
+  z-index: 10;
 }
 .scale-status {
   position: absolute;
@@ -317,10 +327,10 @@ body {
   font-size: 12px;
   font-weight: 600;
   display: none;
+  z-index: 10;
 }
 .scale-status.active { display: block; }
 
-/* TOOLS */
 .tools-panel {
   background: var(--surface);
   border-radius: var(--radius);
@@ -357,7 +367,6 @@ body {
 .tool-btn.active { background: var(--primary); border-color: var(--primary); }
 .tool-btn .emoji { font-size: 18px; }
 
-/* UPLOAD */
 .upload-panel {
   background: var(--surface);
   border-radius: 12px;
@@ -430,7 +439,6 @@ body {
   transition: width 0.3s;
 }
 
-/* SETTINGS */
 .settings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -464,11 +472,44 @@ body {
 }
 
 .hidden { display: none !important; }
+
+/* Marcadores de medição */
+.measure-marker {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+  pointer-events: none;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+}
+.measure-marker.p1 { background: var(--warning); }
+.measure-marker.p2 { background: var(--success); }
+.measure-line-svg {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, var(--warning), var(--success));
+  pointer-events: none;
+  z-index: 4;
+  transform-origin: left center;
+}
+.measure-label-svg {
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 6;
+  transform: translate(-50%, -100%);
+}
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <h1>🔷 Vexa Scan Pro</h1>
@@ -516,7 +557,6 @@ body {
   </div>
 </div>
 
-<!-- APP -->
 <div class="app" id="app">
   <aside class="sidebar">
     <div class="sidebar-header">
@@ -527,12 +567,12 @@ body {
       </div>
     </div>
     <div class="user-info">
-      👤 João Silva<br>
+       João Silva<br>
       <small>joao@email.com</small>
     </div>
     <nav>
-      <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
-      <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
+      <div class="nav-item active" onclick="showPage('dashboard', event)"> Projetos</div>
+      <div class="nav-item" onclick="showPage('upload', event)"> Novo Scan</div>
       <div class="nav-item" onclick="showPage('viewer', event)">🎯 Visualizar</div>
       <div class="nav-item" onclick="showPage('settings', event)">⚙️ Configurações</div>
     </nav>
@@ -544,7 +584,6 @@ body {
   <main class="main">
     <div class="content">
 
-      <!-- DASHBOARD -->
       <div id="page-dashboard" class="page">
         <div class="page-header">
           <h2>📊 Meus Projetos</h2>
@@ -563,9 +602,8 @@ body {
         <div class="project-list hidden" id="projectList"></div>
       </div>
 
-      <!-- UPLOAD -->
       <div id="page-upload" class="page hidden">
-        <div class="page-header"><h2>📹 Novo Scan</h2></div>
+        <div class="page-header"><h2> Novo Scan</h2></div>
         <div class="upload-panel">
           <h3 style="margin-bottom:16px;">1. Upload do Vídeo</h3>
           <div class="upload-zone" id="uploadZone">
@@ -609,10 +647,57 @@ body {
         </div>
       </div>
 
-      <!-- VIEWER -->
       <div id="page-viewer" class="page hidden">
         <div class="viewer-container">
           <div class="viewer-3d" id="viewer3d">
+            
+            <!-- PAREDES SVG -->
+            <svg class="walls-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+              <!-- Parede frontal -->
+              <rect x="100" y="100" width="600" height="400" fill="rgba(203, 213, 225, 0.1)" stroke="#cbd5e1" stroke-width="4"/>
+              
+              <!-- Porta -->
+              <rect x="350" y="350" width="100" height="150" fill="rgba(245, 158, 11, 0.3)" stroke="#f59e0b" stroke-width="3"/>
+              <text x="400" y="430" fill="#f59e0b" font-size="12" text-anchor="middle" font-weight="bold">PORTA</text>
+              
+              <!-- Janela -->
+              <rect x="150" y="150" width="120" height="80" fill="rgba(59, 130, 246, 0.3)" stroke="#3b82f6" stroke-width="3"/>
+              <line x1="210" y1="150" x2="210" y2="230" stroke="#3b82f6" stroke-width="2"/>
+              <line x1="150" y1="190" x2="270" y2="190" stroke="#3b82f6" stroke-width="2"/>
+              <text x="210" y="195" fill="#3b82f6" font-size="12" text-anchor="middle" font-weight="bold">JANELA</text>
+              
+              <!-- Tomadas -->
+              <circle cx="200" cy="450" r="8" fill="#fbbf24" stroke="#fff" stroke-width="2"/>
+              <text x="200" y="454" fill="#000" font-size="10" text-anchor="middle" font-weight="bold">T</text>
+              <text x="220" y="455" fill="#fbbf24" font-size="10">Tomada</text>
+              
+              <circle cx="600" cy="450" r="8" fill="#fbbf24" stroke="#fff" stroke-width="2"/>
+              <text x="600" y="454" fill="#000" font-size="10" text-anchor="middle" font-weight="bold">T</text>
+              <text x="580" y="455" fill="#fbbf24" font-size="10" text-anchor="end">Tomada</text>
+              
+              <!-- Interruptor -->
+              <circle cx="470" cy="450" r="6" fill="none" stroke="#fbbf24" stroke-width="2"/>
+              <text x="470" y="454" fill="#fbbf24" font-size="9" text-anchor="middle" font-weight="bold">I</text>
+              <text x="490" y="455" fill="#fbbf24" font-size="10">Int.</text>
+              
+              <!-- Luminária -->
+              <circle cx="400" cy="250" r="15" fill="none" stroke="#fbbf24" stroke-width="2"/>
+              <line x1="390" y1="240" x2="410" y2="260" stroke="#fbbf24" stroke-width="2"/>
+              <line x1="390" y1="260" x2="410" y2="240" stroke="#fbbf24" stroke-width="2"/>
+              <text x="430" y="255" fill="#fbbf24" font-size="11"> Luminária</text>
+              
+              <!-- Cotas -->
+              <line x1="100" y1="80" x2="700" y2="80" stroke="#64748b" stroke-width="1"/>
+              <line x1="100" y1="75" x2="100" y2="85" stroke="#64748b" stroke-width="1"/>
+              <line x1="700" y1="75" x2="700" y2="85" stroke="#64748b" stroke-width="1"/>
+              <text x="400" y="75" fill="#94a3b8" font-size="11" text-anchor="middle" font-weight="bold">5.00 m</text>
+              
+              <line x1="80" y1="100" x2="80" y2="500" stroke="#64748b" stroke-width="1"/>
+              <line x1="75" y1="100" x2="85" y2="100" stroke="#64748b" stroke-width="1"/>
+              <line x1="75" y1="500" x2="85" y2="500" stroke="#64748b" stroke-width="1"/>
+              <text x="75" y="300" fill="#94a3b8" font-size="11" text-anchor="middle" font-weight="bold" transform="rotate(-90 75 300)">4.00 m</text>
+            </svg>
+            
             <div class="viewer-info">
               <span>📐 <span id="pointCount">0</span> pts</span>
               <span>🎯 <span id="fpsCount">60</span> FPS</span>
@@ -626,12 +711,12 @@ body {
               <button class="view-btn" onclick="setView('plan')">⬆️ Planta</button>
               <button class="view-btn" onclick="setView('front')">➡️ Frontal</button>
               <button class="view-btn" onclick="setView('side')">⬅️ Lateral</button>
-              <button class="view-btn" onclick="resetView()"> Reset</button>
+              <button class="view-btn" onclick="resetView()">🔄 Reset</button>
             </div>
           </div>
           <div class="tools-panel">
-            <h3>📋 Detalhes do Projeto</h3>
-            <div class="project-details" id="projectDetails">
+            <h3> Detalhes do Projeto</h3>
+            <div id="projectDetails">
               <p style="color:var(--text-muted);font-size:12px;">Selecione um projeto no dashboard</p>
             </div>
             <h3>⚙️ Ferramentas</h3>
@@ -646,7 +731,7 @@ body {
                 <span class="emoji">✂️</span>Corte
               </button>
               <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()">
-                <span class="emoji">🗑️</span>Limpar
+                <span class="emoji">️</span>Limpar
               </button>
             </div>
             <div id="scalePanel" class="hidden">
@@ -654,7 +739,7 @@ body {
                 <label>Distância Real (mm)</label>
                 <input type="number" id="realDistance" placeholder="Ex: 1000" value="1000">
               </div>
-              <button class="btn-primary" onclick="calibrateScale()"> Calibrar Escala</button>
+              <button class="btn-primary" onclick="calibrateScale()">🔄 Calibrar Escala</button>
               <div class="measure-display">
                 <div class="measure-row"><span>Status:</span><span id="scaleStatusText">Não calibrada</span></div>
                 <div class="measure-row"><span>Fator:</span><span id="scaleFactor">1.000x</span></div>
@@ -668,7 +753,7 @@ body {
               </div>
               <button class="btn-primary" onclick="resetCut()">🔄 Resetar Corte</button>
             </div>
-            <h3 style="margin-top:16px;"> Medidas</h3>
+            <h3 style="margin-top:16px;">📊 Medidas</h3>
             <div class="measure-display">
               <div class="measure-row"><span>ΔX:</span><span id="dx">-- mm</span></div>
               <div class="measure-row"><span>ΔY:</span><span id="dy">-- mm</span></div>
@@ -679,13 +764,12 @@ body {
             <h3 style="margin-top:16px;">⬇️ Exportar</h3>
             <div style="display:flex;gap:6px;">
               <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPLY()">⬇️ PLY</button>
-              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()"> CSV</button>
+              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()">📊 CSV</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- SETTINGS -->
       <div id="page-settings" class="page hidden">
         <div class="page-header"><h2>⚙️ Configurações</h2></div>
         <div class="settings-grid">
@@ -732,7 +816,6 @@ body {
 </div>
 
 <script>
-// ========== ESTADO GLOBAL ==========
 let projects = [];
 let processingTimer = null;
 let currentTool = null;
@@ -741,7 +824,6 @@ let scaleFactor = 1.0;
 let clickCount = 0;
 let currentProject = null;
 
-// ========== AUTH ==========
 function switchTab(tab, e) {
   e?.stopPropagation();
   document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.remove('active'));
@@ -762,7 +844,6 @@ function logout() {
   document.getElementById('authScreen').style.display = 'flex';
 }
 
-// ========== NAVEGAÇÃO ==========
 function showPage(page, e) {
   e?.stopPropagation?.();
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
@@ -774,7 +855,6 @@ function showPage(page, e) {
   if (page === 'dashboard') renderDashboard();
 }
 
-// ========== DASHBOARD ==========
 function renderDashboard() {
   const empty = document.getElementById('emptyState');
   const banner = document.getElementById('processingBanner');
@@ -831,7 +911,6 @@ function openProject(id) {
   `;
 }
 
-// ========== UPLOAD ==========
 let selectedFile = null;
 
 function handleFileSelect(e) {
@@ -859,7 +938,7 @@ function handleFileSelect(e) {
 
 function simulateUpload() {
   if (!selectedFile) {
-    alert('️ Selecione um vídeo primeiro!');
+    alert('⚠️ Selecione um vídeo primeiro!');
     return;
   }
   const fill = document.getElementById('progressFill');
@@ -867,7 +946,7 @@ function simulateUpload() {
   const btn = document.getElementById('uploadBtn');
   let progress = 0;
   btn.disabled = true;
-  btn.textContent = ' Enviando...';
+  btn.textContent = '⏳ Enviando...';
   text.textContent = 'Enviando para a nuvem...';
   text.style.color = 'var(--text-muted)';
   
@@ -928,7 +1007,6 @@ function simulateProcessing(projectId) {
   }, 1000);
 }
 
-// ========== FERRAMENTAS ==========
 function setTool(tool, e) {
   e?.stopPropagation();
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
@@ -945,7 +1023,7 @@ function setTool(tool, e) {
   const status = document.getElementById('scaleStatus');
   if (tool === 'measure' || tool === 'scale') {
     status.classList.add('active');
-    status.textContent = '📏 Clique no 1º ponto';
+    status.textContent = ' Clique no 1º ponto';
     status.style.background = 'rgba(245, 158, 11, 0.9)';
   } else {
     status.classList.remove('active');
@@ -962,10 +1040,12 @@ document.getElementById('viewer3d').addEventListener('click', (e) => {
   
   clickCount++;
   
-  const point = document.createElement('div');
-  point.style.cssText = `position:absolute;width:16px;height:16px;border-radius:50%;background:${clickCount === 1 ? 'var(--warning)' : 'var(--success)'};border:2px solid white;left:${x-8}px;top:${y-8}px;pointer-events:none;z-index:5;`;
-  e.currentTarget.appendChild(point);
-  measurePoints.push({ x, y });
+  const marker = document.createElement('div');
+  marker.className = `measure-marker ${clickCount === 1 ? 'p1' : 'p2'}`;
+  marker.style.left = x + 'px';
+  marker.style.top = y + 'px';
+  e.currentTarget.appendChild(marker);
+  measurePoints.push({ x, y, element: marker });
   
   const status = document.getElementById('scaleStatus');
   
@@ -980,12 +1060,18 @@ document.getElementById('viewer3d').addEventListener('click', (e) => {
     const distanceMm = distancePx * scaleFactor;
     
     const line = document.createElement('div');
+    line.className = 'measure-line-svg';
     const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    line.style.cssText = `position:absolute;height:2px;background:linear-gradient(90deg,var(--warning),var(--success));width:${distancePx}px;left:${p1.x}px;top:${p1.y}px;transform-origin:left center;transform:rotate(${angle}deg);pointer-events:none;z-index:4;`;
+    line.style.width = distancePx + 'px';
+    line.style.left = p1.x + 'px';
+    line.style.top = p1.y + 'px';
+    line.style.transform = `rotate(${angle}deg)`;
     e.currentTarget.appendChild(line);
     
     const label = document.createElement('div');
-    label.style.cssText = `position:absolute;background:rgba(0,0,0,0.8);color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;left:${(p1.x+p2.x)/2}px;top:${(p1.y+p2.y)/2-20}px;transform:translateX(-50%);pointer-events:none;z-index:6;`;
+    label.className = 'measure-label-svg';
+    label.style.left = ((p1.x + p2.x) / 2) + 'px';
+    label.style.top = ((p1.y + p2.y) / 2) + 'px';
     label.textContent = distanceMm.toFixed(1) + ' mm';
     e.currentTarget.appendChild(label);
     
@@ -1003,20 +1089,27 @@ document.getElementById('viewer3d').addEventListener('click', (e) => {
   }
 });
 
+// ✅ BOTÃO LIMPAR CORRIGIDO
 function clearMeasurements() {
   const viewer = document.getElementById('viewer3d');
-  viewer.querySelectorAll('div[style*="position:absolute"]').forEach(el => {
-    if (!el.classList.contains('viewer-info') && !el.classList.contains('scale-status') && !el.classList.contains('viewer-controls')) {
-      el.remove();
-    }
+  
+  // Remove apenas os marcadores de medição
+  viewer.querySelectorAll('.measure-marker, .measure-line-svg, .measure-label-svg').forEach(el => {
+    el.remove();
   });
+  
+  // Reseta painéis
   document.getElementById('dx').textContent = '-- mm';
   document.getElementById('dy').textContent = '-- mm';
   document.getElementById('dz').textContent = '-- mm';
   document.getElementById('total').textContent = '-- mm';
   document.getElementById('horiz').textContent = '-- mm';
   document.getElementById('scaleStatus').classList.remove('active');
+  
+  // Reseta estado
   currentTool = null;
+  clickCount = 0;
+  measurePoints = [];
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
 }
 
