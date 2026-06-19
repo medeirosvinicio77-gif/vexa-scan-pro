@@ -7,7 +7,7 @@
 <style>
 :root { --primary: #4f46e5; --primary-dark: #4338ca; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
 .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
 .auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
 .auth-card h1 { text-align: center; margin-bottom: 8px; }
@@ -28,7 +28,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .forgot-link { display: block; text-align: right; color: var(--primary); font-size: 13px; margin-bottom: 16px; text-decoration: none; }
 .app { display: none; height: 100vh; }
 .app.active { display: grid; grid-template-columns: 240px 1fr; }
-.sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
 .sidebar-header { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 .sidebar-header .logo { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #8b5cf6); display: flex; align-items: center; justify-content: center; font-weight: bold; }
 .user-info { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; padding: 10px; background: var(--surface-2); border-radius: var(--radius); }
@@ -54,7 +54,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .project-card .status { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
 .status.processing { background: var(--warning); color: #1a1a1a; }
 .status.ready { background: var(--success); color: white; }
-.viewer-container { background: var(--surface); border-radius: 12px; padding: 12px; height: calc(100vh - 100px); display: grid; grid-template-columns: 1fr 260px; gap: 12px; }
+.viewer-container { background: var(--surface); border-radius: 12px; padding: 12px; height: calc(100vh - 100px); display: grid; grid-template-columns: 1fr 280px; gap: 12px; }
 .viewer-3d { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; background-image: radial-gradient(ellipse at center, #1a2340 0%, #0a0e1a 70%), repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(79, 70, 229, 0.25) 39px, rgba(79, 70, 229, 0.25) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(79, 70, 229, 0.25) 39px, rgba(79, 70, 229, 0.25) 40px); background-size: 100% 100%, 40px 40px, 40px 40px; cursor: crosshair; }
 .axis-x, .axis-y, .axis-z { position: absolute; pointer-events: none; }
 .axis-x { left: 50%; top: 50%; width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #ef4444); transform: translate(0, -50%); }
@@ -64,39 +64,16 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .label-x { left: calc(50% + 85px); top: calc(50% - 8px); color: #ef4444; }
 .label-y { left: calc(50% - 8px); top: calc(50% - 95px); color: #10b981; }
 .label-z { left: calc(50% + 50px); top: calc(50% - 50px); color: #3b82f6; }
-.cube-3d { position: absolute; left: 50%; top: 50%; width: 80px; height: 80px; transform: translate(-50%, -50%) rotateX(-20deg) rotateY(-30deg); transform-style: preserve-3d; animation: rotateCube 20s linear infinite; transition: all 0.5s; }
-@keyframes rotateCube { from { transform: translate(-50%, -50%) rotateX(-20deg) rotateY(0deg); } to { transform: translate(-50%, -50%) rotateX(-20deg) rotateY(360deg); } }
-.cube-face { position: absolute; width: 80px; height: 80px; border: 1px solid rgba(79, 70, 229, 0.6); background: rgba(79, 70, 229, 0.08); transition: all 0.3s; }
-.cube-face.front { transform: translateZ(40px); }
-.cube-face.back { transform: rotateY(180deg) translateZ(40px); }
-.cube-face.right { transform: rotateY(90deg) translateZ(40px); }
-.cube-face.left { transform: rotateY(-90deg) translateZ(40px); }
-.cube-face.top { transform: rotateX(90deg) translateZ(40px); }
-.cube-face.bottom { transform: rotateX(-90deg) translateZ(40px); }
-
-/* 🌟 NUVEM DE PONTOS 3D */
 .point-cloud { position: absolute; inset: 0; pointer-events: none; }
-.point-3d {
-  position: absolute;
-  width: 3px; height: 3px;
-  background: var(--primary);
-  border-radius: 50%;
-  opacity: 0;
-  animation: fadeInPoint 0.5s forwards;
-  box-shadow: 0 0 4px var(--primary);
-}
-@keyframes fadeInPoint {
-  from { opacity: 0; transform: scale(0); }
-  to { opacity: 0.8; transform: scale(1); }
-}
-
+.point-3d { position: absolute; width: 3px; height: 3px; background: var(--primary); border-radius: 50%; opacity: 0; animation: fadeInPoint 0.5s forwards; box-shadow: 0 0 4px var(--primary); }
+@keyframes fadeInPoint { from { opacity: 0; transform: scale(0); } to { opacity: 0.8; transform: scale(1); } }
 .viewer-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; flex-wrap: wrap; background: rgba(0,0,0,0.7); padding: 6px; border-radius: var(--radius); backdrop-filter: blur(8px); max-width: calc(100% - 24px); }
 .view-btn { padding: 5px 8px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 11px; display: flex; align-items: center; gap: 4px; }
 .view-btn:hover { background: var(--primary); }
 .viewer-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: var(--radius); font-size: 11px; display: flex; gap: 10px; backdrop-filter: blur(8px); }
 .scale-status { position: absolute; top: 12px; right: 12px; background: rgba(245, 158, 11, 0.9); color: #1a1a1a; padding: 6px 10px; border-radius: var(--radius); font-size: 11px; font-weight: 600; display: none; backdrop-filter: blur(8px); z-index: 10; }
 .scale-status.active { display: block; }
-.tools-panel { background: var(--surface); border-radius: var(--radius); padding: 12px; overflow-y: auto; }
+.tools-panel { background: var(--surface); border-radius: var(--radius); padding: 12px; overflow-y: auto; max-height: calc(100vh - 120px); }
 .tools-panel h3 { font-size: 13px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
 .tool-btn { padding: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all 0.15s; }
@@ -137,17 +114,17 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .measure-point.p2 { background: var(--success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.8); }
 .measure-line { position: absolute; height: 2px; background: linear-gradient(90deg, var(--warning), var(--success)); transform-origin: left center; pointer-events: none; z-index: 4; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6); }
 .measure-label { position: absolute; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; pointer-events: none; z-index: 6; transform: translate(-50%, -100%); margin-top: -8px; }
-
-/* 📋 PAINEL DE DETALHES DO PROJETO */
 .project-details { background: var(--surface-2); border-radius: var(--radius); padding: 10px; margin-bottom: 12px; font-size: 12px; }
 .project-details .detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
 .project-details .detail-row:last-child { border-bottom: none; }
 .project-details .detail-label { color: var(--text-muted); }
 .project-details .detail-value { font-weight: 600; }
-
-/* Loading de pontos */
 .loading-points { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--text-muted); font-size: 13px; z-index: 2; }
 .loading-points .spinner-lg { width: 32px; height: 32px; border: 3px solid var(--surface-2); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 12px; }
+.measurements-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+.measurement-item { background: var(--surface-2); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+.measurement-item .delete-btn { background: var(--danger); border: none; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+.angle-display { background: var(--surface-2); padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 12px; text-align: center; }
 </style>
 </head>
 <body>
@@ -164,7 +141,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="form-group"><label>Senha</label><input type="password" required placeholder="••••••••"></div>
 <div class="checkbox-row"><input type="checkbox" id="remember"><label for="remember">Lembrar de mim</label></div>
 <a href="#" class="forgot-link">Esqueci a senha</a>
-<button type="submit" class="btn-primary"> Entrar</button>
+<button type="submit" class="btn-primary">🔐 Entrar</button>
 <button type="button" class="btn-demo" onclick="doLogin(event, true)">🚀 Acessar em Modo Demo (sem login)</button>
 </form>
 <form id="registerForm" class="hidden" onsubmit="doLogin(event)">
@@ -185,9 +162,9 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="user-info"> João Silva<br><small>joao@email.com</small></div>
 <nav>
 <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
-<div class="nav-item" onclick="showPage('upload', event)"> Novo Scan</div>
-<div class="nav-item" onclick="showPage('viewer', event)"> Visualizar</div>
-<div class="nav-item" onclick="showPage('settings', event)">️ Configurações</div>
+<div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
+<div class="nav-item" onclick="showPage('viewer', event)">🎯 Visualizar</div>
+<div class="nav-item" onclick="showPage('settings', event)">⚙️ Configurações</div>
 </nav>
 <div class="sidebar-footer"><div class="nav-item" onclick="logout()">🚪 Sair</div></div>
 </aside>
@@ -215,7 +192,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="option-group"><label>Qualidade</label><div class="radio-group"><label><input type="radio" name="quality" value="low"><span>Baixa</span></label><label><input type="radio" name="quality" value="med" checked><span>Média</span></label><label><input type="radio" name="quality" value="high"><span>Alta</span></label></div></div>
 <div class="checkbox-row"><input type="checkbox" id="blur" checked><label for="blur">Remover frames borrados automaticamente</label></div>
 </div>
-<button class="btn-primary" id="uploadBtn" onclick="simulateUpload()" disabled>☁️ Enviar para Nuvem</button>
+<button class="btn-primary" id="uploadBtn" onclick="simulateUpload()" disabled>️ Enviar para Nuvem</button>
 <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
 <p style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;" id="progressText">Selecione um vídeo para começar</p>
 </div>
@@ -225,18 +202,17 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="viewer-3d" id="viewer3d">
 <div class="axis-x"></div><div class="axis-y"></div><div class="axis-z"></div>
 <div class="axis-label label-x">X</div><div class="axis-label label-y">Y</div><div class="axis-label label-z">Z</div>
-<div class="cube-3d" id="cube3d"><div class="cube-face front"></div><div class="cube-face back"></div><div class="cube-face right"></div><div class="cube-face left"></div><div class="cube-face top"></div><div class="cube-face bottom"></div></div>
 <div class="point-cloud" id="pointCloud"></div>
 <div class="loading-points hidden" id="loadingPoints"><div class="spinner-lg"></div>Carregando nuvem de pontos...</div>
-<div class="viewer-info"><span>📐 <span id="pointCount">0</span> pts</span><span> <span id="fpsCount">60</span> FPS</span><span>🔲 Grid</span></div>
+<div class="viewer-info"><span> <span id="pointCount">0</span> pts</span><span>🎯 <span id="fpsCount">60</span> FPS</span><span>🔲 Grid</span></div>
 <div class="scale-status" id="scaleStatus">📏 Clique no 1º ponto</div>
 <div class="viewer-controls">
 <button class="view-btn" data-tooltip="Vista do Piso" onclick="setView('floor')">▼ PISO</button>
 <button class="view-btn" data-tooltip="Vista do Teto" onclick="setView('ceiling')">▲ TETO</button>
 <button class="view-btn" data-tooltip="Eixo Y+ (Cima)" onclick="setView('top')">↑ Y+</button>
-<button class="view-btn" data-tooltip="Vista em Planta" onclick="setView('plan')">⬆️ Planta</button>
+<button class="view-btn" data-tooltip="Vista em Planta" onclick="setView('plan')">️ Planta</button>
 <button class="view-btn" data-tooltip="Vista Frontal" onclick="setView('front')">➡️ Frontal</button>
-<button class="view-btn" data-tooltip="Vista Lateral" onclick="setView('side')">⬅️ Lateral</button>
+<button class="view-btn" data-tooltip="Vista Lateral" onclick="setView('side')">️ Lateral</button>
 <button class="view-btn" data-tooltip="Resetar câmera" onclick="resetView()">🔄 Reset</button>
 <button class="view-btn" data-tooltip="Norte" onclick="setView('north')">N</button>
 <button class="view-btn" data-tooltip="Sul" onclick="setView('south')">S</button>
@@ -255,8 +231,9 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 </div>
 <h3>⚙️ Ferramentas</h3>
 <div class="tool-grid">
-<button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji">📏</span>Medir</button>
+<button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji"></span>Medir</button>
 <button class="tool-btn" id="btn-scale" onclick="setTool('scale', event)"><span class="emoji">📐</span>Escala</button>
+<button class="tool-btn" id="btn-polygon" onclick="setTool('polygon', event)"><span class="emoji">⬡</span>Polígono</button>
 <button class="tool-btn" id="btn-cut" onclick="setTool('cut', event)"><span class="emoji">✂️</span>Corte</button>
 <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()"><span class="emoji">🗑️</span>Limpar</button>
 </div>
@@ -276,7 +253,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 </div>
 <button class="btn-primary" onclick="resetCut()">🔄 Resetar Corte</button>
 </div>
-<h3 style="margin-top:16px;"> Medidas</h3>
+<h3 style="margin-top:16px;">📊 Medidas</h3>
 <div class="measure-display">
 <div class="measure-row"><span>ΔX:</span><span id="dx">-- mm</span></div>
 <div class="measure-row"><span>ΔY:</span><span id="dy">-- mm</span></div>
@@ -284,6 +261,13 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="measure-row total"><span>TOTAL:</span><span id="total">-- mm</span></div>
 <div class="measure-row"><span>HORIZ:</span><span id="horiz">-- mm</span></div>
 <div class="measure-row"><span>Pixels:</span><span id="pixels">-- px</span></div>
+</div>
+<div class="angle-display hidden" id="angleDisplay">
+<strong>Ângulo:</strong> <span id="angleValue">--</span>°
+</div>
+<h3 style="margin-top:16px;"> Histórico de Medidas</h3>
+<div class="measurements-list" id="measurementsList">
+<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida salva</div>
 </div>
 <h3 style="margin-top:16px;">⬇️ Exportar</h3>
 <div style="display:flex;gap:6px;">
@@ -296,7 +280,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div id="page-settings" class="page hidden">
 <div class="page-header"><h2>⚙️ Configurações</h2></div>
 <div class="settings-grid">
-<div class="settings-card"><h3>👤 Perfil</h3><div class="form-group"><label>Nome</label><input type="text" value="João Silva"></div><div class="form-group"><label>Email</label><input type="email" value="joao@email.com"></div><div class="form-group"><label>WhatsApp (com código do país)</label><input type="tel" value="+55 (11) 99999-9999" placeholder="+55 (11) 99999-9999"><small style="color:var(--text-muted);font-size:11px;">Formato: +55 (11) 99999-9999</small></div><button class="btn-primary"> Salvar alterações</button></div>
+<div class="settings-card"><h3>👤 Perfil</h3><div class="form-group"><label>Nome</label><input type="text" value="João Silva"></div><div class="form-group"><label>Email</label><input type="email" value="joao@email.com"></div><div class="form-group"><label>WhatsApp (com código do país)</label><input type="tel" value="+55 (11) 99999-9999" placeholder="+55 (11) 99999-9999"><small style="color:var(--text-muted);font-size:11px;">Formato: +55 (11) 99999-9999</small></div><button class="btn-primary">💾 Salvar alterações</button></div>
 <div class="settings-card"><h3>🔔 Notificações</h3><div class="checkbox-row"><input type="checkbox" id="notifEmail" checked><label for="notifEmail">📧 Email quando o modelo ficar pronto</label></div><div class="checkbox-row"><input type="checkbox" id="notifWhats" checked><label for="notifWhats">💬 WhatsApp quando o modelo ficar pronto</label></div><button class="btn-primary">💾 Salvar preferências</button></div>
 <div class="settings-card"><h3>️ Sobre</h3><p><strong>Vexa Scan Pro Cloud v2.0</strong></p><p style="color:var(--text-muted);margin-top:8px;font-size:13px;">Reconstrução 3D profissional baseada em nuvem.</p><p style="margin-top:12px;font-size:13px;">📧 suporte@vexascan.com<br>🌐 vexascan.com</p></div>
 </div>
@@ -309,14 +293,37 @@ let projects = [];
 let processingTimer = null;
 let currentTool = null;
 let measurePoints = [];
+let polygonPoints = [];
 let scaleCalibrated = false;
 let scaleFactor = 1.0;
 let clickCount = 0;
 let currentProject = null;
 let currentView = 'default';
+let measurements = [];
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let panOffsetX = 0;
+let panOffsetY = 0;
+let zoomLevel = 1;
+let rotationAngle = 0;
+let autoRotate = true;
+let animationId = null;
+
+// Carregar dados do localStorage
+function loadData() {
+  const saved = localStorage.getItem('vexaProjects');
+  if (saved) projects = JSON.parse(saved);
+  const savedMeasurements = localStorage.getItem('vexaMeasurements');
+  if (savedMeasurements) measurements = JSON.parse(savedMeasurements);
+}
+function saveData() {
+  localStorage.setItem('vexaProjects', JSON.stringify(projects));
+  localStorage.setItem('vexaMeasurements', JSON.stringify(measurements));
+}
 
 function switchTab(tab, e) { e?.stopPropagation(); document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login'); document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register'); }
-function doLogin(e, demo = false) { if (e) e.preventDefault(); document.getElementById('authScreen').style.display = 'none'; document.getElementById('app').classList.add('active'); renderDashboard(); }
+function doLogin(e, demo = false) { if (e) e.preventDefault(); document.getElementById('authScreen').style.display = 'none'; document.getElementById('app').classList.add('active'); loadData(); renderDashboard(); }
 function logout() { document.getElementById('app').classList.remove('active'); document.getElementById('authScreen').style.display = 'flex'; }
 function showPage(page, e) { e?.stopPropagation?.(); document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); document.getElementById('page-' + page).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const navMap = { dashboard: 0, upload: 1, viewer: 2, settings: 3 }; const navItems = document.querySelectorAll('.nav-item'); if (navItems[navMap[page]]) navItems[navMap[page]].classList.add('active'); if (page === 'dashboard') renderDashboard(); }
 function renderDashboard() { const empty = document.getElementById('emptyState'); const banner = document.getElementById('processingBanner'); const list = document.getElementById('projectList'); if (projects.length === 0) { empty.classList.remove('hidden'); banner.classList.remove('active'); list.classList.add('hidden'); return; } empty.classList.add('hidden'); list.classList.remove('hidden'); const hasProcessing = projects.some(p => p.status === 'processing'); banner.classList.toggle('active', hasProcessing); if (hasProcessing) { const proc = projects.find(p => p.status === 'processing'); document.getElementById('processingText').textContent = 'Processando "' + proc.name + '"... Aguarde alguns minutos.'; } list.innerHTML = projects.map(p => '<div class="project-card" onclick="openProject(' + p.id + ')"><strong>' + p.name + '</strong><div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Criado em ' + p.date + ' • ' + p.frames + ' frames</div><span class="status ' + p.status + '">' + (p.status === 'processing' ? '⏳ Processando...' : '✓ Pronto') + '</span></div>').join(''); }
@@ -326,20 +333,17 @@ function openProject(id) {
   if (project && project.status === 'processing') { alert('⏳ Este projeto ainda está sendo processado!\nAguarde alguns minutos.'); return; }
   currentProject = project;
   showPage('viewer');
-  
-  // Atualiza detalhes do projeto
   document.getElementById('detailName').textContent = project.name;
   document.getElementById('detailDate').textContent = project.date;
   document.getElementById('detailFrames').textContent = project.frames;
   document.getElementById('detailPoints').textContent = project.points.toLocaleString('pt-BR');
   document.getElementById('detailStatus').textContent = '✓ Pronto';
   document.getElementById('detailStatus').style.color = 'var(--success)';
-  
-  // Gera nuvem de pontos
   generatePointCloud(project.points);
+  renderMeasurementsList();
 }
 
-//  GERA NUVEM DE PONTOS 3D SIMULADA
+// 🏗️ GERA PAREDE 3D REALISTA
 function generatePointCloud(numPoints) {
   const cloud = document.getElementById('pointCloud');
   const loading = document.getElementById('loadingPoints');
@@ -354,35 +358,78 @@ function generatePointCloud(numPoints) {
   const centerY = h / 2;
   
   let generated = 0;
-  const batchSize = 50;
+  const batchSize = 100;
+  const points = [];
+  
+  // Gera pontos em formato de PAREDE (plano vertical)
+  const wallWidth = 400;
+  const wallHeight = 250;
+  const wallDepth = 20;
+  
+  for (let i = 0; i < numPoints; i++) {
+    // 70% na parede frontal, 20% no chão, 10% no teto
+    const surface = Math.random();
+    let x, y, z;
+    
+    if (surface < 0.7) {
+      // Parede frontal
+      x = centerX + (Math.random() - 0.5) * wallWidth;
+      y = centerY + (Math.random() - 0.5) * wallHeight;
+      z = (Math.random() - 0.5) * wallDepth;
+    } else if (surface < 0.9) {
+      // Chão
+      x = centerX + (Math.random() - 0.5) * wallWidth;
+      y = centerY + wallHeight / 2 + Math.random() * 50;
+      z = (Math.random() - 0.5) * wallDepth * 2;
+    } else {
+      // Teto
+      x = centerX + (Math.random() - 0.5) * wallWidth;
+      y = centerY - wallHeight / 2 - Math.random() * 50;
+      z = (Math.random() - 0.5) * wallDepth * 2;
+    }
+    
+    // Adiciona ruído realista
+    x += (Math.random() - 0.5) * 5;
+    y += (Math.random() - 0.5) * 5;
+    
+    points.push({ x, y, z, origX: x, origY: y });
+  }
+  
   const interval = setInterval(() => {
     for (let i = 0; i < batchSize && generated < numPoints; i++) {
+      const p = points[generated];
       const point = document.createElement('div');
       point.className = 'point-3d';
       
-      // Distribuição em forma de "sala" (retângulo 3D)
-      const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * 150;
-      const x = centerX + Math.cos(angle) * radius + (Math.random() - 0.5) * 100;
-      const y = centerY + Math.sin(angle) * radius * 0.6 + (Math.random() - 0.5) * 80;
-      const z = Math.random() * 200 - 100;
-      
-      // Perspectiva simples
-      const scale = 1 + z / 500;
+      const scale = 1 + p.z / 500;
       const size = Math.max(2, 3 * scale);
       
-      point.style.left = x + 'px';
-      point.style.top = y + 'px';
+      point.style.left = p.x + 'px';
+      point.style.top = p.y + 'px';
       point.style.width = size + 'px';
       point.style.height = size + 'px';
       point.style.opacity = 0.3 + Math.random() * 0.7;
       point.style.animationDelay = (Math.random() * 0.5) + 's';
       
-      // Cores variadas para simular profundidade
-      const hue = 220 + Math.random() * 40;
-      const light = 50 + Math.random() * 20;
+      // Cores baseadas na posição (parede = azul, chão = verde, teto = cinza)
+      const surface = Math.random();
+      let hue, light;
+      if (surface < 0.7) {
+        hue = 220 + Math.random() * 40; // Azul para parede
+        light = 50 + Math.random() * 20;
+      } else if (surface < 0.9) {
+        hue = 120 + Math.random() * 30; // Verde para chão
+        light = 40 + Math.random() * 20;
+      } else {
+        hue = 0; // Cinza para teto
+        light = 60 + Math.random() * 20;
+      }
       point.style.background = `hsl(${hue}, 70%, ${light}%)`;
       point.style.boxShadow = `0 0 ${size}px hsl(${hue}, 70%, ${light}%)`;
+      
+      point.dataset.origX = p.origX;
+      point.dataset.origY = p.origY;
+      point.dataset.z = p.z;
       
       cloud.appendChild(point);
       generated++;
@@ -393,9 +440,84 @@ function generatePointCloud(numPoints) {
     if (generated >= numPoints) {
       clearInterval(interval);
       loading.classList.add('hidden');
+      startAutoRotate();
     }
-  }, 30);
+  }, 20);
 }
+
+// 🔄 ROTAÇÃO AUTOMÁTICA
+function startAutoRotate() {
+  if (animationId) cancelAnimationFrame(animationId);
+  autoRotate = true;
+  
+  function rotate() {
+    if (!autoRotate) return;
+    rotationAngle += 0.2;
+    applyTransform();
+    animationId = requestAnimationFrame(rotate);
+  }
+  rotate();
+}
+
+function applyTransform() {
+  const cloud = document.getElementById('pointCloud');
+  const points = cloud.querySelectorAll('.point-3d');
+  const centerX = cloud.clientWidth / 2;
+  const centerY = cloud.clientHeight / 2;
+  
+  points.forEach(point => {
+    const origX = parseFloat(point.dataset.origX);
+    const origY = parseFloat(point.dataset.origY);
+    const z = parseFloat(point.dataset.z);
+    
+    // Rotação 3D simples
+    const rad = rotationAngle * Math.PI / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    
+    const dx = origX - centerX;
+    const dz = z;
+    
+    const newX = dx * cos - dz * sin;
+    const newZ = dx * sin + dz * cos;
+    
+    const scale = zoomLevel * (1 + newZ / 500);
+    const x = centerX + newX * scale + panOffsetX;
+    const y = centerY + (origY - centerY) * scale + panOffsetY;
+    
+    point.style.left = x + 'px';
+    point.style.top = y + 'px';
+    point.style.transform = `scale(${scale})`;
+  });
+}
+
+// 🖱️ ZOOM COM SCROLL
+document.getElementById('viewer3d').addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoomLevel += e.deltaY > 0 ? -0.1 : 0.1;
+  zoomLevel = Math.max(0.3, Math.min(3, zoomLevel));
+  applyTransform();
+});
+
+// 🖱️ PAN COM ARRASTAR (botão direito)
+document.getElementById('viewer3d').addEventListener('mousedown', (e) => {
+  if (e.button === 2) {
+    isDragging = true;
+    dragStartX = e.clientX - panOffsetX;
+    dragStartY = e.clientY - panOffsetY;
+    autoRotate = false;
+    if (animationId) cancelAnimationFrame(animationId);
+  }
+});
+document.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    panOffsetX = e.clientX - dragStartX;
+    panOffsetY = e.clientY - dragStartY;
+    applyTransform();
+  }
+});
+document.addEventListener('mouseup', () => { isDragging = false; });
+document.getElementById('viewer3d').addEventListener('contextmenu', (e) => e.preventDefault());
 
 let selectedFile = null;
 function handleFileSelect(e) { const file = e.target.files[0]; if (!file) return; if (!file.type.startsWith('video/')) { alert('❌ Por favor, selecione um arquivo de vídeo (MP4, MOV, AVI)'); e.target.value = ''; return; } if (file.size > 2 * 1024 * 1024 * 1024) { alert('❌ Arquivo muito grande! Máximo 2GB.'); e.target.value = ''; return; } selectedFile = file; document.getElementById('uploadZone').classList.add('has-file'); document.getElementById('fileInfo').classList.add('active'); document.getElementById('fileName').textContent = file.name; document.getElementById('fileSize').textContent = formatFileSize(file.size); document.getElementById('uploadBtn').disabled = false; document.getElementById('progressText').textContent = '✓ Arquivo pronto: ' + file.name; document.getElementById('progressText').style.color = 'var(--success)'; }
@@ -404,8 +526,8 @@ const uploadZone = document.getElementById('uploadZone');
 uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
 uploadZone.addEventListener('dragleave', () => { uploadZone.classList.remove('dragover'); });
 uploadZone.addEventListener('drop', (e) => { e.preventDefault(); uploadZone.classList.remove('dragover'); const file = e.dataTransfer.files[0]; if (file) { const input = document.getElementById('videoInput'); const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files; handleFileSelect({ target: input }); } });
-function simulateUpload() { if (!selectedFile) { alert('⚠️ Selecione um vídeo primeiro!'); return; } const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); const btn = document.getElementById('uploadBtn'); let progress = 0; btn.disabled = true; btn.textContent = '⏳ Enviando...'; text.textContent = 'Enviando para a nuvem...'; text.style.color = 'var(--text-muted)'; const interval = setInterval(() => { progress += Math.random() * 15 + 5; if (progress > 100) progress = 100; fill.style.width = progress + '%'; text.textContent = 'Upload ' + Math.round(progress) + '% • ' + formatFileSize(selectedFile.size * progress / 100) + ' / ' + formatFileSize(selectedFile.size); if (progress >= 100) { clearInterval(interval); text.textContent = '✓ Enviado! Processando na nuvem...'; text.style.color = 'var(--success)'; btn.textContent = '✓ Enviado com sucesso!'; const newProject = { id: Date.now(), name: selectedFile.name.replace(/\.[^/.]+$/, ""), date: new Date().toLocaleDateString('pt-BR'), frames: Math.floor(Math.random() * 200) + 100, points: Math.floor(Math.random() * 10000) + 5000, status: 'processing' }; projects.push(newProject); setTimeout(() => { showPage('dashboard'); renderDashboard(); simulateProcessing(newProject.id); }, 1500); } }, 300); }
-function simulateProcessing(projectId) { let seconds = 10; const banner = document.getElementById('processingBanner'); const text = document.getElementById('processingText'); if (processingTimer) clearInterval(processingTimer); processingTimer = setInterval(() => { seconds--; text.textContent = 'Processando... ' + seconds + ' segundos restantes'; if (seconds <= 0) { clearInterval(processingTimer); processingTimer = null; const project = projects.find(p => p.id === projectId); if (project) { project.status = 'ready'; project.frames = Math.floor(Math.random() * 500) + 300; project.points = Math.floor(Math.random() * 15000) + 8000; } alert('🎉 Seu scan 3D está pronto!\nClique no projeto para visualizar.'); renderDashboard(); } }, 1000); }
+function simulateUpload() { if (!selectedFile) { alert('⚠️ Selecione um vídeo primeiro!'); return; } const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); const btn = document.getElementById('uploadBtn'); let progress = 0; btn.disabled = true; btn.textContent = '⏳ Enviando...'; text.textContent = 'Enviando para a nuvem...'; text.style.color = 'var(--text-muted)'; const interval = setInterval(() => { progress += Math.random() * 15 + 5; if (progress > 100) progress = 100; fill.style.width = progress + '%'; text.textContent = 'Upload ' + Math.round(progress) + '% • ' + formatFileSize(selectedFile.size * progress / 100) + ' / ' + formatFileSize(selectedFile.size); if (progress >= 100) { clearInterval(interval); text.textContent = '✓ Enviado! Processando na nuvem...'; text.style.color = 'var(--success)'; btn.textContent = '✓ Enviado com sucesso!'; const newProject = { id: Date.now(), name: selectedFile.name.replace(/\.[^/.]+$/, ""), date: new Date().toLocaleDateString('pt-BR'), frames: Math.floor(Math.random() * 200) + 100, points: Math.floor(Math.random() * 10000) + 5000, status: 'processing' }; projects.push(newProject); saveData(); setTimeout(() => { showPage('dashboard'); renderDashboard(); simulateProcessing(newProject.id); }, 1500); } }, 300); }
+function simulateProcessing(projectId) { let seconds = 10; const banner = document.getElementById('processingBanner'); const text = document.getElementById('processingText'); if (processingTimer) clearInterval(processingTimer); processingTimer = setInterval(() => { seconds--; text.textContent = 'Processando... ' + seconds + ' segundos restantes'; if (seconds <= 0) { clearInterval(processingTimer); processingTimer = null; const project = projects.find(p => p.id === projectId); if (project) { project.status = 'ready'; project.frames = Math.floor(Math.random() * 500) + 300; project.points = Math.floor(Math.random() * 15000) + 8000; saveData(); } alert('🎉 Seu scan 3D está pronto!\nClique no projeto para visualizar.'); renderDashboard(); } }, 1000); }
 
 function setTool(tool, e) {
   e?.stopPropagation();
@@ -415,12 +537,22 @@ function setTool(tool, e) {
   currentTool = tool;
   clickCount = 0;
   measurePoints = [];
+  polygonPoints = [];
   document.getElementById('scalePanel').classList.toggle('hidden', tool !== 'scale');
   document.getElementById('cutPanel').classList.toggle('hidden', tool !== 'cut');
+  document.getElementById('angleDisplay').classList.add('hidden');
   const status = document.getElementById('scaleStatus');
-  if (tool === 'measure' || tool === 'scale') {
+  if (tool === 'measure') {
     status.classList.add('active');
     status.textContent = '📏 Clique no 1º ponto';
+    status.style.background = 'rgba(245, 158, 11, 0.9)';
+  } else if (tool === 'polygon') {
+    status.classList.add('active');
+    status.textContent = '⬡ Clique nos vértices (duplo clique para fechar)';
+    status.style.background = 'rgba(139, 92, 246, 0.9)';
+  } else if (tool === 'scale') {
+    status.classList.add('active');
+    status.textContent = '📐 Clique no 1º ponto';
     status.style.background = 'rgba(245, 158, 11, 0.9)';
   } else {
     status.classList.remove('active');
@@ -429,49 +561,129 @@ function setTool(tool, e) {
 
 document.getElementById('viewer3d').addEventListener('click', (e) => {
   if (e.target.closest('.viewer-controls') || e.target.closest('.viewer-info')) return;
-  if (!currentTool || (currentTool !== 'measure' && currentTool !== 'scale')) return;
+  if (!currentTool) return;
+  
   const rect = e.currentTarget.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
-  clickCount++;
-  const point = document.createElement('div');
-  point.className = 'measure-point ' + (clickCount === 1 ? 'p1' : 'p2');
-  point.style.left = x + 'px';
-  point.style.top = y + 'px';
-  e.currentTarget.appendChild(point);
-  measurePoints.push({ x, y });
-  const status = document.getElementById('scaleStatus');
-  if (clickCount === 1) { status.textContent = ' Clique no 2º ponto'; }
-  else if (clickCount === 2) {
-    const p1 = measurePoints[0]; const p2 = measurePoints[1];
-    const dx = p2.x - p1.x; const dy = p2.y - p1.y;
-    const distancePx = Math.sqrt(dx * dx + dy * dy);
-    const distanceMm = distancePx * scaleFactor;
-    const line = document.createElement('div');
-    line.className = 'measure-line';
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    line.style.width = distancePx + 'px';
-    line.style.left = p1.x + 'px';
-    line.style.top = p1.y + 'px';
-    line.style.transform = 'rotate(' + angle + 'deg)';
-    e.currentTarget.appendChild(line);
-    const label = document.createElement('div');
-    label.className = 'measure-label';
-    label.style.left = ((p1.x + p2.x) / 2) + 'px';
-    label.style.top = ((p1.y + p2.y) / 2) + 'px';
-    label.textContent = distanceMm.toFixed(1) + ' mm';
-    e.currentTarget.appendChild(label);
-    document.getElementById('dx').textContent = Math.abs(dx).toFixed(1) + ' px';
-    document.getElementById('dy').textContent = Math.abs(dy).toFixed(1) + ' px';
-    document.getElementById('dz').textContent = '0.0 px';
-    document.getElementById('total').textContent = distanceMm.toFixed(1) + ' mm';
-    document.getElementById('horiz').textContent = distancePx.toFixed(1) + ' px';
-    document.getElementById('pixels').textContent = distancePx.toFixed(1) + ' px';
-    status.textContent = '✓ Medido: ' + distanceMm.toFixed(1) + ' mm';
-    status.style.background = 'rgba(16, 185, 129, 0.9)';
-    clickCount = 0; measurePoints = [];
+  
+  if (currentTool === 'measure' || currentTool === 'scale') {
+    clickCount++;
+    const point = document.createElement('div');
+    point.className = 'measure-point ' + (clickCount === 1 ? 'p1' : 'p2');
+    point.style.left = x + 'px';
+    point.style.top = y + 'px';
+    e.currentTarget.appendChild(point);
+    measurePoints.push({ x, y });
+    const status = document.getElementById('scaleStatus');
+    if (clickCount === 1) { status.textContent = '📏 Clique no 2º ponto'; }
+    else if (clickCount === 2) {
+      const p1 = measurePoints[0]; const p2 = measurePoints[1];
+      const dx = p2.x - p1.x; const dy = p2.y - p1.y;
+      const distancePx = Math.sqrt(dx * dx + dy * dy);
+      const distanceMm = distancePx * scaleFactor;
+      const line = document.createElement('div');
+      line.className = 'measure-line';
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      line.style.width = distancePx + 'px';
+      line.style.left = p1.x + 'px';
+      line.style.top = p1.y + 'px';
+      line.style.transform = 'rotate(' + angle + 'deg)';
+      e.currentTarget.appendChild(line);
+      const label = document.createElement('div');
+      label.className = 'measure-label';
+      label.style.left = ((p1.x + p2.x) / 2) + 'px';
+      label.style.top = ((p1.y + p2.y) / 2) + 'px';
+      label.textContent = distanceMm.toFixed(1) + ' mm';
+      e.currentTarget.appendChild(label);
+      document.getElementById('dx').textContent = Math.abs(dx).toFixed(1) + ' px';
+      document.getElementById('dy').textContent = Math.abs(dy).toFixed(1) + ' px';
+      document.getElementById('dz').textContent = '0.0 px';
+      document.getElementById('total').textContent = distanceMm.toFixed(1) + ' mm';
+      document.getElementById('horiz').textContent = distancePx.toFixed(1) + ' px';
+      document.getElementById('pixels').textContent = distancePx.toFixed(1) + ' px';
+      status.textContent = '✓ Medido: ' + distanceMm.toFixed(1) + ' mm';
+      status.style.background = 'rgba(16, 185, 129, 0.9)';
+      // Salva medida
+      measurements.push({ type: 'Linha', distance: distanceMm.toFixed(1), unit: 'mm', date: new Date().toLocaleTimeString('pt-BR') });
+      saveData();
+      renderMeasurementsList();
+      clickCount = 0; measurePoints = [];
+    }
+  } else if (currentTool === 'polygon') {
+    polygonPoints.push({ x, y });
+    const point = document.createElement('div');
+    point.className = 'measure-point p1';
+    point.style.left = x + 'px';
+    point.style.top = y + 'px';
+    e.currentTarget.appendChild(point);
+    
+    if (polygonPoints.length >= 3) {
+      // Desenha linhas do polígono
+      for (let i = 0; i < polygonPoints.length - 1; i++) {
+        const p1 = polygonPoints[i]; const p2 = polygonPoints[i + 1];
+        drawPolygonLine(e.currentTarget, p1, p2);
+      }
+      // Calcula ângulo no último vértice
+      if (polygonPoints.length >= 3) {
+        const p1 = polygonPoints[polygonPoints.length - 3];
+        const p2 = polygonPoints[polygonPoints.length - 2];
+        const p3 = polygonPoints[polygonPoints.length - 1];
+        const angle = calculateAngle(p1, p2, p3);
+        document.getElementById('angleValue').textContent = angle.toFixed(1);
+        document.getElementById('angleDisplay').classList.remove('hidden');
+      }
+    }
   }
 });
+
+document.getElementById('viewer3d').addEventListener('dblclick', (e) => {
+  if (currentTool === 'polygon' && polygonPoints.length >= 3) {
+    // Fecha o polígono
+    const p1 = polygonPoints[polygonPoints.length - 1];
+    const p2 = polygonPoints[0];
+    drawPolygonLine(e.currentTarget, p1, p2);
+    const area = calculatePolygonArea(polygonPoints);
+    measurements.push({ type: 'Polígono', area: area.toFixed(1), unit: 'px²', date: new Date().toLocaleTimeString('pt-BR') });
+    saveData();
+    renderMeasurementsList();
+    polygonPoints = [];
+    document.getElementById('scaleStatus').textContent = '⬡ Polígono fechado!';
+  }
+});
+
+function drawPolygonLine(container, p1, p2) {
+  const dx = p2.x - p1.x; const dy = p2.y - p1.y;
+  const distancePx = Math.sqrt(dx * dx + dy * dy);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  const line = document.createElement('div');
+  line.className = 'measure-line';
+  line.style.width = distancePx + 'px';
+  line.style.left = p1.x + 'px';
+  line.style.top = p1.y + 'px';
+  line.style.transform = 'rotate(' + angle + 'deg)';
+  line.style.background = 'var(--primary)';
+  container.appendChild(line);
+}
+
+function calculateAngle(p1, p2, p3) {
+  const v1 = { x: p1.x - p2.x, y: p1.y - p2.y };
+  const v2 = { x: p3.x - p2.x, y: p3.y - p2.y };
+  const dot = v1.x * v2.x + v1.y * v2.y;
+  const mag1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
+  const mag2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
+  return Math.acos(dot / (mag1 * mag2)) * 180 / Math.PI;
+}
+
+function calculatePolygonArea(points) {
+  let area = 0;
+  for (let i = 0; i < points.length; i++) {
+    const j = (i + 1) % points.length;
+    area += points[i].x * points[j].y;
+    area -= points[j].x * points[i].y;
+  }
+  return Math.abs(area) / 2;
+}
 
 function clearMeasurements() {
   const viewer = document.getElementById('viewer3d');
@@ -483,7 +695,10 @@ function clearMeasurements() {
   document.getElementById('horiz').textContent = '-- mm';
   document.getElementById('pixels').textContent = '-- px';
   document.getElementById('scaleStatus').classList.remove('active');
+  document.getElementById('angleDisplay').classList.add('hidden');
   currentTool = null;
+  measurePoints = [];
+  polygonPoints = [];
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
 }
 
@@ -499,49 +714,85 @@ function calibrateScale() {
 
 function applyCut(value) {
   document.getElementById('cutValue').textContent = value + ' m';
-  const cube = document.getElementById('cube3d');
-  const cutPercent = (value / 3) * 100;
-  cube.style.clipPath = 'polygon(0 0, 100% 0, 100% ' + (100 - cutPercent) + '%, 0 ' + (100 - cutPercent) + '%)';
+  const cloud = document.getElementById('pointCloud');
+  const cutY = parseFloat(value) * 100;
+  cloud.style.clipPath = 'polygon(0 0, 100% 0, 100% ' + (100 - cutY) + '%, 0 ' + (100 - cutY) + '%)';
 }
 
 function resetCut() {
   document.getElementById('cutHeight').value = 1.0;
   document.getElementById('cutValue').textContent = '1.0 m';
-  document.getElementById('cube3d').style.clipPath = 'none';
+  document.getElementById('pointCloud').style.clipPath = 'none';
 }
 
-// 🎮 CONTROLES DE CÂMERA FUNCIONAIS
 function setView(view) {
   currentView = view;
-  const cube = document.getElementById('cube3d');
-  const rotations = {
-    'default': 'translate(-50%, -50%) rotateX(-20deg) rotateY(0deg)',
-    'floor': 'translate(-50%, -50%) rotateX(90deg) rotateY(0deg)',
-    'ceiling': 'translate(-50%, -50%) rotateX(-90deg) rotateY(0deg)',
-    'top': 'translate(-50%, -50%) rotateX(0deg) rotateY(0deg)',
-    'plan': 'translate(-50%, -50%) rotateX(-90deg) rotateY(0deg)',
-    'front': 'translate(-50%, -50%) rotateX(0deg) rotateY(0deg)',
-    'side': 'translate(-50%, -50%) rotateX(0deg) rotateY(90deg)',
-    'north': 'translate(-50%, -50%) rotateX(-20deg) rotateY(0deg)',
-    'south': 'translate(-50%, -50%) rotateX(-20deg) rotateY(180deg)',
-    'east': 'translate(-50%, -50%) rotateX(-20deg) rotateY(90deg)',
-    'west': 'translate(-50%, -50%) rotateX(-20deg) rotateY(-90deg)'
-  };
-  cube.style.animation = 'none';
-  cube.style.transform = rotations[view] || rotations['default'];
+  autoRotate = false;
+  if (animationId) cancelAnimationFrame(animationId);
+  rotationAngle = 0;
+  panOffsetX = 0;
+  panOffsetY = 0;
+  zoomLevel = 1;
+  applyTransform();
 }
 
 function resetView() {
   clearMeasurements();
   resetCut();
-  const cube = document.getElementById('cube3d');
-  cube.style.animation = 'rotateCube 20s linear infinite';
-  cube.style.transform = '';
-  currentView = 'default';
+  rotationAngle = 0;
+  panOffsetX = 0;
+  panOffsetY = 0;
+  zoomLevel = 1;
+  startAutoRotate();
 }
 
-function exportPLY() { alert('⬇️ Exportando PLY...\n\nEm produção, isso geraria um arquivo PLY com ' + (currentProject ? currentProject.points.toLocaleString('pt-BR') : '0') + ' pontos 3D.'); }
-function exportCSV() { alert('📊 Exportando CSV...\n\nEm produção, isso geraria uma planilha com coordenadas X, Y, Z de cada ponto.'); }
+function renderMeasurementsList() {
+  const list = document.getElementById('measurementsList');
+  if (measurements.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida salva</div>';
+    return;
+  }
+  list.innerHTML = measurements.map((m, i) => '<div class="measurement-item"><span>' + m.type + ': ' + m[m.type === 'Linha' ? 'distance' : 'area'] + ' ' + m.unit + '</span><button class="delete-btn" onclick="deleteMeasurement(' + i + ')">✕</button></div>').join('');
+}
+
+function deleteMeasurement(index) {
+  measurements.splice(index, 1);
+  saveData();
+  renderMeasurementsList();
+}
+
+function exportCSV() {
+  let csv = 'Tipo,Valor,Unidade,Data\n';
+  measurements.forEach(m => {
+    const value = m.type === 'Linha' ? m.distance : m.area;
+    csv += m.type + ',' + value + ',' + m.unit + ',' + m.date + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'medicoes_' + (currentProject ? currentProject.name : 'vexa') + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert(' CSV exportado com sucesso!\n' + measurements.length + ' medidas salvas.');
+}
+
+function exportPLY() {
+  let ply = 'ply\nformat ascii 1.0\nelement vertex ' + (currentProject ? currentProject.points : 0) + '\nproperty float x\nproperty float y\nproperty float z\nproperty uchar red\nproperty uchar green\nproperty uchar blue\nend_header\n';
+  for (let i = 0; i < Math.min(currentProject ? currentProject.points : 0, 1000); i++) {
+    ply += (Math.random() * 1000) + ' ' + (Math.random() * 1000) + ' ' + (Math.random() * 1000) + ' 100 100 255\n';
+  }
+  const blob = new Blob([ply], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'scan_' + (currentProject ? currentProject.name : 'vexa') + '.ply';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert('️ PLY exportado!\n' + Math.min(currentProject ? currentProject.points : 0, 1000) + ' pontos (amostra).');
+}
+
+loadData();
 </script>
 </body>
 </html>
