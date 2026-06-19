@@ -25,6 +25,7 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .auth-screen {
@@ -262,22 +263,14 @@ body {
   border-radius: var(--radius);
   position: relative;
   overflow: hidden;
-  background-image:
-    radial-gradient(ellipse at center, #1a2340 0%, #0a0e1a 70%),
-    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(79, 70, 229, 0.25) 39px, rgba(79, 70, 229, 0.25) 40px),
-    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(79, 70, 229, 0.25) 39px, rgba(79, 70, 229, 0.25) 40px);
-  background-size: 100% 100%, 40px 40px, 40px 40px;
-  cursor: crosshair;
+  cursor: grab;
 }
+.viewer-3d:active { cursor: grabbing; }
 
-/* PAREDES SVG */
-.walls-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
+#canvas3d {
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  display: block;
 }
 
 .viewer-controls {
@@ -288,7 +281,7 @@ body {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.7);
   padding: 8px;
   border-radius: var(--radius);
   backdrop-filter: blur(8px);
@@ -308,7 +301,7 @@ body {
   position: absolute;
   top: 16px;
   left: 16px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.7);
   padding: 8px 12px;
   border-radius: var(--radius);
   font-size: 12px;
@@ -473,38 +466,26 @@ body {
 
 .hidden { display: none !important; }
 
-/* Marcadores de medição */
-.measure-marker {
+.legend {
   position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid white;
-  pointer-events: none;
-  z-index: 5;
-  transform: translate(-50%, -50%);
-}
-.measure-marker.p1 { background: var(--warning); }
-.measure-marker.p2 { background: var(--success); }
-.measure-line-svg {
-  position: absolute;
-  height: 2px;
-  background: linear-gradient(90deg, var(--warning), var(--success));
-  pointer-events: none;
-  z-index: 4;
-  transform-origin: left center;
-}
-.measure-label-svg {
-  position: absolute;
-  background: rgba(0,0,0,0.8);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+  bottom: 80px;
+  left: 16px;
+  background: rgba(0,0,0,0.7);
+  padding: 10px;
+  border-radius: var(--radius);
   font-size: 11px;
-  font-weight: 600;
-  pointer-events: none;
-  z-index: 6;
-  transform: translate(-50%, -100%);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.legend-color {
+  width: 16px;
+  height: 3px;
 }
 </style>
 </head>
@@ -567,17 +548,17 @@ body {
       </div>
     </div>
     <div class="user-info">
-       João Silva<br>
+      👤 João Silva<br>
       <small>joao@email.com</small>
     </div>
     <nav>
-      <div class="nav-item active" onclick="showPage('dashboard', event)"> Projetos</div>
-      <div class="nav-item" onclick="showPage('upload', event)"> Novo Scan</div>
+      <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
+      <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
       <div class="nav-item" onclick="showPage('viewer', event)">🎯 Visualizar</div>
-      <div class="nav-item" onclick="showPage('settings', event)">⚙️ Configurações</div>
+      <div class="nav-item" onclick="showPage('settings', event)">️ Configurações</div>
     </nav>
     <div class="sidebar-footer">
-      <div class="nav-item" onclick="logout()">🚪 Sair</div>
+      <div class="nav-item" onclick="logout()"> Sair</div>
     </div>
   </aside>
 
@@ -603,7 +584,7 @@ body {
       </div>
 
       <div id="page-upload" class="page hidden">
-        <div class="page-header"><h2> Novo Scan</h2></div>
+        <div class="page-header"><h2>📹 Novo Scan</h2></div>
         <div class="upload-panel">
           <h3 style="margin-bottom:16px;">1. Upload do Vídeo</h3>
           <div class="upload-zone" id="uploadZone">
@@ -650,67 +631,29 @@ body {
       <div id="page-viewer" class="page hidden">
         <div class="viewer-container">
           <div class="viewer-3d" id="viewer3d">
-            
-            <!-- PAREDES SVG -->
-            <svg class="walls-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
-              <!-- Parede frontal -->
-              <rect x="100" y="100" width="600" height="400" fill="rgba(203, 213, 225, 0.1)" stroke="#cbd5e1" stroke-width="4"/>
-              
-              <!-- Porta -->
-              <rect x="350" y="350" width="100" height="150" fill="rgba(245, 158, 11, 0.3)" stroke="#f59e0b" stroke-width="3"/>
-              <text x="400" y="430" fill="#f59e0b" font-size="12" text-anchor="middle" font-weight="bold">PORTA</text>
-              
-              <!-- Janela -->
-              <rect x="150" y="150" width="120" height="80" fill="rgba(59, 130, 246, 0.3)" stroke="#3b82f6" stroke-width="3"/>
-              <line x1="210" y1="150" x2="210" y2="230" stroke="#3b82f6" stroke-width="2"/>
-              <line x1="150" y1="190" x2="270" y2="190" stroke="#3b82f6" stroke-width="2"/>
-              <text x="210" y="195" fill="#3b82f6" font-size="12" text-anchor="middle" font-weight="bold">JANELA</text>
-              
-              <!-- Tomadas -->
-              <circle cx="200" cy="450" r="8" fill="#fbbf24" stroke="#fff" stroke-width="2"/>
-              <text x="200" y="454" fill="#000" font-size="10" text-anchor="middle" font-weight="bold">T</text>
-              <text x="220" y="455" fill="#fbbf24" font-size="10">Tomada</text>
-              
-              <circle cx="600" cy="450" r="8" fill="#fbbf24" stroke="#fff" stroke-width="2"/>
-              <text x="600" y="454" fill="#000" font-size="10" text-anchor="middle" font-weight="bold">T</text>
-              <text x="580" y="455" fill="#fbbf24" font-size="10" text-anchor="end">Tomada</text>
-              
-              <!-- Interruptor -->
-              <circle cx="470" cy="450" r="6" fill="none" stroke="#fbbf24" stroke-width="2"/>
-              <text x="470" y="454" fill="#fbbf24" font-size="9" text-anchor="middle" font-weight="bold">I</text>
-              <text x="490" y="455" fill="#fbbf24" font-size="10">Int.</text>
-              
-              <!-- Luminária -->
-              <circle cx="400" cy="250" r="15" fill="none" stroke="#fbbf24" stroke-width="2"/>
-              <line x1="390" y1="240" x2="410" y2="260" stroke="#fbbf24" stroke-width="2"/>
-              <line x1="390" y1="260" x2="410" y2="240" stroke="#fbbf24" stroke-width="2"/>
-              <text x="430" y="255" fill="#fbbf24" font-size="11"> Luminária</text>
-              
-              <!-- Cotas -->
-              <line x1="100" y1="80" x2="700" y2="80" stroke="#64748b" stroke-width="1"/>
-              <line x1="100" y1="75" x2="100" y2="85" stroke="#64748b" stroke-width="1"/>
-              <line x1="700" y1="75" x2="700" y2="85" stroke="#64748b" stroke-width="1"/>
-              <text x="400" y="75" fill="#94a3b8" font-size="11" text-anchor="middle" font-weight="bold">5.00 m</text>
-              
-              <line x1="80" y1="100" x2="80" y2="500" stroke="#64748b" stroke-width="1"/>
-              <line x1="75" y1="100" x2="85" y2="100" stroke="#64748b" stroke-width="1"/>
-              <line x1="75" y1="500" x2="85" y2="500" stroke="#64748b" stroke-width="1"/>
-              <text x="75" y="300" fill="#94a3b8" font-size="11" text-anchor="middle" font-weight="bold" transform="rotate(-90 75 300)">4.00 m</text>
-            </svg>
+            <canvas id="canvas3d"></canvas>
             
             <div class="viewer-info">
-              <span>📐 <span id="pointCount">0</span> pts</span>
+              <span>📐 <span id="pointCount">12.458</span> pts</span>
               <span>🎯 <span id="fpsCount">60</span> FPS</span>
               <span>🔲 Grid</span>
             </div>
             <div class="scale-status" id="scaleStatus">📏 Clique no 1º ponto</div>
+            
+            <div class="legend">
+              <div class="legend-item"><div class="legend-color" style="background:#cbd5e1;height:6px;"></div><span>Parede</span></div>
+              <div class="legend-item"><div class="legend-color" style="background:#f59e0b;"></div><span>Porta</span></div>
+              <div class="legend-item"><div class="legend-color" style="background:#3b82f6;"></div><span>Janela</span></div>
+              <div class="legend-item"><div class="legend-color" style="background:#fbbf24;height:10px;width:10px;border-radius:50%;"></div><span>Elétrica</span></div>
+            </div>
+            
             <div class="viewer-controls">
-              <button class="view-btn" onclick="setView('floor')">▼ PISO</button>
-              <button class="view-btn" onclick="setView('ceiling')">▲ TETO</button>
-              <button class="view-btn" onclick="setView('top')">↑ Y+</button>
-              <button class="view-btn" onclick="setView('plan')">⬆️ Planta</button>
               <button class="view-btn" onclick="setView('front')">➡️ Frontal</button>
-              <button class="view-btn" onclick="setView('side')">⬅️ Lateral</button>
+              <button class="view-btn" onclick="setView('back')">⬅️ Traseira</button>
+              <button class="view-btn" onclick="setView('left')"> Esquerda</button>
+              <button class="view-btn" onclick="setView('right')">🔜 Direita</button>
+              <button class="view-btn" onclick="setView('top')">⬆️ Planta</button>
+              <button class="view-btn" onclick="setView('iso')">🎲 Isométrica</button>
               <button class="view-btn" onclick="resetView()">🔄 Reset</button>
             </div>
           </div>
@@ -719,7 +662,7 @@ body {
             <div id="projectDetails">
               <p style="color:var(--text-muted);font-size:12px;">Selecione um projeto no dashboard</p>
             </div>
-            <h3>⚙️ Ferramentas</h3>
+            <h3>️ Ferramentas</h3>
             <div class="tool-grid">
               <button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)">
                 <span class="emoji">📏</span>Medir
@@ -731,7 +674,7 @@ body {
                 <span class="emoji">✂️</span>Corte
               </button>
               <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()">
-                <span class="emoji">️</span>Limpar
+                <span class="emoji">🗑️</span>Limpar
               </button>
             </div>
             <div id="scalePanel" class="hidden">
@@ -816,6 +759,7 @@ body {
 </div>
 
 <script>
+// ========== ESTADO GLOBAL ==========
 let projects = [];
 let processingTimer = null;
 let currentTool = null;
@@ -824,6 +768,469 @@ let scaleFactor = 1.0;
 let clickCount = 0;
 let currentProject = null;
 
+// ========== CÂMERA 3D ==========
+let camera = {
+  x: 0,
+  y: 0,
+  z: 8000,
+  rotX: 0.3,
+  rotY: 0,
+  zoom: 1,
+  panX: 0,
+  panY: 0
+};
+
+// ========== AMBIENTE 3D ==========
+const ROOM_WIDTH = 5000;
+const ROOM_DEPTH = 4000;
+const ROOM_HEIGHT = 2800;
+
+const environment = {
+  walls: [
+    // Parede frontal (Z=0)
+    { x: 0, y: 0, z: 0, w: ROOM_WIDTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Frontal' },
+    // Parede traseira (Z=ROOM_DEPTH)
+    { x: 0, y: 0, z: ROOM_DEPTH, w: ROOM_WIDTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Traseira' },
+    // Parede esquerda (X=0)
+    { x: 0, y: 0, z: 0, w: ROOM_DEPTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Esquerda', axis: 'z' },
+    // Parede direita (X=ROOM_WIDTH)
+    { x: ROOM_WIDTH, y: 0, z: 0, w: ROOM_DEPTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Direita', axis: 'z' }
+  ],
+  door: { x: 2000, y: 0, z: 0, w: 1000, h: 2100, color: '#f59e0b', label: 'Porta 1.00m' },
+  window: { x: 0, y: 800, z: 1500, w: 1300, h: 1200, color: '#3b82f6', label: 'Janela 1.30m', axis: 'z' },
+  electric: [
+    { x: 1000, y: 300, z: 0, label: 'Tomada T1', icon: '' },
+    { x: 4000, y: 300, z: 0, label: 'Tomada T2', icon: '⚡' },
+    { x: 2500, y: 300, z: ROOM_DEPTH, label: 'Tomada T3', icon: '⚡' },
+    { x: 2200, y: 1200, z: 0, label: 'Interruptor', icon: '🔲' },
+    { x: 2500, y: 2700, z: 2000, label: 'Luminária', icon: '💡' }
+  ]
+};
+
+// ========== CANVAS ==========
+const canvas = document.getElementById('canvas3d');
+const ctx = canvas.getContext('2d');
+let isDragging = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
+let dragButton = 0;
+
+function resizeCanvas() {
+  const container = document.getElementById('viewer3d');
+  canvas.width = container.clientWidth;
+  canvas.height = container.clientHeight;
+  render();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ========== PROJEÇÃO 3D ==========
+function project3D(x, y, z) {
+  // Transladar para centro da câmera
+  let dx = x - camera.x;
+  let dy = y - camera.y;
+  let dz = z - camera.z;
+  
+  // Rotação Y (yaw)
+  let cosY = Math.cos(camera.rotY);
+  let sinY = Math.sin(camera.rotY);
+  let x1 = dx * cosY - dz * sinY;
+  let z1 = dx * sinY + dz * cosY;
+  
+  // Rotação X (pitch)
+  let cosX = Math.cos(camera.rotX);
+  let sinX = Math.sin(camera.rotX);
+  let y1 = dy * cosX - z1 * sinX;
+  let z2 = dy * sinX + z1 * cosX;
+  
+  // Projeção perspectiva
+  if (z2 <= 10) return null;
+  let fov = 1000 * camera.zoom;
+  let px = (x1 * fov / z2) + canvas.width / 2 + camera.panX;
+  let py = (y1 * fov / z2) + canvas.height / 2 + camera.panY;
+  
+  return { x: px, y: py, z: z2 };
+}
+
+// ========== RENDERIZAÇÃO ==========
+function drawWall(wall) {
+  let corners;
+  if (wall.axis === 'z') {
+    // Parede ao longo do eixo Z
+    corners = [
+      project3D(wall.x, wall.y, wall.z),
+      project3D(wall.x, wall.y, wall.z + wall.w),
+      project3D(wall.x, wall.y + wall.h, wall.z + wall.w),
+      project3D(wall.x, wall.y + wall.h, wall.z)
+    ];
+  } else {
+    // Parede ao longo do eixo X
+    corners = [
+      project3D(wall.x, wall.y, wall.z),
+      project3D(wall.x + wall.w, wall.y, wall.z),
+      project3D(wall.x + wall.w, wall.y + wall.h, wall.z),
+      project3D(wall.x, wall.y + wall.h, wall.z)
+    ];
+  }
+  
+  if (corners.some(c => c === null)) return;
+  
+  ctx.beginPath();
+  ctx.moveTo(corners[0].x, corners[0].y);
+  for (let i = 1; i < corners.length; i++) {
+    ctx.lineTo(corners[i].x, corners[i].y);
+  }
+  ctx.closePath();
+  
+  ctx.fillStyle = wall.color + '40';
+  ctx.strokeStyle = wall.color;
+  ctx.lineWidth = 3;
+  ctx.fill();
+  ctx.stroke();
+  
+  // Label
+  if (wall.label) {
+    let center = project3D(
+      wall.axis === 'z' ? wall.x : wall.x + wall.w/2,
+      wall.y + wall.h/2,
+      wall.axis === 'z' ? wall.z + wall.w/2 : wall.z
+    );
+    if (center && center.z < 5000) {
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 14px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(wall.label, center.x, center.y);
+    }
+  }
+}
+
+function drawDoor() {
+  const door = environment.door;
+  const corners = [
+    project3D(door.x, door.y, door.z),
+    project3D(door.x + door.w, door.y, door.z),
+    project3D(door.x + door.w, door.y + door.h, door.z),
+    project3D(door.x, door.y + door.h, door.z)
+  ];
+  
+  if (corners.some(c => c === null)) return;
+  
+  ctx.beginPath();
+  ctx.moveTo(corners[0].x, corners[0].y);
+  for (let i = 1; i < corners.length; i++) {
+    ctx.lineTo(corners[i].x, corners[i].y);
+  }
+  ctx.closePath();
+  
+  ctx.fillStyle = door.color + '60';
+  ctx.strokeStyle = door.color;
+  ctx.lineWidth = 3;
+  ctx.fill();
+  ctx.stroke();
+  
+  let center = project3D(door.x + door.w/2, door.y + door.h/2, door.z);
+  if (center) {
+    ctx.fillStyle = door.color;
+    ctx.font = 'bold 16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(door.label, center.x, center.y);
+  }
+}
+
+function drawWindow() {
+  const win = environment.window;
+  const corners = [
+    project3D(win.x, win.y, win.z),
+    project3D(win.x, win.y, win.z + win.w),
+    project3D(win.x, win.y + win.h, win.z + win.w),
+    project3D(win.x, win.y + win.h, win.z)
+  ];
+  
+  if (corners.some(c => c === null)) return;
+  
+  ctx.beginPath();
+  ctx.moveTo(corners[0].x, corners[0].y);
+  for (let i = 1; i < corners.length; i++) {
+    ctx.lineTo(corners[i].x, corners[i].y);
+  }
+  ctx.closePath();
+  
+  ctx.fillStyle = win.color + '60';
+  ctx.strokeStyle = win.color;
+  ctx.lineWidth = 3;
+  ctx.fill();
+  ctx.stroke();
+  
+  // Divisórias da janela
+  let midZ = project3D(win.x, win.y, win.z + win.w/2);
+  let midZ2 = project3D(win.x, win.y + win.h, win.z + win.w/2);
+  if (midZ && midZ2) {
+    ctx.beginPath();
+    ctx.moveTo(midZ.x, midZ.y);
+    ctx.lineTo(midZ2.x, midZ2.y);
+    ctx.stroke();
+  }
+  
+  let midY = project3D(win.x, win.y + win.h/2, win.z);
+  let midY2 = project3D(win.x, win.y + win.h/2, win.z + win.w);
+  if (midY && midY2) {
+    ctx.beginPath();
+    ctx.moveTo(midY.x, midY.y);
+    ctx.lineTo(midY2.x, midY2.y);
+    ctx.stroke();
+  }
+  
+  let center = project3D(win.x, win.y + win.h/2, win.z + win.w/2);
+  if (center) {
+    ctx.fillStyle = win.color;
+    ctx.font = 'bold 16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(win.label, center.x - 80, center.y);
+  }
+}
+
+function drawElectric() {
+  environment.electric.forEach(el => {
+    const center = project3D(el.x, el.y, el.z);
+    if (!center || center.z > 4000) return;
+    
+    const size = Math.max(8, 30 / center.z * 500);
+    
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, size, 0, Math.PI * 2);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    ctx.fillStyle = '#000';
+    ctx.font = `bold ${size}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.fillText(el.icon, center.x, center.y + size/3);
+    
+    if (center.z < 2500) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '12px Arial';
+      ctx.fillText(el.label, center.x, center.y + size + 15);
+    }
+  });
+}
+
+function drawGrid() {
+  ctx.strokeStyle = 'rgba(79, 70, 229, 0.2)';
+  ctx.lineWidth = 1;
+  
+  // Grid no piso
+  for (let x = 0; x <= ROOM_WIDTH; x += 500) {
+    let p1 = project3D(x, ROOM_HEIGHT, 0);
+    let p2 = project3D(x, ROOM_HEIGHT, ROOM_DEPTH);
+    if (p1 && p2) {
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+  }
+  for (let z = 0; z <= ROOM_DEPTH; z += 500) {
+    let p1 = project3D(0, ROOM_HEIGHT, z);
+    let p2 = project3D(ROOM_WIDTH, ROOM_HEIGHT, z);
+    if (p1 && p2) {
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+  }
+}
+
+function drawMeasurements() {
+  measurePoints.forEach((p, i) => {
+    const proj = project3D(p.x, p.y, p.z);
+    if (!proj) return;
+    
+    ctx.beginPath();
+    ctx.arc(proj.x, proj.y, 10, 0, Math.PI * 2);
+    ctx.fillStyle = i === 0 ? '#f59e0b' : '#10b981';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+  
+  if (measurePoints.length === 2) {
+    const p1 = project3D(measurePoints[0].x, measurePoints[0].y, measurePoints[0].z);
+    const p2 = project3D(measurePoints[1].x, measurePoints[1].y, measurePoints[1].z);
+    
+    if (p1 && p2) {
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([10, 5]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      const dist = Math.sqrt(
+        Math.pow(measurePoints[1].x - measurePoints[0].x, 2) +
+        Math.pow(measurePoints[1].y - measurePoints[0].y, 2) +
+        Math.pow(measurePoints[1].z - measurePoints[0].z, 2)
+      );
+      const distM = (dist / 1000).toFixed(2);
+      
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(distM + ' m', (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 - 20);
+    }
+  }
+}
+
+function render() {
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  drawGrid();
+  environment.walls.forEach(drawWall);
+  drawDoor();
+  drawWindow();
+  drawElectric();
+  drawMeasurements();
+}
+
+// ========== CONTROLES ==========
+canvas.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+  dragButton = e.button;
+  
+  if (e.button === 0 && currentTool) {
+    // Clique para medir
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Raycast simplificado
+    const point = unproject2D(x, y);
+    if (point) {
+      measurePoints.push(point);
+      clickCount++;
+      
+      const status = document.getElementById('scaleStatus');
+      if (clickCount === 1) {
+        status.textContent = ' Clique no 2º ponto';
+      } else if (clickCount === 2) {
+        const dist = Math.sqrt(
+          Math.pow(measurePoints[1].x - measurePoints[0].x, 2) +
+          Math.pow(measurePoints[1].y - measurePoints[0].y, 2) +
+          Math.pow(measurePoints[1].z - measurePoints[0].z, 2)
+        );
+        const distMm = dist * scaleFactor;
+        
+        document.getElementById('dx').textContent = Math.abs(measurePoints[1].x - measurePoints[0].x).toFixed(0) + ' mm';
+        document.getElementById('dy').textContent = Math.abs(measurePoints[1].y - measurePoints[0].y).toFixed(0) + ' mm';
+        document.getElementById('dz').textContent = Math.abs(measurePoints[1].z - measurePoints[0].z).toFixed(0) + ' mm';
+        document.getElementById('total').textContent = distMm.toFixed(0) + ' mm';
+        document.getElementById('horiz').textContent = Math.sqrt(
+          Math.pow(measurePoints[1].x - measurePoints[0].x, 2) +
+          Math.pow(measurePoints[1].z - measurePoints[0].z, 2)
+        ).toFixed(0) + ' mm';
+        
+        status.textContent = '✓ Medido: ' + distMm.toFixed(0) + ' mm';
+        status.style.background = 'rgba(16, 185, 129, 0.9)';
+        
+        clickCount = 0;
+        measurePoints = [];
+      }
+    }
+  }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  
+  const deltaX = e.clientX - lastMouseX;
+  const deltaY = e.clientY - lastMouseY;
+  
+  if (dragButton === 0 && !currentTool) {
+    // Rotação orbital (botão esquerdo)
+    camera.rotY += deltaX * 0.005;
+    camera.rotX += deltaY * 0.005;
+    camera.rotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotX));
+  } else if (dragButton === 2 || dragButton === 1) {
+    // Pan (botão direito ou meio)
+    camera.panX += deltaX;
+    camera.panY += deltaY;
+  }
+  
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+  render();
+});
+
+canvas.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  camera.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
+  camera.zoom = Math.max(0.3, Math.min(3, camera.zoom));
+  render();
+});
+
+function unproject2D(x, y) {
+  // Simplificado: retorna ponto no plano mais próximo
+  return {
+    x: camera.x + (x - canvas.width/2 - camera.panX) * 10,
+    y: camera.y + (y - canvas.height/2 - camera.panY) * 10,
+    z: camera.z - 1000
+  };
+}
+
+function setView(view) {
+  const views = {
+    'front': { x: 2500, y: 1400, z: -2000, rotX: 0, rotY: 0 },
+    'back': { x: 2500, y: 1400, z: ROOM_DEPTH + 2000, rotX: 0, rotY: Math.PI },
+    'left': { x: -2000, y: 1400, z: 2000, rotX: 0, rotY: -Math.PI/2 },
+    'right': { x: ROOM_WIDTH + 2000, y: 1400, z: 2000, rotX: 0, rotY: Math.PI/2 },
+    'top': { x: 2500, y: -3000, z: 2000, rotX: Math.PI/2, rotY: 0 },
+    'iso': { x: 7000, y: 5000, z: 7000, rotX: 0.5, rotY: 0.7 }
+  };
+  
+  const v = views[view];
+  if (v) {
+    camera.x = v.x;
+    camera.y = v.y;
+    camera.z = v.z;
+    camera.rotX = v.rotX;
+    camera.rotY = v.rotY;
+    camera.panX = 0;
+    camera.panY = 0;
+    camera.zoom = 1;
+    render();
+  }
+}
+
+function resetView() {
+  camera = {
+    x: 0,
+    y: 0,
+    z: 8000,
+    rotX: 0.3,
+    rotY: 0,
+    zoom: 1,
+    panX: 0,
+    panY: 0
+  };
+  clearMeasurements();
+  render();
+}
+
+// ========== AUTH ==========
 function switchTab(tab, e) {
   e?.stopPropagation();
   document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.remove('active'));
@@ -836,6 +1243,7 @@ function doLogin(e, demo = false) {
   if (e) e.preventDefault();
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('app').classList.add('active');
+  setTimeout(resizeCanvas, 100);
   renderDashboard();
 }
 
@@ -853,6 +1261,7 @@ function showPage(page, e) {
   const navItems = document.querySelectorAll('.nav-item');
   if (navItems[navMap[page]]) navItems[navMap[page]].classList.add('active');
   if (page === 'dashboard') renderDashboard();
+  if (page === 'viewer') setTimeout(() => { resizeCanvas(); render(); }, 100);
 }
 
 function renderDashboard() {
@@ -899,7 +1308,6 @@ function openProject(id) {
   }
   currentProject = project;
   showPage('viewer');
-  document.getElementById('pointCount').textContent = '12.458';
   document.getElementById('projectDetails').innerHTML = `
     <div style="font-size:12px;">
       <div style="margin-bottom:8px;"><strong>Nome:</strong> ${project.name}</div>
@@ -909,8 +1317,10 @@ function openProject(id) {
       <div><strong>Status:</strong> <span style="color:var(--success);">✓ Pronto</span></div>
     </div>
   `;
+  setTimeout(() => { resizeCanvas(); render(); }, 100);
 }
 
+// ========== UPLOAD ==========
 let selectedFile = null;
 
 function handleFileSelect(e) {
@@ -1007,6 +1417,7 @@ function simulateProcessing(projectId) {
   }, 1000);
 }
 
+// ========== FERRAMENTAS ==========
 function setTool(tool, e) {
   e?.stopPropagation();
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
@@ -1023,117 +1434,39 @@ function setTool(tool, e) {
   const status = document.getElementById('scaleStatus');
   if (tool === 'measure' || tool === 'scale') {
     status.classList.add('active');
-    status.textContent = ' Clique no 1º ponto';
+    status.textContent = '📏 Clique no 1º ponto';
     status.style.background = 'rgba(245, 158, 11, 0.9)';
   } else {
     status.classList.remove('active');
   }
 }
 
-document.getElementById('viewer3d').addEventListener('click', (e) => {
-  if (e.target.closest('.viewer-controls')) return;
-  if (!currentTool || (currentTool !== 'measure' && currentTool !== 'scale')) return;
-  
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  
-  clickCount++;
-  
-  const marker = document.createElement('div');
-  marker.className = `measure-marker ${clickCount === 1 ? 'p1' : 'p2'}`;
-  marker.style.left = x + 'px';
-  marker.style.top = y + 'px';
-  e.currentTarget.appendChild(marker);
-  measurePoints.push({ x, y, element: marker });
-  
-  const status = document.getElementById('scaleStatus');
-  
-  if (clickCount === 1) {
-    status.textContent = '📏 Clique no 2º ponto';
-  } else if (clickCount === 2) {
-    const p1 = measurePoints[0];
-    const p2 = measurePoints[1];
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    const distancePx = Math.sqrt(dx * dx + dy * dy);
-    const distanceMm = distancePx * scaleFactor;
-    
-    const line = document.createElement('div');
-    line.className = 'measure-line-svg';
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    line.style.width = distancePx + 'px';
-    line.style.left = p1.x + 'px';
-    line.style.top = p1.y + 'px';
-    line.style.transform = `rotate(${angle}deg)`;
-    e.currentTarget.appendChild(line);
-    
-    const label = document.createElement('div');
-    label.className = 'measure-label-svg';
-    label.style.left = ((p1.x + p2.x) / 2) + 'px';
-    label.style.top = ((p1.y + p2.y) / 2) + 'px';
-    label.textContent = distanceMm.toFixed(1) + ' mm';
-    e.currentTarget.appendChild(label);
-    
-    document.getElementById('dx').textContent = Math.abs(dx).toFixed(1) + ' px';
-    document.getElementById('dy').textContent = Math.abs(dy).toFixed(1) + ' px';
-    document.getElementById('dz').textContent = '0.0 px';
-    document.getElementById('total').textContent = distanceMm.toFixed(1) + ' mm';
-    document.getElementById('horiz').textContent = distancePx.toFixed(1) + ' px';
-    
-    status.textContent = '✓ Medido: ' + distanceMm.toFixed(1) + ' mm';
-    status.style.background = 'rgba(16, 185, 129, 0.9)';
-    
-    clickCount = 0;
-    measurePoints = [];
-  }
-});
-
-// ✅ BOTÃO LIMPAR CORRIGIDO
 function clearMeasurements() {
-  const viewer = document.getElementById('viewer3d');
-  
-  // Remove apenas os marcadores de medição
-  viewer.querySelectorAll('.measure-marker, .measure-line-svg, .measure-label-svg').forEach(el => {
-    el.remove();
-  });
-  
-  // Reseta painéis
+  measurePoints = [];
+  clickCount = 0;
   document.getElementById('dx').textContent = '-- mm';
   document.getElementById('dy').textContent = '-- mm';
   document.getElementById('dz').textContent = '-- mm';
   document.getElementById('total').textContent = '-- mm';
   document.getElementById('horiz').textContent = '-- mm';
   document.getElementById('scaleStatus').classList.remove('active');
-  
-  // Reseta estado
   currentTool = null;
-  clickCount = 0;
-  measurePoints = [];
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  render();
 }
 
 function calibrateScale() {
   const real = parseFloat(document.getElementById('realDistance').value) || 1000;
-  scaleFactor = real / 100;
+  scaleFactor = real / 1000;
   document.getElementById('scaleStatusText').textContent = '✓ Calibrada';
   document.getElementById('scaleStatusText').style.color = 'var(--success)';
   document.getElementById('scaleFactor').textContent = scaleFactor.toFixed(3) + 'x';
-  alert('✓ Escala calibrada!\n100 pixels = ' + real + ' mm');
+  alert('✓ Escala calibrada!');
 }
 
 function resetCut() {
   document.getElementById('cutHeight').value = 1.0;
   document.getElementById('cutValue').textContent = '1.0 m';
-}
-
-function setView(view) {
-  console.log('Vista:', view);
-}
-
-function resetView() {
-  clearMeasurements();
-  resetCut();
 }
 
 function exportPLY() {
@@ -1143,6 +1476,9 @@ function exportPLY() {
 function exportCSV() {
   alert('📊 Exportando CSV...\nEm produção, isso geraria uma planilha com as coordenadas e medidas.');
 }
+
+// Inicializar
+setTimeout(resizeCanvas, 100);
 </script>
 
 </body>
