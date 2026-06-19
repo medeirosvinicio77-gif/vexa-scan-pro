@@ -2,716 +2,677 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro Cloud</title>
+<title>Vexa Scan Pro Cloud - Planta Arquitetônica</title>
 <style>
-:root { --primary: #4f46e5; --primary-dark: #4338ca; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
+:root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px;
+  --wall: #cbd5e1; --beam: #92400e; --column: #78350f; --door: #f59e0b; --window: #3b82f6; --electric: #fbbf24; --hydraulic: #06b6d4; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
-.auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-.auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-.auth-card h1 { text-align: center; margin-bottom: 8px; }
-.auth-card .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
-.auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--surface-2); padding: 4px; border-radius: var(--radius); }
-.auth-tabs button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-weight: 500; }
-.auth-tabs button.active { background: var(--primary); color: white; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
-.form-group input { width: 100%; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; }
-.form-group input:focus { outline: none; border-color: var(--primary); }
-.checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; }
-.btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 14px; }
-.btn-primary:hover { background: var(--primary-dark); }
-.btn-primary:disabled { background: var(--surface-2); cursor: not-allowed; opacity: 0.6; }
-.btn-demo { width: 100%; padding: 12px; margin-top: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 14px; }
-.btn-demo:hover { background: var(--surface-2); }
-.forgot-link { display: block; text-align: right; color: var(--primary); font-size: 13px; margin-bottom: 16px; text-decoration: none; }
-.app { display: none; height: 100vh; }
-.app.active { display: grid; grid-template-columns: 240px 1fr; }
-.sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+.app { display: grid; grid-template-columns: 240px 1fr; height: 100vh; }
+.sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
 .sidebar-header { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-.sidebar-header .logo { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #8b5cf6); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.logo { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #8b5cf6); display: flex; align-items: center; justify-content: center; font-weight: bold; }
 .user-info { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; padding: 10px; background: var(--surface-2); border-radius: var(--radius); }
 .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius); cursor: pointer; color: var(--text-muted); margin-bottom: 4px; font-size: 14px; }
 .nav-item:hover { background: var(--surface-2); color: var(--text); }
 .nav-item.active { background: var(--primary); color: white; }
-.sidebar-footer { margin-top: auto; }
-.main { display: flex; overflow: hidden; }
 .content { flex: 1; padding: 20px; overflow-y: auto; }
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .page-header h2 { font-size: 22px; }
-.empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 12px; border: 2px dashed var(--border); }
-.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state h3 { margin-bottom: 8px; }
-.empty-state p { color: var(--text-muted); margin-bottom: 20px; }
-.processing-banner { display: none; background: linear-gradient(90deg, var(--warning), #fbbf24); color: #1a1a1a; padding: 12px 16px; border-radius: var(--radius); margin-bottom: 16px; font-weight: 500; align-items: center; gap: 10px; }
-.processing-banner.active { display: flex; }
-.spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.project-list { display: grid; gap: 12px; }
-.project-card { background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; }
-.project-card:hover { border-color: var(--primary); }
-.project-card .status { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
-.status.processing { background: var(--warning); color: #1a1a1a; }
-.status.ready { background: var(--success); color: white; }
-.viewer-container { background: var(--surface); border-radius: 12px; padding: 12px; height: calc(100vh - 100px); display: grid; grid-template-columns: 1fr 280px; gap: 12px; }
-.viewer-3d { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; background-image: radial-gradient(ellipse at center, #1a2340 0%, #0a0e1a 70%), repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(79, 70, 229, 0.2) 39px, rgba(79, 70, 229, 0.2) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(79, 70, 229, 0.2) 39px, rgba(79, 70, 229, 0.2) 40px); background-size: 100% 100%, 40px 40px, 40px 40px; cursor: crosshair; }
-
-/* 🏗️ CENA 3D OTIMIZADA */
-.scene-container { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; perspective: 800px; }
-.room { position: relative; width: 500px; height: 400px; transform-style: preserve-3d; transition: transform 0.3s; }
-
-/* Parede frontal */
-.wall-front {
-  position: absolute;
-  left: 50px; top: 50px;
-  width: 400px; height: 280px;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.3), rgba(139, 92, 246, 0.3));
-  border: 2px solid rgba(139, 92, 246, 0.8);
-  transform: translateZ(0px);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
-}
-.wall-front::before {
-  content: 'PAREDE FRONTAL';
-  position: absolute;
-  top: 10px; left: 10px;
-  color: rgba(139, 92, 246, 0.9);
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-/* Porta na parede */
-.door {
-  position: absolute;
-  left: 60px; bottom: 0;
-  width: 70px; height: 140px;
-  background: rgba(30, 41, 59, 0.8);
-  border: 2px solid rgba(245, 158, 11, 0.8);
-  border-bottom: none;
-}
-.door::before {
-  content: '🚪 PORTA';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--warning);
-  font-size: 10px;
-  font-weight: bold;
-}
-
-/* Janela na parede */
-.window {
-  position: absolute;
-  right: 60px; top: 40px;
-  width: 100px; height: 80px;
-  background: rgba(59, 130, 246, 0.4);
-  border: 2px solid rgba(59, 130, 246, 0.9);
-}
-.window::before {
-  content: '🪟 JANELA';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  color: #3b82f6;
-  font-size: 10px;
-  font-weight: bold;
-}
-.window::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: 0; right: 0;
-  height: 2px;
-  background: rgba(59, 130, 246, 0.9);
-}
-
-/* Piso */
-.floor {
-  position: absolute;
-  left: 50px; top: 330px;
-  width: 400px; height: 100px;
-  background: linear-gradient(180deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1));
-  border: 2px solid rgba(16, 185, 129, 0.8);
-  border-top: none;
-  transform: rotateX(60deg);
-  transform-origin: top;
-}
-.floor::before {
-  content: 'PISO';
-  position: absolute;
-  top: 10px; left: 10px;
-  color: rgba(16, 185, 129, 0.9);
-  font-size: 11px;
-  font-weight: bold;
-}
-
-/* Teto */
-.ceiling {
-  position: absolute;
-  left: 50px; top: 50px;
-  width: 400px; height: 60px;
-  background: linear-gradient(0deg, rgba(148, 163, 184, 0.3), rgba(148, 163, 184, 0.1));
-  border: 2px solid rgba(148, 163, 184, 0.8);
-  border-bottom: none;
-  transform: rotateX(-60deg);
-  transform-origin: bottom;
-}
-.ceiling::before {
-  content: 'TETO';
-  position: absolute;
-  bottom: 10px; left: 10px;
-  color: rgba(148, 163, 184, 0.9);
-  font-size: 11px;
-  font-weight: bold;
-}
-
-/* Nuvem de pontos (leve) */
-.point-cloud { position: absolute; inset: 0; pointer-events: none; }
-.point-3d { position: absolute; width: 3px; height: 3px; border-radius: 50%; }
-.point-wall { background: #8b5cf6; box-shadow: 0 0 3px #8b5cf6; }
-.point-floor { background: #10b981; box-shadow: 0 0 3px #10b981; }
-.point-ceiling { background: #94a3b8; box-shadow: 0 0 3px #94a3b8; }
-
-.viewer-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; flex-wrap: wrap; background: rgba(0,0,0,0.7); padding: 6px; border-radius: var(--radius); backdrop-filter: blur(8px); max-width: calc(100% - 24px); }
-.view-btn { padding: 5px 8px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 11px; }
+.btn-primary { padding: 10px 16px; background: var(--primary); color: white; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 14px; }
+.btn-primary:hover { background: #4338ca; }
+.viewer-container { background: var(--surface); border-radius: 12px; padding: 12px; height: calc(100vh - 120px); display: grid; grid-template-columns: 1fr 280px; gap: 12px; }
+.viewer-3d { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; background-image: radial-gradient(ellipse at center, #1a2340 0%, #0a0e1a 70%); cursor: crosshair; display: flex; align-items: center; justify-content: center; perspective: 1200px; }
+.scene-wrapper { transform-style: preserve-3d; transition: transform 0.4s ease; }
+.viewer-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; flex-wrap: wrap; background: rgba(0,0,0,0.8); padding: 8px; border-radius: var(--radius); backdrop-filter: blur(8px); }
+.view-btn { padding: 6px 10px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 11px; }
 .view-btn:hover { background: var(--primary); }
-.viewer-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: var(--radius); font-size: 11px; display: flex; gap: 10px; backdrop-filter: blur(8px); }
-.scale-status { position: absolute; top: 12px; right: 12px; background: rgba(245, 158, 11, 0.9); color: #1a1a1a; padding: 6px 10px; border-radius: var(--radius); font-size: 11px; font-weight: 600; display: none; backdrop-filter: blur(8px); z-index: 10; }
+.view-btn.active { background: var(--primary); }
+.viewer-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: var(--radius); font-size: 11px; display: flex; gap: 12px; backdrop-filter: blur(8px); }
+.scale-status { position: absolute; top: 12px; right: 12px; background: rgba(245, 158, 11, 0.9); color: #1a1a1a; padding: 8px 12px; border-radius: var(--radius); font-size: 11px; font-weight: 600; display: none; backdrop-filter: blur(8px); z-index: 10; }
 .scale-status.active { display: block; }
-.tools-panel { background: var(--surface); border-radius: var(--radius); padding: 12px; overflow-y: auto; max-height: calc(100vh - 120px); }
+.legend { position: absolute; top: 50px; left: 12px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: var(--radius); font-size: 10px; backdrop-filter: blur(8px); }
+.legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.legend-line { width: 20px; height: 3px; }
+.legend-circle { width: 10px; height: 10px; border-radius: 50%; }
+.tools-panel { background: var(--surface); border-radius: var(--radius); padding: 14px; overflow-y: auto; }
 .tools-panel h3 { font-size: 13px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
-.tool-btn { padding: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tool-btn { padding: 10px 6px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .tool-btn:hover { border-color: var(--primary); }
 .tool-btn.active { background: var(--primary); border-color: var(--primary); }
-.tool-btn .emoji { font-size: 16px; }
-.upload-panel { background: var(--surface); border-radius: 12px; padding: 24px; max-width: 600px; margin: 0 auto; }
-.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; position: relative; }
-.upload-zone:hover { border-color: var(--primary); background: var(--surface-2); }
-.upload-zone.has-file { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
-.upload-zone .icon { font-size: 40px; margin-bottom: 8px; }
-.upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.file-info { margin-top: 12px; padding: 10px; background: var(--surface-2); border-radius: var(--radius); font-size: 13px; display: none; }
-.file-info.active { display: block; }
-.file-info .file-name { color: var(--success); font-weight: 600; }
-.upload-options { display: grid; gap: 16px; margin-bottom: 20px; }
-.option-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-.radio-group { display: flex; gap: 8px; }
-.radio-group label { flex: 1; padding: 8px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 13px; }
-.radio-group input { display: none; }
-.radio-group input:checked + span { background: var(--primary); color: white; display: block; padding: 8px; margin: -8px; border-radius: 6px; }
-.progress-bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin-top: 12px; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #8b5cf6); width: 0%; transition: width 0.3s; }
-.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-.settings-card { background: var(--surface); border-radius: 12px; padding: 20px; }
-.settings-card h3 { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-[data-tooltip] { position: relative; }
-[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #000; color: white; padding: 6px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap; margin-bottom: 6px; z-index: 100; pointer-events: none; }
+.tool-btn .emoji { font-size: 18px; }
+.project-details { background: var(--surface-2); border-radius: var(--radius); padding: 10px; margin-bottom: 12px; font-size: 12px; }
+.detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.detail-row:last-child { border-bottom: none; }
+.detail-label { color: var(--text-muted); }
+.detail-value { font-weight: 600; }
 .measure-display { background: var(--surface-2); border-radius: var(--radius); padding: 10px; margin-top: 10px; font-size: 12px; }
 .measure-row { display: flex; justify-content: space-between; padding: 3px 0; }
 .measure-row.total { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; font-weight: 600; color: var(--success); }
-.hidden { display: none !important; }
-.measure-point { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--success); border: 2px solid white; transform: translate(-50%, -50%); pointer-events: none; z-index: 5; box-shadow: 0 0 8px rgba(16, 185, 129, 0.8); }
-.measure-point.p1 { background: var(--warning); }
-.measure-line { position: absolute; height: 2px; background: linear-gradient(90deg, var(--warning), var(--success)); transform-origin: left center; pointer-events: none; z-index: 4; }
-.measure-label { position: absolute; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; pointer-events: none; z-index: 6; transform: translate(-50%, -100%); margin-top: -8px; }
-.project-details { background: var(--surface-2); border-radius: var(--radius); padding: 10px; margin-bottom: 12px; font-size: 12px; }
-.project-details .detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
-.project-details .detail-row:last-child { border-bottom: none; }
-.project-details .detail-label { color: var(--text-muted); }
-.project-details .detail-value { font-weight: 600; }
-.measurements-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+.measurements-list { max-height: 180px; overflow-y: auto; margin-top: 10px; }
 .measurement-item { background: var(--surface-2); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
-.measurement-item .delete-btn { background: var(--danger); border: none; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px; }
-.legend { position: absolute; bottom: 60px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 10px; border-radius: var(--radius); font-size: 10px; backdrop-filter: blur(8px); }
-.legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-.legend-color { width: 12px; height: 12px; border-radius: 2px; }
+.delete-btn { background: var(--danger); border: none; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 12px; color: var(--text-muted); }
+.form-group input { width: 100%; padding: 8px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 13px; }
+.hidden { display: none !important; }
+.snap-point { cursor: pointer; transition: all 0.2s; }
+.snap-point:hover { filter: brightness(2); }
+.measure-marker { pointer-events: none; }
+.measure-line-svg { stroke: #ef4444; stroke-width: 2; stroke-dasharray: 5,3; pointer-events: none; }
+.measure-label-svg { fill: #ef4444; font-size: 12px; font-weight: bold; pointer-events: none; }
+.info-badge { position: absolute; top: 50px; right: 12px; background: rgba(16, 185, 129, 0.9); color: white; padding: 6px 10px; border-radius: var(--radius); font-size: 11px; font-weight: 600; backdrop-filter: blur(8px); }
+.export-buttons { display: flex; gap: 6px; }
+.export-buttons button { flex: 1; padding: 8px; font-size: 12px; }
 </style>
 </head>
 <body>
-<div class="auth-screen" id="authScreen">
-<div class="auth-card">
-<h1>🔷 Vexa Scan Pro</h1>
-<p class="subtitle">Reconstrução 3D profissional na nuvem</p>
-<div class="auth-tabs">
-<button class="active" onclick="switchTab('login', event)">Entrar</button>
-<button onclick="switchTab('register', event)">Cadastrar</button>
-</div>
-<form id="loginForm" onsubmit="doLogin(event)">
-<div class="form-group"><label>Email</label><input type="email" required placeholder="seu@email.com"></div>
-<div class="form-group"><label>Senha</label><input type="password" required placeholder="••••••••"></div>
-<div class="checkbox-row"><input type="checkbox" id="remember"><label for="remember">Lembrar de mim</label></div>
-<a href="#" class="forgot-link">Esqueci a senha</a>
-<button type="submit" class="btn-primary">🔐 Entrar</button>
-<button type="button" class="btn-demo" onclick="doLogin(event, true)"> Acessar em Modo Demo (sem login)</button>
-</form>
-<form id="registerForm" class="hidden" onsubmit="doLogin(event)">
-<div class="form-group"><label>Nome completo</label><input type="text" required placeholder="João Silva"></div>
-<div class="form-group"><label>Email</label><input type="email" required placeholder="seu@email.com"></div>
-<div class="form-group"><label>Senha (mínimo 6 caracteres)</label><input type="password" required minlength="6"></div>
-<div class="form-group"><label>WhatsApp (opcional)</label><input type="tel" placeholder="+55 (11) 99999-9999"></div>
-<button type="submit" class="btn-primary">✨ Criar conta</button>
-</form>
-</div>
-</div>
-<div class="app" id="app">
+<div class="app">
 <aside class="sidebar">
-<div class="sidebar-header"><div class="logo">V</div><div><div style="font-weight:600;">Vexa Scan</div><div style="font-size:11px;color:var(--text-muted);">Cloud Demo</div></div></div>
+<div class="sidebar-header">
+<div class="logo">V</div>
+<div><div style="font-weight:600;">Vexa Scan</div><div style="font-size:11px;color:var(--text-muted);">Pro Cloud</div></div>
+</div>
 <div class="user-info">👤 João Silva<br><small>joao@email.com</small></div>
 <nav>
-<div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
-<div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
-<div class="nav-item" onclick="showPage('viewer', event)">🎯 Visualizar</div>
-<div class="nav-item" onclick="showPage('settings', event)">⚙️ Configurações</div>
+<div class="nav-item active">📊 Projetos</div>
+<div class="nav-item">📹 Novo Scan</div>
+<div class="nav-item">🎯 Visualizar</div>
+<div class="nav-item">⚙️ Configurações</div>
 </nav>
-<div class="sidebar-footer"><div class="nav-item" onclick="logout()">🚪 Sair</div></div>
 </aside>
-<main class="main">
-<div class="content">
-<div id="page-dashboard" class="page">
-<div class="page-header"><h2>📊 Meus Projetos</h2><button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="showPage('upload', event)">➕ Novo Scan</button></div>
-<div class="processing-banner" id="processingBanner"><div class="spinner"></div><span id="processingText">Processando...</span></div>
-<div class="empty-state" id="emptyState"><div class="icon">📦</div><h3>Nenhum projeto ainda</h3><p>Comece seu primeiro scan 3D enviando um vídeo</p><button class="btn-primary" style="width:auto;padding:10px 20px;" onclick="showPage('upload', event)">☁️ Enviar primeiro vídeo</button></div>
-<div class="project-list hidden" id="projectList"></div>
+<main class="content">
+<div class="page-header">
+<h2>🏗️ Sala de Estar - Projeto 01</h2>
+<button class="btn-primary" onclick="exportSVG()">💾 Salvar SVG</button>
 </div>
-<div id="page-upload" class="page hidden">
-<div class="page-header"><h2>📹 Novo Scan</h2></div>
-<div class="upload-panel">
-<h3 style="margin-bottom:16px;">1. Upload do Vídeo</h3>
-<div class="upload-zone" id="uploadZone">
-<input type="file" accept="video/*" id="videoInput" onchange="handleFileSelect(event)">
-<div class="icon">📹</div>
-<p><strong>Clique para selecionar</strong> ou arraste o vídeo aqui</p>
-<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">MP4, MOV, AVI até 2GB</p>
-</div>
-<div class="file-info" id="fileInfo"><div class="file-name"><span>✓</span> <span id="fileName">arquivo.mp4</span></div><div style="color:var(--text-muted);font-size:11px;margin-top:2px;" id="fileSize">0 MB</div></div>
-<div class="upload-options">
-<div class="option-group"><label>Intervalo entre frames</label><div class="radio-group"><label><input type="radio" name="interval" value="1"><span>1s</span></label><label><input type="radio" name="interval" value="2" checked><span>2s</span></label><label><input type="radio" name="interval" value="5"><span>5s</span></label><label><input type="radio" name="interval" value="10"><span>10s</span></label></div></div>
-<div class="option-group"><label>Qualidade</label><div class="radio-group"><label><input type="radio" name="quality" value="low"><span>Baixa</span></label><label><input type="radio" name="quality" value="med" checked><span>Média</span></label><label><input type="radio" name="quality" value="high"><span>Alta</span></label></div></div>
-<div class="checkbox-row"><input type="checkbox" id="blur" checked><label for="blur">Remover frames borrados automaticamente</label></div>
-</div>
-<button class="btn-primary" id="uploadBtn" onclick="simulateUpload()" disabled>☁️ Enviar para Nuvem</button>
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-<p style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;" id="progressText">Selecione um vídeo para começar</p>
-</div>
-</div>
-<div id="page-viewer" class="page hidden">
 <div class="viewer-container">
 <div class="viewer-3d" id="viewer3d">
-<div class="scene-container" id="sceneContainer">
-<div class="room" id="room">
-<div class="wall-front" id="wallFront">
-<div class="door"></div>
-<div class="window"></div>
+<div class="scene-wrapper" id="sceneWrapper">
+<svg id="architecturalSvg" width="600" height="500" viewBox="-50 -50 600 500" style="transform-style: preserve-3d;">
+<!-- Definições -->
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"/>
+</marker>
+<pattern id="floorPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+<rect width="20" height="20" fill="#1e293b"/>
+<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#334155" stroke-width="0.5"/>
+</pattern>
+</defs>
+
+<!-- Piso (preenchimento) -->
+<rect x="0" y="0" width="500" height="400" fill="url(#floorPattern)" opacity="0.3"/>
+
+<!-- === PAREDES === -->
+<g id="walls" stroke="var(--wall)" stroke-width="8" fill="none">
+<!-- Parede Superior (5m) -->
+<line x1="0" y1="0" x2="500" y2="0" class="snap-point" data-type="wall" data-id="w1"/>
+<!-- Parede Direita (4m) -->
+<line x1="500" y1="0" x2="500" y2="400" class="snap-point" data-type="wall" data-id="w2"/>
+<!-- Parede Inferior (5m) - com vão da porta -->
+<line x1="0" y1="400" x2="120" y2="400" class="snap-point" data-type="wall" data-id="w3a"/>
+<line x1="220" y1="400" x2="500" y2="400" class="snap-point" data-type="wall" data-id="w3b"/>
+<!-- Parede Esquerda (4m) - com vão da janela -->
+<line x1="0" y1="0" x2="0" y2="150" class="snap-point" data-type="wall" data-id="w4a"/>
+<line x1="0" y1="280" x2="0" y2="400" class="snap-point" data-type="wall" data-id="w4b"/>
+</g>
+
+<!-- === PORTA (inferior) === -->
+<g id="door1">
+<line x1="120" y1="400" x2="220" y2="400" stroke="var(--door)" stroke-width="2" stroke-dasharray="4,2"/>
+<path d="M 120 400 A 100 100 0 0 1 220 400" fill="none" stroke="var(--door)" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="170" y="385" fill="var(--door)" font-size="10" text-anchor="middle" font-weight="bold">PORTA 1.00m</text>
+</g>
+
+<!-- === JANELA (esquerda) === -->
+<g id="window1">
+<line x1="0" y1="150" x2="0" y2="280" stroke="var(--window)" stroke-width="4"/>
+<line x1="-4" y1="150" x2="-4" y2="280" stroke="var(--window)" stroke-width="2"/>
+<line x1="4" y1="150" x2="4" y2="280" stroke="var(--window)" stroke-width="2"/>
+<text x="-20" y="215" fill="var(--window)" font-size="10" text-anchor="middle" font-weight="bold" transform="rotate(-90 -20 215)">JANELA 1.30m</text>
+</g>
+
+<!-- === COLUNAS (cantos estruturais) === -->
+<g id="columns" fill="var(--column)">
+<rect x="-6" y="-6" width="12" height="12" class="snap-point" data-type="column" data-id="c1"/>
+<rect x="494" y="-6" width="12" height="12" class="snap-point" data-type="column" data-id="c2"/>
+<rect x="494" y="394" width="12" height="12" class="snap-point" data-type="column" data-id="c3"/>
+<rect x="-6" y="394" width="12" height="12" class="snap-point" data-type="column" data-id="c4"/>
+</g>
+
+<!-- === VIGAS (no teto, vista em planta) === -->
+<g id="beams" stroke="var(--beam)" stroke-width="4" fill="none" opacity="0.7" stroke-dasharray="8,4">
+<line x1="0" y1="0" x2="500" y2="0"/>
+<line x1="0" y1="200" x2="500" y2="200"/>
+<line x1="250" y1="0" x2="250" y2="400"/>
+<text x="250" y="-8" fill="var(--beam)" font-size="9" text-anchor="middle">VIGA V1</text>
+<text x="250" y="195" fill="var(--beam)" font-size="9" text-anchor="middle">VIGA V2</text>
+</g>
+
+<!-- === PONTOS ELÉTRICOS === -->
+<g id="electric">
+<!-- Tomadas -->
+<g transform="translate(80, 380)">
+<circle r="6" fill="var(--electric)" stroke="#000" stroke-width="1" class="snap-point" data-type="electric" data-id="t1"/>
+<text x="0" y="3" text-anchor="middle" font-size="8" font-weight="bold" fill="#000">T</text>
+<text x="12" y="3" fill="var(--electric)" font-size="8">Tomada</text>
+</g>
+<g transform="translate(420, 380)">
+<circle r="6" fill="var(--electric)" stroke="#000" stroke-width="1" class="snap-point" data-type="electric" data-id="t2"/>
+<text x="0" y="3" text-anchor="middle" font-size="8" font-weight="bold" fill="#000">T</text>
+<text x="-25" y="3" fill="var(--electric)" font-size="8" text-anchor="end">Tomada</text>
+</g>
+<!-- Interruptor -->
+<g transform="translate(130, 380)">
+<circle r="5" fill="none" stroke="var(--electric)" stroke-width="2" class="snap-point" data-type="electric" data-id="i1"/>
+<text x="0" y="3" text-anchor="middle" font-size="7" font-weight="bold" fill="var(--electric)">I</text>
+<text x="12" y="-5" fill="var(--electric)" font-size="7">Int.</text>
+</g>
+<!-- Luminária central -->
+<g transform="translate(250, 200)">
+<circle r="10" fill="none" stroke="var(--electric)" stroke-width="2"/>
+<line x1="-10" y1="-10" x2="10" y2="10" stroke="var(--electric)" stroke-width="1.5"/>
+<line x1="-10" y1="10" x2="10" y2="-10" stroke="var(--electric)" stroke-width="1.5"/>
+<text x="15" y="-5" fill="var(--electric)" font-size="9">💡 Luminária</text>
+</g>
+</g>
+
+<!-- === PONTOS HIDRÁULICOS === -->
+<g id="hydraulic">
+<!-- Ponto de água (pia) -->
+<g transform="translate(450, 50)">
+<circle r="8" fill="var(--hydraulic)" stroke="#000" stroke-width="1" class="snap-point" data-type="hydraulic" data-id="h1"/>
+<text x="0" y="3" text-anchor="middle" font-size="9" font-weight="bold" fill="#000">H</text>
+<text x="-15" y="3" fill="var(--hydraulic)" font-size="9" text-anchor="end">Pia</text>
+</g>
+<!-- Ralo -->
+<g transform="translate(450, 100)">
+<circle r="6" fill="none" stroke="var(--hydraulic)" stroke-width="2" class="snap-point" data-type="hydraulic" data-id="h2"/>
+<circle r="2" fill="var(--hydraulic)"/>
+<text x="-15" y="3" fill="var(--hydraulic)" font-size="9" text-anchor="end">Ralo</text>
+</g>
+</g>
+
+<!-- === COTAS (dimensões) === -->
+<g id="dimensions" fill="#94a3b8" font-size="11">
+<!-- Cota superior (largura) -->
+<line x1="0" y1="-25" x2="500" y2="-25" stroke="#64748b" stroke-width="1"/>
+<line x1="0" y1="-30" x2="0" y2="-20" stroke="#64748b" stroke-width="1"/>
+<line x1="500" y1="-30" x2="500" y2="-20" stroke="#64748b" stroke-width="1"/>
+<text x="250" y="-30" text-anchor="middle" font-weight="bold">5.00 m</text>
+<!-- Cota lateral (altura) -->
+<line x1="-25" y1="0" x2="-25" y2="400" stroke="#64748b" stroke-width="1"/>
+<line x1="-30" y1="0" x2="-20" y2="0" stroke="#64748b" stroke-width="1"/>
+<line x1="-30" y1="400" x2="-20" y2="400" stroke="#64748b" stroke-width="1"/>
+<text x="-30" y="200" text-anchor="middle" transform="rotate(-90 -30 200)" font-weight="bold">4.00 m</text>
+</g>
+
+<!-- Norte -->
+<g transform="translate(480, -30)">
+<circle r="12" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+<text x="0" y="4" text-anchor="middle" font-size="11" font-weight="bold" fill="#ef4444">N</text>
+<line x1="0" y1="-12" x2="0" y2="-18" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"/>
+</g>
+
+<!-- Layer de medições do usuário -->
+<g id="userMeasurements"></g>
+
+</svg>
 </div>
-<div class="floor"></div>
-<div class="ceiling"></div>
-<div class="point-cloud" id="pointCloud"></div>
-</div>
-</div>
+
 <div class="legend">
-<div class="legend-item"><div class="legend-color" style="background:#8b5cf6;"></div><span>Parede</span></div>
-<div class="legend-item"><div class="legend-color" style="background:#10b981;"></div><span>Piso</span></div>
-<div class="legend-item"><div class="legend-color" style="background:#94a3b8;"></div><span>Teto</span></div>
+<div style="font-weight:600;margin-bottom:6px;">🎨 Legenda</div>
+<div class="legend-item"><div class="legend-line" style="background:var(--wall);height:6px;"></div><span>Parede</span></div>
+<div class="legend-item"><div class="legend-line" style="background:var(--beam);"></div><span>Viga</span></div>
+<div class="legend-item"><div style="width:10px;height:10px;background:var(--column);"></div><span>Coluna</span></div>
+<div class="legend-item"><div class="legend-line" style="background:var(--door);"></div><span>Porta</span></div>
+<div class="legend-item"><div class="legend-line" style="background:var(--window);"></div><span>Janela</span></div>
+<div class="legend-item"><div class="legend-circle" style="background:var(--electric);"></div><span>Elétrica</span></div>
+<div class="legend-item"><div class="legend-circle" style="background:var(--hydraulic);"></div><span>Hidráulica</span></div>
 </div>
-<div class="viewer-info"><span> <span id="pointCount">0</span> pts</span><span>🎯 60 FPS</span></div>
-<div class="scale-status" id="scaleStatus"> Clique no 1º ponto</div>
+
+<div class="viewer-info">
+<span>📐 5.00 x 4.00 m</span>
+<span>🏗️ Área: 20.00 m²</span>
+<span>📊 Pé-direito: 2.80 m</span>
+</div>
+
+<div class="scale-status" id="scaleStatus">📏 Clique no 1º ponto</div>
+
 <div class="viewer-controls">
-<button class="view-btn" onclick="setView('front')">➡️ Frontal</button>
-<button class="view-btn" onclick="setView('top')">⬆️ Planta</button>
-<button class="view-btn" onclick="setView('side')">⬅️ Lateral</button>
-<button class="view-btn" onclick="setView('iso')">🎲 Isométrica</button>
+<button class="view-btn active" onclick="setView('plan', event)">⬆️ Planta</button>
+<button class="view-btn" onclick="setView('front', event)">➡️ Frontal</button>
+<button class="view-btn" onclick="setView('side', event)">⬅️ Lateral</button>
+<button class="view-btn" onclick="setView('iso', event)">🎲 Isométrica</button>
+<button class="view-btn" onclick="toggleBeams()">🏗️ Vigas</button>
+<button class="view-btn" onclick="toggleElectric()">⚡ Elétrica</button>
+<button class="view-btn" onclick="toggleHydraulic()">💧 Hidráulica</button>
 <button class="view-btn" onclick="resetView()">🔄 Reset</button>
 </div>
 </div>
+
 <div class="tools-panel">
 <h3>📋 Detalhes do Projeto</h3>
 <div class="project-details">
-<div class="detail-row"><span class="detail-label">Nome:</span><span class="detail-value" id="detailName">--</span></div>
-<div class="detail-row"><span class="detail-label">Data:</span><span class="detail-value" id="detailDate">--</span></div>
-<div class="detail-row"><span class="detail-label">Frames:</span><span class="detail-value" id="detailFrames">--</span></div>
-<div class="detail-row"><span class="detail-label">Pontos:</span><span class="detail-value" id="detailPoints">--</span></div>
-<div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" id="detailStatus" style="color:var(--success);">--</span></div>
+<div class="detail-row"><span class="detail-label">Nome:</span><span class="detail-value">Sala de Estar</span></div>
+<div class="detail-row"><span class="detail-label">Dimensões:</span><span class="detail-value">5.00 x 4.00 m</span></div>
+<div class="detail-row"><span class="detail-label">Área:</span><span class="detail-value">20.00 m²</span></div>
+<div class="detail-row"><span class="detail-label">Pé-direito:</span><span class="detail-value">2.80 m</span></div>
+<div class="detail-row"><span class="detail-label">Volume:</span><span class="detail-value">56.00 m³</span></div>
+<div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:var(--success);">✓ Pronto</span></div>
 </div>
-<h3>️ Ferramentas</h3>
+
+<h3>🛠️ Ferramentas</h3>
 <div class="tool-grid">
-<button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji">📏</span>Medir</button>
-<button class="tool-btn" id="btn-scale" onclick="setTool('scale', event)"><span class="emoji"></span>Escala</button>
-<button class="tool-btn" id="btn-polygon" onclick="setTool('polygon', event)"><span class="emoji">⬡</span>Polígono</button>
-<button class="tool-btn" id="btn-cut" onclick="setTool('cut', event)"><span class="emoji">✂️</span>Corte</button>
+<button class="tool-btn" id="btn-measure" onclick="setTool('measure')"><span class="emoji">📏</span>Medir</button>
+<button class="tool-btn" id="btn-scale" onclick="setTool('scale')"><span class="emoji">📐</span>Escala</button>
+<button class="tool-btn" id="btn-area" onclick="setTool('area')"><span class="emoji">⬡</span>Área</button>
 <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()"><span class="emoji">🗑️</span>Limpar</button>
 </div>
+
 <div id="scalePanel" class="hidden">
-<div class="form-group"><label>Distância Real (mm)</label><input type="number" id="realDistance" placeholder="Ex: 1000" value="1000"></div>
-<button class="btn-primary" onclick="calibrateScale()">🔄 Calibrar Escala</button>
+<div class="form-group">
+<label>Distância Real Conhecida (mm)</label>
+<input type="number" id="realDistance" placeholder="Ex: 5000 (5 metros)" value="5000">
+</div>
+<button class="btn-primary" style="width:100%;" onclick="calibrateScale()">🔄 Calibrar Escala</button>
 <div class="measure-display">
-<div class="measure-row"><span>Status:</span><span id="scaleStatusText">Não calibrada</span></div>
-<div class="measure-row"><span>Fator:</span><span id="scaleFactor">1.000x</span></div>
+<div class="measure-row"><span>Status:</span><span id="scaleStatusText" style="color:var(--warning);">Não calibrada</span></div>
+<div class="measure-row"><span>Fator:</span><span id="scaleFactor">1.000 px/mm</span></div>
 </div>
+<p style="font-size:10px;color:var(--text-muted);margin-top:8px;">💡 Dica: Meça uma parede conhecida (ex: 5m) e digite 5000mm para calibrar.</p>
 </div>
-<div id="cutPanel" class="hidden">
-<div class="form-group"><label>Altura do Corte (m)</label><input type="range" id="cutHeight" min="0" max="3" step="0.1" value="1.0" oninput="applyCut(this.value)"><div style="text-align:center;margin-top:4px;" id="cutValue">1.0 m</div></div>
-<button class="btn-primary" onclick="resetCut()">🔄 Resetar Corte</button>
-</div>
-<h3 style="margin-top:16px;">📊 Medidas</h3>
+
+<h3 style="margin-top:16px;">📊 Medição Atual</h3>
 <div class="measure-display">
 <div class="measure-row"><span>ΔX:</span><span id="dx">-- mm</span></div>
 <div class="measure-row"><span>ΔY:</span><span id="dy">-- mm</span></div>
-<div class="measure-row total"><span>TOTAL:</span><span id="total">-- mm</span></div>
+<div class="measure-row"><span>Distância:</span><span id="dist">-- mm</span></div>
+<div class="measure-row total"><span>TOTAL:</span><span id="total">-- m</span></div>
 </div>
+
 <h3 style="margin-top:16px;">📋 Histórico</h3>
-<div class="measurements-list" id="measurementsList"><div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida</div></div>
+<div class="measurements-list" id="measurementsList">
+<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida salva</div>
+</div>
+
 <h3 style="margin-top:16px;">⬇️ Exportar</h3>
-<div style="display:flex;gap:6px;">
-<button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPLY()">⬇️ PLY</button>
-<button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()">📊 CSV</button>
+<div class="export-buttons">
+<button class="btn-primary" onclick="exportDXF()">📐 DXF</button>
+<button class="btn-primary" style="background:var(--success);" onclick="exportCSV()">📊 CSV</button>
 </div>
-</div>
-</div>
-</div>
-<div id="page-settings" class="page hidden">
-<div class="page-header"><h2>⚙️ Configurações</h2></div>
-<div class="settings-grid">
-<div class="settings-card"><h3>👤 Perfil</h3><div class="form-group"><label>Nome</label><input type="text" value="João Silva"></div><div class="form-group"><label>Email</label><input type="email" value="joao@email.com"></div><div class="form-group"><label>WhatsApp</label><input type="tel" value="+55 (11) 99999-9999"></div><button class="btn-primary">💾 Salvar</button></div>
-<div class="settings-card"><h3>🔔 Notificações</h3><div class="checkbox-row"><input type="checkbox" checked><label>📧 Email quando pronto</label></div><div class="checkbox-row"><input type="checkbox" checked><label>💬 WhatsApp quando pronto</label></div><button class="btn-primary">💾 Salvar</button></div>
-<div class="settings-card"><h3>ℹ️ Sobre</h3><p><strong>Vexa Scan Pro Cloud v2.0</strong></p><p style="color:var(--text-muted);margin-top:8px;font-size:13px;">Reconstrução 3D profissional.</p><p style="margin-top:12px;font-size:13px;">📧 suporte@vexascan.com<br>🌐 vexascan.com</p></div>
 </div>
 </div>
 </div>
 </main>
 </div>
+
 <script>
-let projects = [], measurements = [], currentTool = null, measurePoints = [], polygonPoints = [], clickCount = 0, scaleFactor = 1.0, currentProject = null, rotationX = -15, rotationY = 0, zoom = 1;
+let currentTool = null;
+let measurePoints = [];
+let areaPoints = [];
+let scaleFactor = 0.1; // 1px = 0.1mm padrão (será calibrado)
+let measurements = [];
+let rotationX = 0, rotationY = 0, zoom = 1;
 
-function switchTab(tab, e) { e?.stopPropagation(); document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login'); document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register'); }
-function doLogin(e) { if (e) e.preventDefault(); document.getElementById('authScreen').style.display = 'none'; document.getElementById('app').classList.add('active'); loadData(); renderDashboard(); }
-function logout() { document.getElementById('app').classList.remove('active'); document.getElementById('authScreen').style.display = 'flex'; }
-function showPage(page, e) { e?.stopPropagation?.(); document.querySelectorAll('.page').forEach(p => p.classList.add('hidden')); document.getElementById('page-' + page).classList.remove('hidden'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const map = { dashboard: 0, upload: 1, viewer: 2, settings: 3 }; const items = document.querySelectorAll('.nav-item'); if (items[map[page]]) items[map[page]].classList.add('active'); if (page === 'dashboard') renderDashboard(); }
-function renderDashboard() { const empty = document.getElementById('emptyState'), banner = document.getElementById('processingBanner'), list = document.getElementById('projectList'); if (projects.length === 0) { empty.classList.remove('hidden'); banner.classList.remove('active'); list.classList.add('hidden'); return; } empty.classList.add('hidden'); list.classList.remove('hidden'); const proc = projects.some(p => p.status === 'processing'); banner.classList.toggle('active', proc); list.innerHTML = projects.map(p => '<div class="project-card" onclick="openProject(' + p.id + ')"><strong>' + p.name + '</strong><div style="font-size:12px;color:var(--text-muted);margin-top:4px;">' + p.date + ' • ' + p.frames + ' frames</div><span class="status ' + p.status + '">' + (p.status === 'processing' ? '⏳ Processando...' : '✓ Pronto') + '</span></div>').join(''); }
-
-function openProject(id) {
-  const project = projects.find(p => p.id === id);
-  if (project && project.status === 'processing') { alert('⏳ Aguarde o processamento!'); return; }
-  currentProject = project;
-  showPage('viewer');
-  document.getElementById('detailName').textContent = project.name;
-  document.getElementById('detailDate').textContent = project.date;
-  document.getElementById('detailFrames').textContent = project.frames;
-  document.getElementById('detailPoints').textContent = project.points.toLocaleString('pt-BR');
-  document.getElementById('detailStatus').textContent = '✓ Pronto';
-  generateWallPoints(project.points);
-  renderMeasurementsList();
-}
-
-// 🏠 GERA PAREDE CLARAMENTE IDENTIFICÁVEL (LEVE)
-function generateWallPoints(numPoints) {
-  const cloud = document.getElementById('pointCloud');
-  cloud.innerHTML = '';
-  
-  // Distribuição: 70% parede, 20% piso, 10% teto
-  const wallCount = Math.floor(numPoints * 0.7);
-  const floorCount = Math.floor(numPoints * 0.2);
-  const ceilingCount = numPoints - wallCount - floorCount;
-  
-  // Parede frontal (retângulo 400x280, posição x:50-450, y:50-330)
-  for (let i = 0; i < wallCount; i++) {
-    const x = 60 + Math.random() * 380;
-    const y = 60 + Math.random() * 260;
-    // Evita porta (x:60-130, y:190-330) e janela (x:340-440, y:50-130)
-    if ((x < 140 && y > 180) || (x > 330 && y < 140)) continue;
-    const p = document.createElement('div');
-    p.className = 'point-3d point-wall';
-    p.style.left = x + 'px';
-    p.style.top = y + 'px';
-    cloud.appendChild(p);
-  }
-  
-  // Piso (retângulo abaixo da parede)
-  for (let i = 0; i < floorCount; i++) {
-    const x = 60 + Math.random() * 380;
-    const y = 335 + Math.random() * 50;
-    const p = document.createElement('div');
-    p.className = 'point-3d point-floor';
-    p.style.left = x + 'px';
-    p.style.top = y + 'px';
-    cloud.appendChild(p);
-  }
-  
-  // Teto
-  for (let i = 0; i < ceilingCount; i++) {
-    const x = 60 + Math.random() * 380;
-    const y = 10 + Math.random() * 40;
-    const p = document.createElement('div');
-    p.className = 'point-3d point-ceiling';
-    p.style.left = x + 'px';
-    p.style.top = y + 'px';
-    cloud.appendChild(p);
-  }
-  
-  document.getElementById('pointCount').textContent = cloud.children.length.toLocaleString('pt-BR');
-}
-
-// 🎮 ROTAÇÃO DA CENA
-function updateRoomTransform() {
-  const room = document.getElementById('room');
-  room.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${zoom})`;
-}
-
-function setView(view) {
+// ========== VISTAS 3D ==========
+function setView(view, e) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  e?.target?.classList.add('active');
+  const svg = document.getElementById('architecturalSvg');
   const views = {
-    'front': { x: 0, y: 0, z: 1 },
-    'top': { x: -70, y: 0, z: 1 },
-    'side': { x: 0, y: 75, z: 0.9 },
-    'iso': { x: -25, y: 35, z: 1 }
+    'plan': 'rotateX(0deg) rotateY(0deg) scale(1)',
+    'front': 'rotateX(0deg) rotateY(0deg) translateY(-50px) scale(0.9)',
+    'side': 'rotateX(0deg) rotateY(-75deg) scale(0.9)',
+    'iso': 'rotateX(55deg) rotateY(0deg) rotateZ(-45deg) scale(0.85)'
   };
-  const v = views[view] || views['front'];
-  rotationX = v.x; rotationY = v.y; zoom = v.z;
-  updateRoomTransform();
+  svg.style.transform = views[view] || views['plan'];
+  svg.style.transition = 'transform 0.6s ease';
 }
 
 function resetView() {
-  rotationX = -15; rotationY = 0; zoom = 1;
-  updateRoomTransform();
+  const svg = document.getElementById('architecturalSvg');
+  svg.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
   clearMeasurements();
-  resetCut();
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.view-btn').classList.add('active');
 }
 
-// 🖱️ ZOOM E PAN
-document.getElementById('viewer3d').addEventListener('wheel', (e) => {
-  e.preventDefault();
-  zoom += e.deltaY > 0 ? -0.1 : 0.1;
-  zoom = Math.max(0.5, Math.min(2, zoom));
-  updateRoomTransform();
-});
-
-let isDragging = false, lastX = 0, lastY = 0;
-document.getElementById('viewer3d').addEventListener('mousedown', (e) => {
-  if (e.button === 2 || e.button === 1) { isDragging = true; lastX = e.clientX; lastY = e.clientY; e.preventDefault(); }
-});
-document.addEventListener('mousemove', (e) => {
-  if (isDragging) {
-    rotationY += (e.clientX - lastX) * 0.5;
-    rotationX -= (e.clientY - lastY) * 0.5;
-    rotationX = Math.max(-90, Math.min(90, rotationX));
-    lastX = e.clientX; lastY = e.clientY;
-    updateRoomTransform();
-  }
-});
-document.addEventListener('mouseup', () => isDragging = false);
-document.getElementById('viewer3d').addEventListener('contextmenu', (e) => e.preventDefault());
-
-// UPLOAD
-let selectedFile = null;
-function handleFileSelect(e) {
-  const file = e.target.files[0]; if (!file) return;
-  if (!file.type.startsWith('video/')) { alert('❌ Selecione um vídeo!'); return; }
-  selectedFile = file;
-  document.getElementById('uploadZone').classList.add('has-file');
-  document.getElementById('fileInfo').classList.add('active');
-  document.getElementById('fileName').textContent = file.name;
-  document.getElementById('fileSize').textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
-  document.getElementById('uploadBtn').disabled = false;
-  document.getElementById('progressText').textContent = '✓ Pronto: ' + file.name;
-  document.getElementById('progressText').style.color = 'var(--success)';
+// ========== TOGGLE LAYERS ==========
+function toggleBeams() {
+  const beams = document.getElementById('beams');
+  beams.style.display = beams.style.display === 'none' ? 'block' : 'none';
 }
-function simulateUpload() {
-  if (!selectedFile) { alert('⚠️ Selecione um vídeo!'); return; }
-  const fill = document.getElementById('progressFill'), text = document.getElementById('progressText'), btn = document.getElementById('uploadBtn');
-  let progress = 0; btn.disabled = true; btn.textContent = '⏳ Enviando...';
-  const interval = setInterval(() => {
-    progress += Math.random() * 20 + 10;
-    if (progress > 100) progress = 100;
-    fill.style.width = progress + '%';
-    text.textContent = 'Upload ' + Math.round(progress) + '%';
-    if (progress >= 100) {
-      clearInterval(interval);
-      text.textContent = '✓ Enviado!'; text.style.color = 'var(--success)';
-      btn.textContent = '✓ Enviado!';
-      const proj = { id: Date.now(), name: selectedFile.name.replace(/\.[^/.]+$/, ""), date: new Date().toLocaleDateString('pt-BR'), frames: Math.floor(Math.random() * 200) + 100, points: 1200, status: 'processing' };
-      projects.push(proj); saveData();
-      setTimeout(() => { showPage('dashboard'); renderDashboard(); simulateProcessing(proj.id); }, 1000);
-    }
-  }, 200);
+function toggleElectric() {
+  const el = document.getElementById('electric');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
-function simulateProcessing(id) {
-  let s = 8; const banner = document.getElementById('processingBanner'), text = document.getElementById('processingText');
-  banner.classList.add('active');
-  const t = setInterval(() => {
-    s--; text.textContent = 'Processando... ' + s + 's restantes';
-    if (s <= 0) {
-      clearInterval(t); banner.classList.remove('active');
-      const p = projects.find(x => x.id === id); if (p) { p.status = 'ready'; saveData(); }
-      alert(' Scan pronto!'); renderDashboard();
-    }
-  }, 1000);
+function toggleHydraulic() {
+  const el = document.getElementById('hydraulic');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
-// FERRAMENTAS
-function setTool(tool, e) {
-  e?.stopPropagation();
+// ========== FERRAMENTAS ==========
+function setTool(tool) {
+  currentTool = tool;
+  measurePoints = [];
+  areaPoints = [];
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('btn-' + tool); if (btn) btn.classList.add('active');
-  currentTool = tool; clickCount = 0; measurePoints = []; polygonPoints = [];
+  const btn = document.getElementById('btn-' + tool);
+  if (btn) btn.classList.add('active');
   document.getElementById('scalePanel').classList.toggle('hidden', tool !== 'scale');
-  document.getElementById('cutPanel').classList.toggle('hidden', tool !== 'cut');
   const status = document.getElementById('scaleStatus');
-  if (tool === 'measure' || tool === 'scale') { status.classList.add('active'); status.textContent = '📏 Clique no 1º ponto'; }
-  else if (tool === 'polygon') { status.classList.add('active'); status.textContent = '⬡ Clique nos vértices (duplo clique fecha)'; }
-  else status.classList.remove('active');
+  if (tool === 'measure' || tool === 'scale') {
+    status.classList.add('active');
+    status.textContent = '📏 Clique em 2 pontos (use snap nos elementos)';
+  } else if (tool === 'area') {
+    status.classList.add('active');
+    status.textContent = '⬡ Clique nos vértices (duplo clique fecha)';
+  } else {
+    status.classList.remove('active');
+  }
 }
 
-document.getElementById('viewer3d').addEventListener('click', (e) => {
-  if (e.target.closest('.viewer-controls') || e.target.closest('.legend')) return;
+// ========== SVG COORDINATES ==========
+function getSvgPoint(e) {
+  const svg = document.getElementById('architecturalSvg');
+  const rect = svg.getBoundingClientRect();
+  const viewBox = svg.viewBox.baseVal;
+  const x = ((e.clientX - rect.left) / rect.width) * viewBox.width + viewBox.x;
+  const y = ((e.clientY - rect.top) / rect.height) * viewBox.height + viewBox.y;
+  return { x, y };
+}
+
+// ========== SNAP INTELIGENTE ==========
+function findNearestSnap(point) {
+  // Snap para cantos das paredes, tomadas, etc
+  const snapPoints = [
+    { x: 0, y: 0, label: 'Canto NE' },
+    { x: 500, y: 0, label: 'Canto NO' },
+    { x: 500, y: 400, label: 'Canto SO' },
+    { x: 0, y: 400, label: 'Canto SE' },
+    { x: 120, y: 400, label: 'Porta (esq)' },
+    { x: 220, y: 400, label: 'Porta (dir)' },
+    { x: 0, y: 150, label: 'Janela (sup)' },
+    { x: 0, y: 280, label: 'Janela (inf)' },
+    { x: 80, y: 380, label: 'Tomada 1' },
+    { x: 420, y: 380, label: 'Tomada 2' },
+    { x: 130, y: 380, label: 'Interruptor' },
+    { x: 450, y: 50, label: 'Pia' },
+    { x: 450, y: 100, label: 'Ralo' },
+    { x: 250, y: 200, label: 'Centro' }
+  ];
+  const threshold = 15;
+  let nearest = null;
+  let minDist = threshold;
+  for (const sp of snapPoints) {
+    const d = Math.sqrt((point.x - sp.x) ** 2 + (point.y - sp.y) ** 2);
+    if (d < minDist) {
+      minDist = d;
+      nearest = sp;
+    }
+  }
+  return nearest || point;
+}
+
+// ========== CLIQUE NO SVG ==========
+document.getElementById('architecturalSvg').addEventListener('click', (e) => {
   if (!currentTool) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const rawPoint = getSvgPoint(e);
+  const point = findNearestSnap(rawPoint);
   
   if (currentTool === 'measure' || currentTool === 'scale') {
-    clickCount++;
-    const pt = document.createElement('div');
-    pt.className = 'measure-point ' + (clickCount === 1 ? 'p1' : '');
-    pt.style.left = x + 'px'; pt.style.top = y + 'px';
-    e.currentTarget.appendChild(pt);
-    measurePoints.push({ x, y });
-    const status = document.getElementById('scaleStatus');
-    if (clickCount === 1) status.textContent = '📏 Clique no 2º ponto';
-    else if (clickCount === 2) {
+    measurePoints.push(point);
+    drawMeasureMarker(point);
+    if (measurePoints.length === 1) {
+      document.getElementById('scaleStatus').textContent = `📏 1º ponto: ${point.label || 'livre'} — clique no 2º`;
+    } else if (measurePoints.length === 2) {
       const p1 = measurePoints[0], p2 = measurePoints[1];
-      const dx = p2.x - p1.x, dy = p2.y - p1.y;
-      const dist = Math.sqrt(dx * dx + dy * dy) * scaleFactor;
-      const line = document.createElement('div');
-      line.className = 'measure-line';
-      const ang = Math.atan2(dy, dx) * 180 / Math.PI;
-      line.style.width = Math.sqrt(dx*dx+dy*dy) + 'px';
-      line.style.left = p1.x + 'px'; line.style.top = p1.y + 'px';
-      line.style.transform = 'rotate(' + ang + 'deg)';
-      e.currentTarget.appendChild(line);
-      const lbl = document.createElement('div');
-      lbl.className = 'measure-label';
-      lbl.style.left = ((p1.x+p2.x)/2) + 'px'; lbl.style.top = ((p1.y+p2.y)/2) + 'px';
-      lbl.textContent = dist.toFixed(0) + ' mm';
-      e.currentTarget.appendChild(lbl);
-      document.getElementById('dx').textContent = Math.abs(dx).toFixed(0) + ' px';
-      document.getElementById('dy').textContent = Math.abs(dy).toFixed(0) + ' px';
-      document.getElementById('total').textContent = dist.toFixed(0) + ' mm';
-      status.textContent = '✓ ' + dist.toFixed(0) + ' mm';
-      measurements.push({ type: 'Linha', value: dist.toFixed(0), unit: 'mm', date: new Date().toLocaleTimeString('pt-BR') });
-      saveData(); renderMeasurementsList();
-      clickCount = 0; measurePoints = [];
+      const dx = (p2.x - p1.x);
+      const dy = (p2.y - p1.y);
+      const distPx = Math.sqrt(dx * dx + dy * dy);
+      const distMm = distPx * 10; // 1px = 10mm (escala padrão: 500px = 5m = 5000mm)
+      const distM = distMm / 1000;
+      
+      drawMeasureLine(p1, p2, distM);
+      
+      document.getElementById('dx').textContent = Math.abs(dx * 10).toFixed(0) + ' mm';
+      document.getElementById('dy').textContent = Math.abs(dy * 10).toFixed(0) + ' mm';
+      document.getElementById('dist').textContent = distMm.toFixed(0) + ' mm';
+      document.getElementById('total').textContent = distM.toFixed(2) + ' m';
+      document.getElementById('scaleStatus').textContent = `✓ ${distM.toFixed(2)} m (${(p1.label||'')} → ${p2.label||''})`;
+      
+      measurements.push({
+        type: 'Distância',
+        from: p1.label || `(${p1.x.toFixed(0)},${p1.y.toFixed(0)})`,
+        to: p2.label || `(${p2.x.toFixed(0)},${p2.y.toFixed(0)})`,
+        value: distM.toFixed(2),
+        unit: 'm',
+        date: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      });
+      renderMeasurementsList();
+      measurePoints = [];
     }
-  } else if (currentTool === 'polygon') {
-    polygonPoints.push({ x, y });
-    const pt = document.createElement('div');
-    pt.className = 'measure-point p1';
-    pt.style.left = x + 'px'; pt.style.top = y + 'px';
-    e.currentTarget.appendChild(pt);
-    if (polygonPoints.length >= 2) {
-      const p1 = polygonPoints[polygonPoints.length-2], p2 = polygonPoints[polygonPoints.length-1];
-      const dx = p2.x-p1.x, dy = p2.y-p1.y;
-      const line = document.createElement('div');
-      line.className = 'measure-line';
-      line.style.width = Math.sqrt(dx*dx+dy*dy) + 'px';
-      line.style.left = p1.x + 'px'; line.style.top = p1.y + 'px';
-      line.style.transform = 'rotate(' + (Math.atan2(dy,dx)*180/Math.PI) + 'deg)';
-      line.style.background = 'var(--primary)';
-      e.currentTarget.appendChild(line);
+  } else if (currentTool === 'area') {
+    areaPoints.push(point);
+    drawMeasureMarker(point, '#8b5cf6');
+    if (areaPoints.length >= 3) {
+      drawPolygonPreview();
     }
+    document.getElementById('scaleStatus').textContent = `⬡ ${areaPoints.length} pontos (duplo clique fecha)`;
   }
 });
 
-document.getElementById('viewer3d').addEventListener('dblclick', (e) => {
-  if (currentTool === 'polygon' && polygonPoints.length >= 3) {
-    const p1 = polygonPoints[polygonPoints.length-1], p2 = polygonPoints[0];
-    const dx = p2.x-p1.x, dy = p2.y-p1.y;
-    const line = document.createElement('div');
-    line.className = 'measure-line';
-    line.style.width = Math.sqrt(dx*dx+dy*dy) + 'px';
-    line.style.left = p1.x + 'px'; line.style.top = p1.y + 'px';
-    line.style.transform = 'rotate(' + (Math.atan2(dy,dx)*180/Math.PI) + 'deg)';
-    line.style.background = 'var(--primary)';
-    e.currentTarget.appendChild(line);
-    let area = 0;
-    for (let i = 0; i < polygonPoints.length; i++) { const j = (i+1) % polygonPoints.length; area += polygonPoints[i].x * polygonPoints[j].y - polygonPoints[j].x * polygonPoints[i].y; }
-    area = Math.abs(area) / 2;
-    measurements.push({ type: 'Polígono', value: area.toFixed(0), unit: 'px²', date: new Date().toLocaleTimeString('pt-BR') });
-    saveData(); renderMeasurementsList();
-    polygonPoints = [];
-    document.getElementById('scaleStatus').textContent = '⬡ Área: ' + area.toFixed(0) + ' px²';
+document.getElementById('architecturalSvg').addEventListener('dblclick', (e) => {
+  if (currentTool === 'area' && areaPoints.length >= 3) {
+    const area = calculateArea(areaPoints);
+    const areaM2 = area * 0.01 * 0.01; // px² para m²
+    document.getElementById('scaleStatus').textContent = `✓ Área: ${areaM2.toFixed(2)} m²`;
+    measurements.push({
+      type: 'Área',
+      from: areaPoints.length + ' vértices',
+      to: '-',
+      value: areaM2.toFixed(2),
+      unit: 'm²',
+      date: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    });
+    renderMeasurementsList();
+    areaPoints = [];
+    const preview = document.getElementById('polygonPreview');
+    if (preview) preview.remove();
   }
 });
+
+function drawMeasureMarker(point, color = '#ef4444') {
+  const svg = document.getElementById('architecturalSvg');
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('class', 'measure-marker');
+  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', point.x);
+  circle.setAttribute('cy', point.y);
+  circle.setAttribute('r', 5);
+  circle.setAttribute('fill', color);
+  circle.setAttribute('stroke', 'white');
+  circle.setAttribute('stroke-width', 2);
+  g.appendChild(circle);
+  if (point.label) {
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', point.x);
+    text.setAttribute('y', point.y - 10);
+    text.setAttribute('fill', color);
+    text.setAttribute('font-size', '10');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-weight', 'bold');
+    text.textContent = point.label;
+    g.appendChild(text);
+  }
+  document.getElementById('userMeasurements').appendChild(g);
+}
+
+function drawMeasureLine(p1, p2, distM) {
+  const g = document.getElementById('userMeasurements');
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', p1.x);
+  line.setAttribute('y1', p1.y);
+  line.setAttribute('x2', p2.x);
+  line.setAttribute('y2', p2.y);
+  line.setAttribute('class', 'measure-line-svg');
+  g.appendChild(line);
+  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  text.setAttribute('x', (p1.x + p2.x) / 2);
+  text.setAttribute('y', (p1.y + p2.y) / 2 - 8);
+  text.setAttribute('class', 'measure-label-svg');
+  text.setAttribute('text-anchor', 'middle');
+  text.textContent = distM.toFixed(2) + ' m';
+  g.appendChild(text);
+}
+
+function drawPolygonPreview() {
+  const existing = document.getElementById('polygonPreview');
+  if (existing) existing.remove();
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.id = 'polygonPreview';
+  let pathD = `M ${areaPoints[0].x} ${areaPoints[0].y}`;
+  for (let i = 1; i < areaPoints.length; i++) {
+    pathD += ` L ${areaPoints[i].x} ${areaPoints[i].y}`;
+  }
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', pathD);
+  path.setAttribute('fill', 'rgba(139, 92, 246, 0.2)');
+  path.setAttribute('stroke', '#8b5cf6');
+  path.setAttribute('stroke-width', 2);
+  path.setAttribute('stroke-dasharray', '4,2');
+  g.appendChild(path);
+  document.getElementById('userMeasurements').appendChild(g);
+}
+
+function calculateArea(points) {
+  let area = 0;
+  for (let i = 0; i < points.length; i++) {
+    const j = (i + 1) % points.length;
+    area += points[i].x * points[j].y;
+    area -= points[j].x * points[i].y;
+  }
+  return Math.abs(area) / 2;
+}
 
 function clearMeasurements() {
-  const v = document.getElementById('viewer3d');
-  v.querySelectorAll('.measure-point, .measure-line, .measure-label').forEach(el => el.remove());
+  document.getElementById('userMeasurements').innerHTML = '';
+  measurePoints = [];
+  areaPoints = [];
+  currentTool = null;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('scaleStatus').classList.remove('active');
   document.getElementById('dx').textContent = '-- mm';
   document.getElementById('dy').textContent = '-- mm';
-  document.getElementById('total').textContent = '-- mm';
-  document.getElementById('scaleStatus').classList.remove('active');
-  currentTool = null; measurePoints = []; polygonPoints = [];
-  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('dist').textContent = '-- mm';
+  document.getElementById('total').textContent = '-- m';
 }
 
 function calibrateScale() {
-  const real = parseFloat(document.getElementById('realDistance').value) || 1000;
-  scaleFactor = real / 100;
+  if (measurements.length === 0) {
+    alert('⚠️ Faça uma medição primeiro (ex: parede de 5m) e depois calibre.');
+    return;
+  }
+  const realMm = parseFloat(document.getElementById('realDistance').value) || 5000;
+  const lastMeasure = measurements[measurements.length - 1];
+  const measuredM = parseFloat(lastMeasure.value);
+  const newScale = realMm / (measuredM * 1000);
   document.getElementById('scaleStatusText').textContent = '✓ Calibrada';
   document.getElementById('scaleStatusText').style.color = 'var(--success)';
-  document.getElementById('scaleFactor').textContent = scaleFactor.toFixed(3) + 'x';
-  alert('✓ Escala: 100px = ' + real + 'mm');
+  document.getElementById('scaleFactor').textContent = newScale.toFixed(4) + ' px/mm';
+  alert(`✓ Escala calibrada!\n\nMedida: ${measuredM}m = ${realMm}mm\nFator: 1px = ${(newScale * 10).toFixed(2)} mm`);
 }
-
-function applyCut(v) {
-  document.getElementById('cutValue').textContent = v + ' m';
-  const wall = document.getElementById('wallFront');
-  const pct = (v / 3) * 100;
-  wall.style.clipPath = 'polygon(0 0, 100% 0, 100% ' + (100-pct) + '%, 0 ' + (100-pct) + '%)';
-}
-function resetCut() { document.getElementById('cutHeight').value = 1.0; document.getElementById('cutValue').textContent = '1.0 m'; document.getElementById('wallFront').style.clipPath = 'none'; }
 
 function renderMeasurementsList() {
   const list = document.getElementById('measurementsList');
-  if (measurements.length === 0) { list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida</div>'; return; }
-  list.innerHTML = measurements.map((m, i) => '<div class="measurement-item"><span>' + m.type + ': ' + m.value + ' ' + m.unit + '</span><button class="delete-btn" onclick="deleteMeasurement(' + i + ')">✕</button></div>').join('');
+  if (measurements.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida</div>';
+    return;
+  }
+  list.innerHTML = measurements.map((m, i) => `
+    <div class="measurement-item">
+      <div>
+        <div style="font-weight:600;">${m.type}: ${m.value} ${m.unit}</div>
+        <div style="color:var(--text-muted);font-size:10px;">${m.from} → ${m.to} • ${m.date}</div>
+      </div>
+      <button class="delete-btn" onclick="deleteMeasurement(${i})">✕</button>
+    </div>
+  `).join('');
 }
-function deleteMeasurement(i) { measurements.splice(i, 1); saveData(); renderMeasurementsList(); }
+
+function deleteMeasurement(i) {
+  measurements.splice(i, 1);
+  renderMeasurementsList();
+}
 
 function exportCSV() {
-  let csv = 'Tipo,Valor,Unidade,Data\n';
-  measurements.forEach(m => csv += m.type + ',' + m.value + ',' + m.unit + ',' + m.date + '\n');
+  let csv = 'Tipo,De,Para,Valor,Unidade,Data\n';
+  measurements.forEach(m => {
+    csv += `${m.type},"${m.from}","${m.to}",${m.value},${m.unit},${m.date}\n`;
+  });
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'medicoes_' + Date.now() + '.csv';
+  a.download = 'planta_sala_estar_' + Date.now() + '.csv';
   a.click();
   alert('📊 CSV exportado! (' + measurements.length + ' medidas)');
 }
 
-function exportPLY() {
-  const n = currentProject ? currentProject.points : 1200;
-  let ply = 'ply\nformat ascii 1.0\nelement vertex ' + n + '\nproperty float x\nproperty float y\nproperty float z\nproperty uchar red\nproperty uchar green\nproperty uchar blue\nend_header\n';
-  for (let i = 0; i < Math.min(n, 500); i++) {
-    const r = Math.random();
-    let color = r < 0.7 ? '139 92 246' : r < 0.9 ? '16 185 129' : '148 163 184';
-    ply += (Math.random()*400) + ' ' + (Math.random()*300) + ' ' + (Math.random()*50) + ' ' + color + '\n';
-  }
-  const blob = new Blob([ply], { type: 'text/plain' });
+function exportDXF() {
+  let dxf = '0\nSECTION\n2\nENTITIES\n';
+  // Paredes
+  dxf += '0\nLINE\n8\nWALLS\n10\n0\n20\n0\n11\n500\n21\n0\n';
+  dxf += '0\nLINE\n8\nWALLS\n10\n500\n20\n0\n11\n500\n21\n400\n';
+  dxf += '0\nLINE\n8\nWALLS\n10\n500\n20\n400\n11\n0\n21\n400\n';
+  dxf += '0\nLINE\n8\nWALLS\n10\n0\n20\n400\n11\n0\n21\n0\n';
+  dxf += '0\nENDSEC\n0\nEOF\n';
+  const blob = new Blob([dxf], { type: 'application/dxf' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'scan_' + Date.now() + '.ply';
+  a.download = 'planta_sala_estar.dxf';
   a.click();
-  alert('️ PLY exportado! (amostra de 500 pontos)');
+  alert('📐 DXF exportado!\nAbra no AutoCAD, LibreCAD ou QCAD');
 }
 
-function loadData() {
-  const s = localStorage.getItem('vexaProjects'); if (s) projects = JSON.parse(s);
-  const m = localStorage.getItem('vexaMeasurements'); if (m) measurements = JSON.parse(m);
-}
-function saveData() {
-  localStorage.setItem('vexaProjects', JSON.stringify(projects));
-  localStorage.setItem('vexaMeasurements', JSON.stringify(measurements));
+function exportSVG() {
+  const svg = document.getElementById('architecturalSvg');
+  const svgData = new XMLSerializer().serializeToString(svg);
+  const blob = new Blob([svgData], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'planta_sala_estar.svg';
+  a.click();
+  alert('💾 SVG salvo!');
 }
 
-updateRoomTransform();
+// Rotação livre com botão direito
+let isDragging = false, lastX = 0, lastY = 0;
+document.getElementById('viewer3d').addEventListener('mousedown', (e) => {
+  if (e.button === 2) { isDragging = true; lastX = e.clientX; lastY = e.clientY; e.preventDefault(); }
+});
+document.addEventListener('mousemove', (e) => {
+  if (isDragging && !currentTool) {
+    const svg = document.getElementById('architecturalSvg');
+    rotationY += (e.clientX - lastX) * 0.5;
+    rotationX -= (e.clientY - lastY) * 0.5;
+    rotationX = Math.max(-85, Math.min(85, rotationX));
+    svg.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${zoom})`;
+    svg.style.transition = 'none';
+    lastX = e.clientX; lastY = e.clientY;
+  }
+});
+document.addEventListener('mouseup', () => isDragging = false);
+document.getElementById('viewer3d').addEventListener('contextmenu', (e) => e.preventDefault());
+document.getElementById('viewer3d').addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoom += e.deltaY > 0 ? -0.1 : 0.1;
+  zoom = Math.max(0.5, Math.min(2, zoom));
+  const svg = document.getElementById('architecturalSvg');
+  svg.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(${zoom})`;
+});
 </script>
 </body>
 </html>
