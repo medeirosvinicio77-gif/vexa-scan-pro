@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro - Tour 3D com Medição</title>
+<title>Vexa Scan Pro - Tour 3D com Snap e Escala</title>
 <style>
     :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,21 +21,23 @@
     .main-content { position: relative; width: 100%; height: 100%; }
     #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000; }
     
-    /* HUD */
     .hud-overlay { position: absolute; top: 20px; left: 20px; background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; pointer-events: none; min-width: 220px; }
     .hud-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
     .hud-stats { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
     .hud-stats span { color: var(--text); font-weight: 600; }
     
-    /* Painel de Medição */
-    .measure-panel { position: absolute; top: 20px; right: 20px; background: rgba(15, 23, 42, 0.9); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; min-width: 240px; }
+    .measure-panel { position: absolute; top: 20px; right: 20px; background: rgba(15, 23, 42, 0.9); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; min-width: 260px; }
     .measure-panel h3 { font-size: 13px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--warning); }
     .measure-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
     .measure-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; font-weight: 600; color: var(--success); font-size: 14px; }
     .measure-row .label { color: var(--text-muted); }
     .measure-row .value { color: var(--text); font-weight: 600; }
     
-    /* Botões de Ferramentas */
+    .scale-control { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .scale-control label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .scale-control input { width: 100%; padding: 6px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 12px; }
+    .scale-control .scale-info { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    
     .tools-bar { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: var(--radius); backdrop-filter: blur(8px); z-index: 20; }
     .tool-btn { padding: 8px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
     .tool-btn:hover { background: var(--primary); border-color: var(--primary); }
@@ -44,10 +46,10 @@
     .controls-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; color: white; font-size: 12px; z-index: 20; pointer-events: none; display: flex; gap: 16px; }
     .key { background: var(--surface-2); padding: 3px 7px; border-radius: 4px; font-weight: bold; border: 1px solid var(--border); font-size: 11px; }
     
-    .crosshair { position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; border: 2px solid rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%, -50%); z-index: 15; pointer-events: none; }
-    .crosshair.measure-mode { border-color: var(--warning); background: rgba(245, 158, 11, 0.3); }
+    .crosshair { position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%, -50%); z-index: 15; pointer-events: none; transition: all 0.2s; }
+    .crosshair.measure-mode { border-color: var(--warning); background: rgba(245, 158, 11, 0.3); width: 16px; height: 16px; }
+    .crosshair.snap-active { border-color: var(--success); background: rgba(16, 185, 129, 0.5); box-shadow: 0 0 10px var(--success); }
 
-    /* Upload Modal */
     .upload-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface); padding: 32px; border-radius: 12px; border: 1px solid var(--border); z-index: 30; width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     .upload-modal h2 { margin-bottom: 16px; }
     .upload-zone { border: 2px dashed var(--border); padding: 30px; border-radius: var(--radius); cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }
@@ -55,12 +57,13 @@
     .progress-container { margin-top: 16px; display: none; }
     .progress-bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
     .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
-    .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 14px; }
-    .btn-primary:hover { background: #4338ca; }
     .hidden { display: none !important; }
     
-    .measure-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100px); background: rgba(245, 158, 11, 0.95); color: #1a1a1a; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 600; z-index: 25; pointer-events: none; display: none; }
+    .measure-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -120px); background: rgba(245, 158, 11, 0.95); color: #1a1a1a; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 600; z-index: 25; pointer-events: none; display: none; white-space: nowrap; }
     .measure-status.active { display: block; }
+    
+    .snap-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -140px); background: rgba(16, 185, 129, 0.95); color: white; padding: 6px 12px; border-radius: var(--radius); font-size: 11px; font-weight: 600; z-index: 25; pointer-events: none; display: none; }
+    .snap-indicator.active { display: block; }
 </style>
 
 <script type="importmap">
@@ -91,7 +94,7 @@
             <div class="nav-item">⚙️ Configurações</div>
         </nav>
         <div style="margin-top: auto;">
-            <div class="nav-item">🚪 Sair</div>
+            <div class="nav-item"> Sair</div>
         </div>
     </aside>
 
@@ -99,34 +102,43 @@
         <div id="canvas-container"></div>
         
         <div class="hud-overlay">
-            <div class="hud-title">🏠 Dormitório - Tour 3D</div>
+            <div class="hud-title"> Dormitório - Tour 3D</div>
             <div class="hud-stats">
                 Malha: <span>Texturizada (GLB)</span><br>
                 Polígonos: <span id="polyCount">0</span><br>
                 Paredes: <span>4</span><br>
+                Zoom: <span id="zoomLevel">100%</span><br>
                 Modo: <span id="modeText">Navegação</span>
             </div>
         </div>
 
-        <!-- Painel de Medição -->
         <div class="measure-panel">
-            <h3>📏 Medição 3D</h3>
+            <h3> Medição 3D</h3>
             <div class="measure-row"><span class="label">Ponto 1:</span><span class="value" id="point1">--</span></div>
             <div class="measure-row"><span class="label">Ponto 2:</span><span class="value" id="point2">--</span></div>
             <div class="measure-row"><span class="label">ΔX:</span><span class="value" id="dx">-- m</span></div>
             <div class="measure-row"><span class="label">ΔY:</span><span class="value" id="dy">-- m</span></div>
             <div class="measure-row"><span class="label">ΔZ:</span><span class="value" id="dz">-- m</span></div>
             <div class="measure-row total"><span class="label">DISTÂNCIA:</span><span class="value" id="totalDist">-- m</span></div>
+            <div class="measure-row"><span class="label">Real:</span><span class="value" id="realDist">-- mm</span></div>
+            
+            <div class="scale-control">
+                <label> Escala Real (mm por metro)</label>
+                <input type="number" id="scaleInput" value="1000" onchange="updateScale()">
+                <div class="scale-info">💡 1000 = 1m real. Ajuste para calibrar.</div>
+            </div>
+            
             <div style="margin-top:10px;font-size:11px;color:var(--text-muted);">
-                💡 Ative "Medir" e clique em 2 pontos na parede
+                💡 Ative "Medir" e clique perto dos cantos
             </div>
         </div>
 
         <div class="crosshair" id="crosshair"></div>
-        <div class="measure-status" id="measureStatus">📏 Clique no 1º ponto da parede</div>
+        <div class="measure-status" id="measureStatus">📏 Clique no 1º ponto</div>
+        <div class="snap-indicator" id="snapIndicator">🎯 Canto detectado</div>
 
         <div class="tools-bar">
-            <button class="tool-btn" id="btnMeasure" onclick="toggleMeasure()">📏 Medir</button>
+            <button class="tool-btn" id="btnMeasure" onclick="toggleMeasure()"> Medir</button>
             <button class="tool-btn" onclick="clearMeasurements()">🗑️ Limpar</button>
             <button class="tool-btn" onclick="toggleViewMode()">🎲 Vista Geral</button>
             <button class="tool-btn" onclick="resetCamera()">🔄 Reset</button>
@@ -135,10 +147,10 @@
         <div class="controls-hint" id="controlsHint">
             <span><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> Mover</span>
             <span><span class="key">Mouse</span> Olhar</span>
+            <span><span class="key">Scroll</span> Zoom</span>
             <span><span class="key">ESC</span> Sair</span>
         </div>
 
-        <!-- Upload Modal -->
         <div class="upload-modal" id="uploadModal">
             <h2>📹 Gerar Tour 3D</h2>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
@@ -175,9 +187,95 @@
     let measurePoints = [];
     let measureLine = null;
     let measureMarkers = [];
+    let snapMarkers = []; // Marcadores visuais dos pontos de snap
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    let clickableObjects = []; // Paredes e objetos que podem ser medidos
+    let clickableObjects = [];
+    
+    // Pontos de snap (cantos, meios, etc)
+    let snapPoints = [];
+    const SNAP_THRESHOLD = 0.4; // metros - distância para "grudar" no canto
+    
+    // Escala
+    let scaleFactor = 1000; // mm por metro (1000 = 1m real)
+
+    // --- Definição dos Snap Points (cantos das paredes) ---
+    function createSnapPoints() {
+        snapPoints = [];
+        
+        // Cantos das 4 paredes (chão e teto)
+        const corners = [
+            // Parede traseira (Z = -5)
+            { x: -5, y: 0, z: -5, label: 'Canto inf esq (trás)' },
+            { x: 5, y: 0, z: -5, label: 'Canto inf dir (trás)' },
+            { x: -5, y: 2.8, z: -5, label: 'Canto sup esq (trás)' },
+            { x: 5, y: 2.8, z: -5, label: 'Canto sup dir (trás)' },
+            
+            // Parede frontal (Z = 5)
+            { x: -5, y: 0, z: 5, label: 'Canto inf esq (frente)' },
+            { x: 5, y: 0, z: 5, label: 'Canto inf dir (frente)' },
+            { x: -5, y: 2.8, z: 5, label: 'Canto sup esq (frente)' },
+            { x: 5, y: 2.8, z: 5, label: 'Canto sup dir (frente)' },
+            
+            // Cantos da porta (abertura)
+            { x: -0.5, y: 0, z: 5, label: 'Porta - canto inf esq' },
+            { x: 0.5, y: 0, z: 5, label: 'Porta - canto inf dir' },
+            { x: -0.5, y: 2.1, z: 5, label: 'Porta - canto sup esq' },
+            { x: 0.5, y: 2.1, z: 5, label: 'Porta - canto sup dir' },
+        ];
+        
+        // Meios das paredes (para medir largura/altura)
+        const mids = [
+            { x: 0, y: 0, z: -5, label: 'Meio rodapé (trás)' },
+            { x: 0, y: 2.8, z: -5, label: 'Meio teto (trás)' },
+            { x: 0, y: 1.4, z: -5, label: 'Meio parede (trás)' },
+            
+            { x: -5, y: 0, z: 0, label: 'Meio rodapé (esq)' },
+            { x: -5, y: 2.8, z: 0, label: 'Meio teto (esq)' },
+            { x: -5, y: 1.4, z: 0, label: 'Meio parede (esq)' },
+            
+            { x: 5, y: 0, z: 0, label: 'Meio rodapé (dir)' },
+            { x: 5, y: 2.8, z: 0, label: 'Meio teto (dir)' },
+            { x: 5, y: 1.4, z: 0, label: 'Meio parede (dir)' },
+        ];
+        
+        snapPoints = [...corners, ...mids];
+        
+        // Criar marcadores visuais sutis nos cantos (esferas pequenas)
+        snapPoints.forEach(sp => {
+            const markerGeo = new THREE.SphereGeometry(0.03, 8, 8);
+            const markerMat = new THREE.MeshBasicMaterial({ 
+                color: 0x4f46e5, 
+                transparent: true, 
+                opacity: 0.4 
+            });
+            const marker = new THREE.Mesh(markerGeo, markerMat);
+            marker.position.set(sp.x, sp.y, sp.z);
+            marker.userData = { isSnapMarker: true, label: sp.label };
+            scene.add(marker);
+            snapMarkers.push(marker);
+        });
+    }
+
+    // --- Encontrar snap point mais próximo ---
+    function findNearestSnapPoint(point) {
+        let nearest = null;
+        let minDist = SNAP_THRESHOLD;
+        
+        for (const sp of snapPoints) {
+            const dist = Math.sqrt(
+                Math.pow(point.x - sp.x, 2) +
+                Math.pow(point.y - sp.y, 2) +
+                Math.pow(point.z - sp.z, 2)
+            );
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = sp;
+            }
+        }
+        
+        return nearest;
+    }
 
     // --- Inicialização da Cena 3D ---
     function init3DScene() {
@@ -215,7 +313,7 @@
 
         // --- CONSTRUÇÃO DA MALHA (4 PAREDES) ---
         
-        // 1. Chão
+        // Chão
         const floorGeo = new THREE.PlaneGeometry(10, 10);
         const floorMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.8, metalness: 0.1 });
         const floor = new THREE.Mesh(floorGeo, floorMat);
@@ -225,7 +323,7 @@
         scene.add(floor);
         clickableObjects.push(floor);
 
-        // 2. Teto
+        // Teto
         const ceilGeo = new THREE.PlaneGeometry(10, 10);
         const ceilMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
         const ceiling = new THREE.Mesh(ceilGeo, ceilMat);
@@ -234,10 +332,10 @@
         scene.add(ceiling);
         clickableObjects.push(ceiling);
 
-        // 3. PAREDES (4 paredes completas)
+        // PAREDES
         const wallMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.6, side: THREE.DoubleSide });
         
-        // Parede TRASEIRA (Z = -5)
+        // Parede TRASEIRA
         const wallBack = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
         wallBack.position.set(0, 1.4, -5);
         wallBack.receiveShadow = true;
@@ -245,7 +343,7 @@
         scene.add(wallBack);
         clickableObjects.push(wallBack);
 
-        // Parede ESQUERDA (X = -5)
+        // Parede ESQUERDA
         const wallLeft = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
         wallLeft.rotation.y = Math.PI / 2;
         wallLeft.position.set(-5, 1.4, 0);
@@ -254,7 +352,7 @@
         scene.add(wallLeft);
         clickableObjects.push(wallLeft);
 
-        // Parede DIREITA (X = 5)
+        // Parede DIREITA
         const wallRight = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
         wallRight.rotation.y = -Math.PI / 2;
         wallRight.position.set(5, 1.4, 0);
@@ -263,8 +361,7 @@
         scene.add(wallRight);
         clickableObjects.push(wallRight);
 
-        // Parede FRONTAL (Z = 5) - COM ABERTURA DE PORTA
-        // Criada com Shape para ter abertura
+        // Parede FRONTAL COM PORTA
         const frontWallShape = new THREE.Shape();
         frontWallShape.moveTo(-5, 0);
         frontWallShape.lineTo(5, 0);
@@ -272,7 +369,6 @@
         frontWallShape.lineTo(-5, 2.8);
         frontWallShape.lineTo(-5, 0);
         
-        // Abertura da porta (1m de largura, 2.1m de altura, centralizada)
         const doorHole = new THREE.Path();
         doorHole.moveTo(-0.5, 0);
         doorHole.lineTo(0.5, 0);
@@ -283,7 +379,7 @@
         
         const frontWallGeo = new THREE.ShapeGeometry(frontWallShape);
         const frontWall = new THREE.Mesh(frontWallGeo, wallMat);
-        frontWall.rotation.y = Math.PI; // Virada para dentro
+        frontWall.rotation.y = Math.PI;
         frontWall.position.set(0, 0, 5);
         frontWall.receiveShadow = true;
         frontWall.userData = { type: 'wall', name: 'Parede Frontal (com porta)' };
@@ -302,7 +398,7 @@
         frameRight.position.set(0.5, 1.05, 5);
         scene.add(frameRight);
 
-        // 4. Móveis (Cama, Guarda-roupa)
+        // Móveis
         const bedGeo = new THREE.BoxGeometry(2, 0.5, 3);
         const bedMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
         const bed = new THREE.Mesh(bedGeo, bedMat);
@@ -351,13 +447,62 @@
         });
         document.getElementById('polyCount').textContent = Math.round(polyCount).toLocaleString('pt-BR');
 
+        // Criar snap points
+        createSnapPoints();
+
         // Event Listeners
         document.addEventListener('keydown', onKeyDown);
         document.addEventListener('keyup', onKeyUp);
         window.addEventListener('resize', onWindowResize);
         renderer.domElement.addEventListener('click', onCanvasClick);
+        renderer.domElement.addEventListener('wheel', onWheelZoom, { passive: false });
+        renderer.domElement.addEventListener('mousemove', onMouseMoveSnap);
 
         animate();
+    }
+
+    // --- Zoom com Scroll ---
+    function onWheelZoom(event) {
+        if (!isTourActive) return;
+        event.preventDefault();
+        
+        const fovDelta = event.deltaY > 0 ? 3 : -3;
+        camera.fov = Math.max(30, Math.min(100, camera.fov + fovDelta));
+        camera.updateProjectionMatrix();
+        
+        const zoomPercent = Math.round((75 / camera.fov) * 100);
+        document.getElementById('zoomLevel').textContent = zoomPercent + '%';
+    }
+
+    // --- Detectar snap ao mover o mouse ---
+    function onMouseMoveSnap(event) {
+        if (!isMeasureMode) return;
+        
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(clickableObjects);
+
+        const crosshair = document.getElementById('crosshair');
+        const snapIndicator = document.getElementById('snapIndicator');
+
+        if (intersects.length > 0) {
+            const point = intersects[0].point;
+            const nearestSnap = findNearestSnapPoint(point);
+            
+            if (nearestSnap) {
+                crosshair.classList.add('snap-active');
+                snapIndicator.classList.add('active');
+                snapIndicator.textContent = `🎯 ${nearestSnap.label}`;
+            } else {
+                crosshair.classList.remove('snap-active');
+                snapIndicator.classList.remove('active');
+            }
+        } else {
+            crosshair.classList.remove('snap-active');
+            snapIndicator.classList.remove('active');
+        }
     }
 
     // --- Movimento FPS ---
@@ -385,12 +530,11 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    // --- Sistema de Medição com Raycasting ---
+    // --- Sistema de Medição com Snap ---
     function onCanvasClick(event) {
         if (!isMeasureMode || !isTourActive) return;
-        if (controls.isLocked) return; // Não medir enquanto está em modo imersivo
+        if (controls.isLocked) return;
         
-        // Calcula posição do mouse normalizada (-1 a +1)
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -398,18 +542,27 @@
         const intersects = raycaster.intersectObjects(clickableObjects);
 
         if (intersects.length > 0) {
-            const point = intersects[0].point;
-            addMeasurePoint(point);
+            let point = intersects[0].point.clone();
+            
+            // Verificar snap nos cantos
+            const nearestSnap = findNearestSnapPoint(point);
+            let snapped = false;
+            if (nearestSnap) {
+                point.set(nearestSnap.x, nearestSnap.y, nearestSnap.z);
+                snapped = true;
+            }
+            
+            addMeasurePoint(point, snapped, nearestSnap?.label);
         }
     }
 
-    function addMeasurePoint(point3D) {
+    function addMeasurePoint(point3D, snapped, snapLabel) {
         if (measurePoints.length >= 2) return;
         
         measurePoints.push(point3D.clone());
         
-        // Criar marcador visual (esfera)
-        const markerGeo = new THREE.SphereGeometry(0.05, 16, 16);
+        // Marcador visual
+        const markerGeo = new THREE.SphereGeometry(0.08, 16, 16);
         const markerMat = new THREE.MeshBasicMaterial({ 
             color: measurePoints.length === 1 ? 0xf59e0b : 0x10b981 
         });
@@ -417,14 +570,33 @@
         marker.position.copy(point3D);
         scene.add(marker);
         measureMarkers.push(marker);
+        
+        // Label flutuante
+        const labelDiv = document.createElement('div');
+        labelDiv.style.cssText = `
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 30;
+            white-space: nowrap;
+        `;
+        labelDiv.textContent = snapped ? `🎯 ${snapLabel}` : `P${measurePoints.length}`;
+        document.body.appendChild(labelDiv);
+        marker.userData.labelDiv = labelDiv;
 
         // Atualizar UI
         const status = document.getElementById('measureStatus');
+        const coordText = `(${point3D.x.toFixed(2)}, ${point3D.y.toFixed(2)}, ${point3D.z.toFixed(2)})`;
+        
         if (measurePoints.length === 1) {
-            document.getElementById('point1').textContent = `(${point3D.x.toFixed(2)}, ${point3D.y.toFixed(2)}, ${point3D.z.toFixed(2)})`;
+            document.getElementById('point1').textContent = coordText + (snapped ? ' 🎯' : '');
             status.textContent = '📏 Clique no 2º ponto';
         } else if (measurePoints.length === 2) {
-            document.getElementById('point2').textContent = `(${point3D.x.toFixed(2)}, ${point3D.y.toFixed(2)}, ${point3D.z.toFixed(2)})`;
+            document.getElementById('point2').textContent = coordText + (snapped ? ' 🎯' : '');
             status.textContent = '✓ Medição completa!';
             status.style.background = 'rgba(16, 185, 129, 0.95)';
             drawMeasureLine();
@@ -443,10 +615,7 @@
         const p2 = measurePoints[1];
         
         const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
-        const material = new THREE.LineBasicMaterial({ 
-            color: 0xef4444, 
-            linewidth: 3 
-        });
+        const material = new THREE.LineBasicMaterial({ color: 0xef4444, linewidth: 3 });
         measureLine = new THREE.Line(geometry, material);
         scene.add(measureLine);
     }
@@ -458,17 +627,22 @@
         const dx = Math.abs(p2.x - p1.x);
         const dy = Math.abs(p2.y - p1.y);
         const dz = Math.abs(p2.z - p1.z);
-        const total = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        const totalM = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        const totalMm = totalM * scaleFactor;
         
         document.getElementById('dx').textContent = dx.toFixed(3) + ' m';
         document.getElementById('dy').textContent = dy.toFixed(3) + ' m';
         document.getElementById('dz').textContent = dz.toFixed(3) + ' m';
-        document.getElementById('totalDist').textContent = total.toFixed(3) + ' m';
+        document.getElementById('totalDist').textContent = totalM.toFixed(3) + ' m';
+        document.getElementById('realDist').textContent = totalMm.toFixed(1) + ' mm';
     }
 
     function clearMeasurements() {
         measurePoints = [];
-        measureMarkers.forEach(m => scene.remove(m));
+        measureMarkers.forEach(m => {
+            if (m.userData.labelDiv) m.userData.labelDiv.remove();
+            scene.remove(m);
+        });
         measureMarkers = [];
         if (measureLine) {
             scene.remove(measureLine);
@@ -480,8 +654,20 @@
         document.getElementById('dy').textContent = '-- m';
         document.getElementById('dz').textContent = '-- m';
         document.getElementById('totalDist').textContent = '-- m';
+        document.getElementById('realDist').textContent = '-- mm';
         document.getElementById('measureStatus').classList.remove('active');
     }
+
+    // --- Atualizar Escala ---
+    window.updateScale = function() {
+        const input = document.getElementById('scaleInput');
+        scaleFactor = parseFloat(input.value) || 1000;
+        
+        // Recalcular se já houver medição
+        if (measurePoints.length === 2) {
+            calculateDistance();
+        }
+    };
 
     // --- Controles de UI ---
     window.toggleMeasure = function() {
@@ -495,14 +681,16 @@
             crosshair.classList.add('measure-mode');
             if (controls.isLocked) controls.unlock();
             status.classList.add('active');
-            status.textContent = ' Clique no 1º ponto da parede';
+            status.textContent = '📏 Clique no 1º ponto (perto dos cantos)';
             status.style.background = 'rgba(245, 158, 11, 0.95)';
             clearMeasurements();
             setTimeout(() => status.classList.add('active'), 100);
         } else {
             btn.classList.remove('active');
             crosshair.classList.remove('measure-mode');
+            crosshair.classList.remove('snap-active');
             status.classList.remove('active');
+            document.getElementById('snapIndicator').classList.remove('active');
         }
     };
 
@@ -514,10 +702,16 @@
             controls.unlock();
             camera.position.set(0, 8, 12);
             camera.lookAt(0, 1, 0);
+            camera.fov = 60;
+            camera.updateProjectionMatrix();
             document.getElementById('modeText').textContent = 'Vista Geral';
+            document.getElementById('zoomLevel').textContent = '125%';
         } else {
             camera.position.set(0, 1.7, 3);
+            camera.fov = 75;
+            camera.updateProjectionMatrix();
             document.getElementById('modeText').textContent = 'Navegação';
+            document.getElementById('zoomLevel').textContent = '100%';
         }
     };
 
@@ -525,7 +719,10 @@
         isOverviewMode = false;
         camera.position.set(0, 1.7, 3);
         camera.rotation.set(0, 0, 0);
+        camera.fov = 75;
+        camera.updateProjectionMatrix();
         document.getElementById('modeText').textContent = 'Navegação';
+        document.getElementById('zoomLevel').textContent = '100%';
         clearMeasurements();
     };
 
@@ -551,14 +748,25 @@
             controls.moveRight(-velocity.x * delta);
             controls.moveForward(-velocity.z * delta);
             
-            // Colisão simples com paredes
             const pos = controls.getObject().position;
             if (pos.x < -4.5) pos.x = -4.5;
             if (pos.x > 4.5) pos.x = 4.5;
             if (pos.z < -4.5) pos.z = -4.5;
             if (pos.z > 4.5) pos.z = 4.5;
-            pos.y = 1.7; // Manter altura dos olhos
+            pos.y = 1.7;
         }
+
+        // Atualizar posição dos labels flutuantes
+        measureMarkers.forEach(marker => {
+            if (marker.userData.labelDiv) {
+                const pos = marker.position.clone();
+                pos.project(camera);
+                const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
+                marker.userData.labelDiv.style.left = x + 'px';
+                marker.userData.labelDiv.style.top = (y - 30) + 'px';
+            }
+        });
 
         prevTime = time;
         renderer.render(scene, camera);
@@ -580,6 +788,7 @@
             "Gerando malha triangular...",
             "Mapeando texturas 4K...",
             "Criando abertura da porta...",
+            "Calibrando pontos de snap...",
             "Otimizando para WebGL...",
             "Tour 3D com medição pronto!"
         ];
@@ -588,7 +797,7 @@
             progress += 2;
             fill.style.width = progress + '%';
             
-            const stepIndex = Math.min(Math.floor(progress / 13), steps.length - 1);
+            const stepIndex = Math.min(Math.floor(progress / 12), steps.length - 1);
             text.textContent = steps[stepIndex];
 
             if (progress >= 100) {
@@ -597,7 +806,7 @@
                     document.getElementById('uploadModal').classList.add('hidden');
                     isTourActive = true;
                     camera.position.set(0, 1.7, 3);
-                    alert("✅ Malha 3D gerada com sucesso!\n\n 4 paredes detectadas (com porta)\n📏 Sistema de medição ativado\n\nComo usar:\n1. Clique '📏 Medir' na barra inferior\n2. Clique em 2 pontos nas paredes\n3. Veja a distância real em metros!");
+                    alert("✅ Malha 3D gerada com sucesso!\n\n🧱 4 paredes detectadas (com porta)\n🎯 Snap nos cantos ativado\n📏 Sistema de medição com escala real\n🔍 Zoom com scroll do mouse\n\nComo usar:\n1. Clique '📏 Medir' na barra inferior\n2. Aproxime o cursor dos cantos (ficará verde)\n3. Clique para marcar os pontos\n4. Ajuste a escala no painel direito se necessário");
                 }, 500);
             }
         }, 50);
@@ -606,7 +815,6 @@
     // Inicializar
     init3DScene();
     
-    // Grid inicial
     const gridHelper = new THREE.GridHelper(20, 20, 0x4f46e5, 0x334155);
     scene.add(gridHelper);
 </script>
