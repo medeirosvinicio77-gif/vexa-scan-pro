@@ -3,131 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro - Processamento de Alta Precisão</title>
+<title>Vexa Scan Pro - 4 Paredes + Tour 3D</title>
 <style>
 :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-.auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+.auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; }
 .auth-card h1 { text-align: center; margin-bottom: 8px; }
-.auth-card .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
 .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--surface-2); padding: 4px; border-radius: var(--radius); }
-.auth-tabs button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-weight: 500; }
+.auth-tabs button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; }
 .auth-tabs button.active { background: var(--primary); color: white; }
 .form-group { margin-bottom: 16px; }
 .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
-.form-group input { width: 100%; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 14px; }
-.checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; }
-.btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 14px; }
-.btn-primary:hover { background: #4338ca; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-danger { background: var(--danger); }
-.btn-demo { width: 100%; padding: 12px; margin-top: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 14px; }
+.form-group input { width: 100%; padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
+.btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; }
+.btn-demo { width: 100%; padding: 12px; margin-top: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; }
 .app { display: none; height: 100vh; }
 .app.active { display: grid; grid-template-columns: 240px 1fr; }
-.sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-.sidebar-header { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-.logo { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), #8b5cf6); display: flex; align-items: center; justify-content: center; font-weight: bold; }
-.user-info { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; padding: 10px; background: var(--surface-2); border-radius: var(--radius); }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius); cursor: pointer; color: var(--text-muted); margin-bottom: 4px; font-size: 14px; }
-.nav-item:hover { background: var(--surface-2); color: var(--text); }
+.sidebar { background: var(--surface); padding: 20px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.nav-item { padding: 10px; margin-bottom: 4px; border-radius: var(--radius); cursor: pointer; color: var(--text-muted); }
+.nav-item:hover { background: var(--surface-2); }
 .nav-item.active { background: var(--primary); color: white; }
-.sidebar-footer { margin-top: auto; }
-.main { display: flex; overflow: hidden; }
-.content { flex: 1; padding: 24px; overflow-y: auto; }
+.content { padding: 24px; overflow-y: auto; }
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .page-header h2 { font-size: 22px; }
-.empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 12px; border: 2px dashed var(--border); }
-.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state h3 { margin-bottom: 8px; }
-.empty-state p { color: var(--text-muted); margin-bottom: 20px; }
+.empty-state { text-align: center; padding: 60px; background: var(--surface); border-radius: 12px; border: 2px dashed var(--border); }
 .project-list { display: grid; gap: 12px; }
-.project-card { background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
+.project-card { background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; }
 .project-card:hover { border-color: var(--primary); }
-.project-card .status { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
-.status.processing { background: var(--warning); color: #1a1a1a; }
-.status.ready { background: var(--success); color: white; }
-.upload-panel { background: var(--surface); border-radius: 12px; padding: 24px; max-width: 700px; margin: 0 auto; }
-.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; position: relative; }
-.upload-zone:hover { border-color: var(--primary); background: var(--surface-2); }
-.upload-zone.has-file { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
-.upload-zone .icon { font-size: 40px; margin-bottom: 8px; }
+.upload-panel { background: var(--surface); padding: 24px; border-radius: 12px; max-width: 700px; margin: 0 auto; }
+.upload-zone { border: 2px dashed var(--border); padding: 40px; text-align: center; border-radius: var(--radius); cursor: pointer; margin-bottom: 20px; position: relative; }
+.upload-zone.has-file { border-color: var(--success); }
 .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.file-info { margin-top: 12px; padding: 10px; background: var(--surface-2); border-radius: var(--radius); font-size: 13px; display: none; }
-.file-info.active { display: block; }
-.file-info .file-name { color: var(--success); font-weight: 600; }
-.upload-options { display: grid; gap: 16px; margin-bottom: 20px; }
-.option-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-.radio-group { display: flex; gap: 8px; }
-.radio-group label { flex: 1; padding: 8px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 13px; }
-.radio-group input { display: none; }
-.radio-group input:checked + span { background: var(--primary); color: white; display: block; padding: 8px; margin: -8px; border-radius: 6px; }
-.progress-container { margin-top: 16px; }
-.progress-bar { height: 10px; background: var(--surface-2); border-radius: 5px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #8b5cf6); width: 0%; transition: width 0.3s; }
-.progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 6px; }
-.processing-panel { background: var(--surface); border-radius: 12px; padding: 24px; max-width: 1000px; margin: 0 auto; }
+.progress-bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin-top: 12px; }
+.progress-fill { height: 100%; background: var(--primary); width: 0%; }
+.processing-panel { background: var(--surface); padding: 24px; border-radius: 12px; max-width: 1200px; margin: 0 auto; }
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-.step { background: var(--surface-2); padding: 16px; border-radius: var(--radius); text-align: center; border: 2px solid var(--border); transition: all 0.3s; }
-.step.active { border-color: var(--primary); background: rgba(79, 70, 229, 0.1); animation: pulse 1.5s infinite; }
-.step.completed { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-.step .icon { font-size: 28px; margin-bottom: 6px; }
-.step .label { font-size: 12px; color: var(--text-muted); }
-.step .status-text { font-size: 11px; margin-top: 4px; font-weight: 600; }
-.video-preview { background: #000; border-radius: var(--radius); padding: 16px; margin-bottom: 16px; text-align: center; min-height: 150px; display: flex; align-items: center; justify-content: center; }
-#videoElement { max-width: 100%; max-height: 250px; border-radius: var(--radius); }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
-.stat-box { background: var(--surface-2); padding: 12px; border-radius: var(--radius); text-align: center; }
-.stat-box .value { font-size: 20px; font-weight: bold; color: var(--primary); }
-.stat-box .label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-.panorama-container { background: var(--surface); border-radius: 12px; padding: 16px; height: calc(100vh - 120px); display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
-.panorama-viewer { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; cursor: crosshair; }
-#panoramaCanvas { display: block; width: 100%; height: 100%; }
-.panorama-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; z-index: 10; display: flex; gap: 12px; }
-.panorama-status { position: absolute; top: 12px; right: 12px; background: rgba(16, 185, 129, 0.9); color: white; padding: 8px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 600; z-index: 10; }
-.panorama-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; background: rgba(0,0,0,0.7); padding: 8px; border-radius: var(--radius); z-index: 10; flex-wrap: wrap; justify-content: center; }
-.ctrl-btn { padding: 6px 10px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 12px; }
-.ctrl-btn:hover { background: var(--primary); }
-.tools-panel { background: var(--surface); border-radius: var(--radius); padding: 16px; overflow-y: auto; }
-.tools-panel h3 { font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-.tool-btn { padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.tool-btn:hover { border-color: var(--primary); }
+.step { background: var(--surface-2); padding: 16px; border-radius: var(--radius); text-align: center; border: 2px solid var(--border); }
+.step.active { border-color: var(--primary); }
+.step.completed { border-color: var(--success); }
+.step .icon { font-size: 24px; margin-bottom: 6px; }
+.video-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.video-preview { background: #000; border-radius: var(--radius); padding: 16px; text-align: center; }
+#videoElement { max-width: 100%; max-height: 300px; }
+.frames-section { background: var(--surface-2); padding: 16px; border-radius: var(--radius); }
+.frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; max-height: 400px; overflow-y: auto; }
+.frame-card { border: 2px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: #000; }
+.frame-card:hover { border-color: var(--primary); transform: scale(1.05); }
+.frame-card.selected { border-color: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+.frame-card img { width: 100%; height: 80px; object-fit: cover; }
+.frame-card .frame-info { padding: 4px; font-size: 10px; text-align: center; }
+.frame-card .wall-tag { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-top: 2px; }
+.wall-front { background: #4f46e5; color: white; }
+.wall-back { background: #10b981; color: white; }
+.wall-left { background: #f59e0b; color: #1a1a1a; }
+.wall-right { background: #ef4444; color: white; }
+.wall-none { background: var(--text-muted); color: #1a1a1a; }
+.wall-selector { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.wall-selector button { flex: 1; padding: 4px; font-size: 9px; border: none; border-radius: 4px; cursor: pointer; color: white; }
+.wall-selector button.wf { background: #4f46e5; }
+.wall-selector button.wb { background: #10b981; }
+.wall-selector button.wl { background: #f59e0b; color: #1a1a1a; }
+.wall-selector button.wr { background: #ef4444; }
+.wall-selector button.wn { background: var(--text-muted); color: #1a1a1a; }
+.walls-result { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+.wall-result-card { background: var(--surface-2); border-radius: var(--radius); overflow: hidden; border: 2px solid var(--border); }
+.wall-result-card img { width: 100%; height: 200px; object-fit: cover; }
+.wall-result-card .wall-header { padding: 12px; font-weight: bold; text-align: center; }
+.wall-result-card .wall-front-h { background: #4f46e5; }
+.wall-result-card .wall-back-h { background: #10b981; }
+.wall-result-card .wall-left-h { background: #f59e0b; color: #1a1a1a; }
+.wall-result-card .wall-right-h { background: #ef4444; }
+.tour-container { background: var(--surface); border-radius: 12px; padding: 16px; height: calc(100vh - 120px); }
+.tour-viewer { background: #000; border-radius: var(--radius); position: relative; overflow: hidden; height: calc(100% - 80px); display: flex; align-items: center; justify-content: center; }
+#tourCanvas { max-width: 100%; max-height: 100%; }
+.tour-controls { display: flex; gap: 8px; margin-top: 16px; justify-content: center; flex-wrap: wrap; }
+.tour-btn { padding: 10px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 13px; }
+.tour-btn:hover { background: var(--primary); }
+.tour-btn.active { background: var(--primary); border-color: var(--primary); }
+.tour-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; padding: 20px 10px; cursor: pointer; font-size: 24px; border-radius: 4px; }
+.tour-nav.left { left: 10px; }
+.tour-nav.right { right: 10px; }
+.tour-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; }
+.measure-overlay { position: absolute; top: 12px; right: 12px; background: rgba(245, 158, 11, 0.9); color: #1a1a1a; padding: 8px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 600; display: none; }
+.measure-overlay.active { display: block; }
+.tools-panel { background: var(--surface); padding: 16px; border-radius: var(--radius); margin-top: 16px; }
+.tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tool-btn { padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 12px; text-align: center; }
 .tool-btn.active { background: var(--primary); border-color: var(--primary); }
-.tool-btn .emoji { font-size: 18px; }
-.project-details { background: var(--surface-2); padding: 10px; border-radius: var(--radius); font-size: 12px; margin-bottom: 16px; }
-.detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
-.detail-row:last-child { border-bottom: none; }
-.measure-display { background: var(--surface-2); border-radius: var(--radius); padding: 10px; margin-top: 10px; font-size: 12px; }
-.measure-row { display: flex; justify-content: space-between; padding: 3px 0; }
-.measure-row.total { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; font-weight: 600; color: var(--success); }
-.measurements-list { max-height: 180px; overflow-y: auto; margin-top: 10px; }
-.measurement-item { background: var(--surface-2); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
-.delete-btn { background: var(--danger); border: none; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px; }
 .hidden { display: none !important; }
-.quality-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; margin-left: 8px; }
-.quality-high { background: var(--success); color: white; }
-.quality-med { background: var(--warning); color: #1a1a1a; }
-.quality-low { background: var(--text-muted); color: #1a1a1a; }
+.stats-bar { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat-item { background: var(--surface-2); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; }
+.stat-item strong { color: var(--primary); }
 </style>
 </head>
 <body>
 
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
-    <h1> Vexa Scan Pro</h1>
-    <p class="subtitle">Reconstrução 3D profissional na nuvem</p>
+    <h1>🔷 Vexa Scan Pro</h1>
     <div class="auth-tabs">
       <button class="active" onclick="switchTab('login', event)">Entrar</button>
       <button onclick="switchTab('register', event)">Cadastrar</button>
     </div>
     <form id="loginForm" onsubmit="doLogin(event)">
-      <div class="form-group"><label>Email</label><input type="email" required placeholder="seu@email.com"></div>
-      <div class="form-group"><label>Senha</label><input type="password" required placeholder="••••••••"></div>
-      <div class="checkbox-row"><input type="checkbox" id="remember"><label for="remember">Lembrar de mim</label></div>
-      <button type="submit" class="btn-primary">🔐 Entrar</button>
+      <div class="form-group"><label>Email</label><input type="email" required></div>
+      <div class="form-group"><label>Senha</label><input type="password" required></div>
+      <button type="submit" class="btn-primary"> Entrar</button>
       <button type="button" class="btn-demo" onclick="doLogin(event, true)">🚀 Modo Demo</button>
     </form>
     <form id="registerForm" class="hidden" onsubmit="doLogin(event)">
@@ -141,198 +124,160 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 
 <div class="app" id="app">
   <aside class="sidebar">
-    <div class="sidebar-header"><div class="logo">V</div><div><div style="font-weight:600;">Vexa Scan</div><div style="font-size:11px;color:var(--text-muted);">Cloud Demo</div></div></div>
-    <div class="user-info">👤 João Silva<br><small>joao@email.com</small></div>
-    <nav>
-      <div class="nav-item active" onclick="showPage('dashboard', event)"> Projetos</div>
-      <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
-      <div class="nav-item" onclick="showPage('panorama', event)">🖼️ Panorama</div>
-      <div class="nav-item" onclick="showPage('settings', event)">⚙️ Configurações</div>
-    </nav>
-    <div class="sidebar-footer"><div class="nav-item" onclick="logout()">🚪 Sair</div></div>
+    <div style="font-weight:600;margin-bottom:20px;">🔷 Vexa Scan</div>
+    <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
+    <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
+    <div class="nav-item" onclick="showPage('classify', event)">️ Classificar</div>
+    <div class="nav-item" onclick="showPage('walls', event)">🧱 4 Paredes</div>
+    <div class="nav-item" onclick="showPage('tour', event)">🎮 Tour 3D</div>
   </aside>
 
-  <main class="main">
-    <div class="content">
-
-      <div id="page-dashboard" class="page">
-        <div class="page-header">
-          <h2>📊 Meus Projetos</h2>
-          <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="showPage('upload', event)"> Novo Scan</button>
-        </div>
-        <div class="empty-state" id="emptyState">
-          <div class="icon">📦</div>
-          <h3>Nenhum projeto ainda</h3>
-          <p>Comece enviando um vídeo</p>
-          <button class="btn-primary" style="width:auto;padding:10px 20px;" onclick="showPage('upload', event)">☁️ Enviar primeiro vídeo</button>
-        </div>
-        <div class="project-list hidden" id="projectList"></div>
+  <main class="content">
+    <div id="page-dashboard" class="page">
+      <div class="page-header">
+        <h2>📊 Meus Projetos</h2>
+        <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="showPage('upload', event)">➕ Novo Scan</button>
       </div>
-
-      <div id="page-upload" class="page hidden">
-        <div class="page-header"><h2>📹 Novo Scan</h2></div>
-        <div class="upload-panel">
-          <h3 style="margin-bottom:16px;">1. Upload do Vídeo <span class="quality-badge quality-high">ALTA PRECISÃO</span></h3>
-          <div class="upload-zone" id="uploadZone">
-            <input type="file" accept="video/*" id="videoInput" onchange="handleFileSelect(event)">
-            <div class="icon"></div>
-            <p><strong>Clique para selecionar</strong> ou arraste o vídeo aqui</p>
-            <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">MP4, MOV, AVI • Resolução original mantida</p>
-          </div>
-          <div class="file-info" id="fileInfo">
-            <div class="file-name">✓ <span id="fileName">arquivo.mp4</span></div>
-            <div style="color:var(--text-muted);font-size:11px;margin-top:2px;" id="fileSize">0 MB</div>
-            <div style="color:var(--text-muted);font-size:11px;" id="fileResolução">Resolução: --</div>
-          </div>
-          <div class="upload-options">
-            <div class="option-group">
-              <label>Intervalo entre frames (segundos) - quanto menor, mais preciso</label>
-              <div class="radio-group">
-                <label><input type="radio" name="interval" value="0.5"><span>0.5s <small>(máx)</small></span></label>
-                <label><input type="radio" name="interval" value="1" checked><span>1s <small>(alto)</small></span></label>
-                <label><input type="radio" name="interval" value="2"><span>2s <small>(médio)</small></span></label>
-                <label><input type="radio" name="interval" value="5"><span>5s <small>(rápido)</small></span></label>
-              </div>
-            </div>
-            <div class="option-group">
-              <label>Qualidade da imagem final</label>
-              <div class="radio-group">
-                <label><input type="radio" name="quality" value="low"><span>Baixa</span></label>
-                <label><input type="radio" name="quality" value="med" checked><span>Média</span></label>
-                <label><input type="radio" name="quality" value="high"><span>Alta</span></label>
-              </div>
-            </div>
-          </div>
-          <button class="btn-primary" id="uploadBtn" onclick="startProcessing()" disabled>🚀 Processar Vídeo (Alta Precisão)</button>
-          <div class="progress-container">
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            <div class="progress-info">
-              <span id="progressText">Selecione um vídeo para começar</span>
-              <span id="progressPercent">0%</span>
-            </div>
-          </div>
-        </div>
+      <div class="empty-state" id="emptyState">
+        <div style="font-size:48px;margin-bottom:16px;">📦</div>
+        <h3>Nenhum projeto ainda</h3>
+        <p style="color:var(--text-muted);margin:16px 0;">Envie um vídeo para começar</p>
+        <button class="btn-primary" style="width:auto;padding:10px 20px;" onclick="showPage('upload', event)">☁️ Enviar vídeo</button>
       </div>
+      <div class="project-list hidden" id="projectList"></div>
+    </div>
 
-      <div id="page-processing" class="page hidden">
-        <div class="page-header">
-          <h2> Processamento de Alta Precisão</h2>
-          <button class="btn-primary btn-danger" style="width:auto;padding:10px 16px;" onclick="cancelProcessing()" id="cancelBtn">❌ Cancelar</button>
+    <div id="page-upload" class="page hidden">
+      <div class="page-header"><h2>📹 Novo Scan</h2></div>
+      <div class="upload-panel">
+        <h3 style="margin-bottom:16px;">Upload do Vídeo</h3>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" accept="video/*" id="videoInput" onchange="handleFileSelect(event)">
+          <div style="font-size:40px;margin-bottom:8px;">📹</div>
+          <p><strong>Clique para selecionar</strong> um vídeo</p>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">MP4, MOV, AVI</p>
         </div>
-        <div class="processing-panel">
-          <div class="steps">
-            <div class="step" id="step1"><div class="icon">📹</div><div class="label">Upload</div><div class="status-text" id="step1Text">Aguardando</div></div>
-            <div class="step" id="step2"><div class="icon">🎞️</div><div class="label">Frames</div><div class="status-text" id="step2Text">Aguardando</div></div>
-            <div class="step" id="step3"><div class="icon">🧵</div><div class="label">Costura</div><div class="status-text" id="step3Text">Aguardando</div></div>
-            <div class="step" id="step4"><div class="icon">🖼️</div><div class="label">Panorama</div><div class="status-text" id="step4Text">Aguardando</div></div>
+        <div class="form-group">
+          <label>Intervalo entre frames (segundos)</label>
+          <div style="display:flex;gap:8px;">
+            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="0.5" style="display:none;"><span>0.5s</span></label>
+            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="1" checked style="display:none;"><span>1s</span></label>
+            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="2" style="display:none;"><span>2s</span></label>
           </div>
+        </div>
+        <button class="btn-primary" id="uploadBtn" onclick="startProcessing()" disabled>🚀 Extrair Frames</button>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;" id="progressText">Selecione um vídeo</p>
+      </div>
+    </div>
+
+    <div id="page-classify" class="page hidden">
+      <div class="page-header"><h2>🏷️ Classificar Frames por Parede</h2></div>
+      <div class="processing-panel">
+        <div class="stats-bar" id="statsBar">
+          <div class="stat-item">Total: <strong id="statTotal">0</strong></div>
+          <div class="stat-item" style="color:#4f46e5;">Frente: <strong id="statFront">0</strong></div>
+          <div class="stat-item" style="color:#10b981;">Trás: <strong id="statBack">0</strong></div>
+          <div class="stat-item" style="color:#f59e0b;">Esq: <strong id="statLeft">0</strong></div>
+          <div class="stat-item" style="color:#ef4444;">Dir: <strong id="statRight">0</strong></div>
+        </div>
+        <div class="video-section">
           <div class="video-preview">
-            <video id="videoElement" controls style="display:none;" muted playsinline></video>
-            <div id="processingMessage" style="color:var(--text-muted);">Aguardando...</div>
+            <video id="videoElement" controls style="display:none;" muted></video>
+            <div id="videoPlaceholder" style="color:var(--text-muted);padding:40px;">Vídeo será carregado aqui</div>
           </div>
-          <div class="stats-grid">
-            <div class="stat-box"><div class="value" id="statFrames">0</div><div class="label">Frames extraídos</div></div>
-            <div class="stat-box"><div class="value" id="statResolution">--</div><div class="label">Resolução</div></div>
-            <div class="stat-box"><div class="value" id="statProgress">0%</div><div class="label">Progresso</div></div>
-            <div class="stat-box"><div class="value" id="statTime">--</div><div class="label">Tempo restante</div></div>
+          <div class="frames-section">
+            <h3 style="margin-bottom:12px;">Frames Extraídos - Clique para classificar</h3>
+            <div class="frames-grid" id="framesGrid"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px;">
+          <button class="btn-primary" onclick="generateWalls()" style="flex:1;">🧱 Gerar 4 Paredes</button>
+          <button class="btn-primary" onclick="showPage('tour', event)" style="flex:1;background:var(--success);">🎮 Ir para Tour 3D</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-walls" class="page hidden">
+      <div class="page-header">
+        <h2> 4 Paredes do Ambiente</h2>
+        <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="exportAllWalls()">💾 Exportar Todas</button>
+      </div>
+      <div class="walls-result" id="wallsResult">
+        <div class="wall-result-card">
+          <div class="wall-header wall-front-h">🔵 PAREDE FRONTAL</div>
+          <img id="wallFrontImg" src="" alt="Frontal">
+          <div style="padding:8px;text-align:center;font-size:12px;" id="wallFrontInfo">Nenhum frame</div>
+        </div>
+        <div class="wall-result-card">
+          <div class="wall-header wall-back-h"> PAREDE TRASEIRA</div>
+          <img id="wallBackImg" src="" alt="Traseira">
+          <div style="padding:8px;text-align:center;font-size:12px;" id="wallBackInfo">Nenhum frame</div>
+        </div>
+        <div class="wall-result-card">
+          <div class="wall-header wall-left-h">🟡 PAREDE ESQUERDA</div>
+          <img id="wallLeftImg" src="" alt="Esquerda">
+          <div style="padding:8px;text-align:center;font-size:12px;" id="wallLeftInfo">Nenhum frame</div>
+        </div>
+        <div class="wall-result-card">
+          <div class="wall-header wall-right-h">🔴 PAREDE DIREITA</div>
+          <img id="wallRightImg" src="" alt="Direita">
+          <div style="padding:8px;text-align:center;font-size:12px;" id="wallRightInfo">Nenhum frame</div>
+        </div>
+      </div>
+      <div style="margin-top:24px;background:var(--surface);padding:16px;border-radius:12px;">
+        <h3 style="margin-bottom:12px;">📐 Medir nas Paredes</h3>
+        <p style="color:var(--text-muted);font-size:13px;">Selecione uma parede acima para medir portas, janelas e pontos</p>
+      </div>
+    </div>
+
+    <div id="page-tour" class="page hidden">
+      <div class="page-header"><h2> Tour Virtual 3D</h2></div>
+      <div class="tour-container">
+        <div class="tour-viewer" id="tourViewer">
+          <canvas id="tourCanvas"></canvas>
+          <button class="tour-nav left" onclick="tourPrev()">◀</button>
+          <button class="tour-nav right" onclick="tourNext()">▶</button>
+          <div class="tour-info">
+            <span id="tourCurrent">Nenhuma parede</span> • 
+            <span id="tourIndex">0/4</span>
+          </div>
+          <div class="measure-overlay" id="measureOverlay">📏 Clique em 2 pontos para medir</div>
+        </div>
+        <div class="tour-controls">
+          <button class="tour-btn" onclick="tourGo(0)"> Frontal</button>
+          <button class="tour-btn" onclick="tourGo(1)">🟢 Traseira</button>
+          <button class="tour-btn" onclick="tourGo(2)">🟡 Esquerda</button>
+          <button class="tour-btn" onclick="tourGo(3)">🔴 Direita</button>
+          <button class="tour-btn" onclick="toggleTourMeasure()">📏 Medir</button>
+          <button class="tour-btn" onclick="tourAutoPlay()">▶️ Auto Tour</button>
+        </div>
+        <div class="tools-panel">
+          <h3 style="margin-bottom:12px;">📊 Medição Atual</h3>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+            <div class="stat-item">ΔX: <strong id="tourDx">--</strong></div>
+            <div class="stat-item">ΔY: <strong id="tourDy">--</strong></div>
+            <div class="stat-item">Dist: <strong id="tourDist">--</strong></div>
+            <div class="stat-item">Real: <strong id="tourReal">--</strong></div>
           </div>
         </div>
       </div>
-
-      <div id="page-panorama" class="page hidden">
-        <div class="page-header">
-          <h2>🖼️ Panorama - Medição de Precisão</h2>
-          <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="exportPanorama()">💾 Exportar Imagem</button>
-        </div>
-        <div class="panorama-container">
-          <div class="panorama-viewer" id="panoramaViewer">
-            <canvas id="panoramaCanvas"></canvas>
-            <div class="panorama-info">
-              <span>📐 <span id="panoSize">0 x 0</span> px</span>
-              <span>🔍 <span id="zoomLevel">100</span>%</span>
-              <span>🎯 <span id="panoPrecision">Alta</span></span>
-            </div>
-            <div class="panorama-status" id="panoStatus">Pronto para medir</div>
-            <div class="panorama-controls">
-              <button class="ctrl-btn" onclick="zoomIn()">+</button>
-              <button class="ctrl-btn" onclick="zoomOut()">🔍-</button>
-              <button class="ctrl-btn" onclick="resetZoom()">🔄 Reset</button>
-              <button class="ctrl-btn" onclick="toggleGrid()"> Grid</button>
-              <button class="ctrl-btn" onclick="clearAllMeasurements()">🗑️ Limpar</button>
-            </div>
-          </div>
-          <div class="tools-panel">
-            <h3>📋 Projeto</h3>
-            <div class="project-details">
-              <div class="detail-row"><span>Nome:</span><span id="panoName">--</span></div>
-              <div class="detail-row"><span>Frames:</span><span id="panoFrames">0</span></div>
-              <div class="detail-row"><span>Resolução:</span><span id="panoRes">--</span></div>
-              <div class="detail-row"><span>Precisão:</span><span id="panoPrecisionDetail" style="color:var(--success);">Alta</span></div>
-            </div>
-            <h3>🛠️ Ferramentas</h3>
-            <div class="tool-grid">
-              <button class="tool-btn" id="btn-measure" onclick="setTool('measure')"><span class="emoji">📏</span>Medir</button>
-              <button class="tool-btn" id="btn-scale" onclick="setTool('scale')"><span class="emoji">📐</span>Escala</button>
-            </div>
-            <div id="scalePanel" class="hidden">
-              <div class="form-group"><label>Distância Real (mm)</label><input type="number" id="realDistance" value="5000"></div>
-              <button class="btn-primary" onclick="calibrateScale()">🔄 Calibrar</button>
-              <div class="measure-display">
-                <div class="measure-row"><span>Status:</span><span id="scaleStatusText">Não calibrada</span></div>
-                <div class="measure-row"><span>Fator:</span><span id="scaleFactor">1.000</span></div>
-              </div>
-            </div>
-            <h3 style="margin-top:16px;">📊 Medição</h3>
-            <div class="measure-display">
-              <div class="measure-row"><span>ΔX:</span><span id="dx">-- px</span></div>
-              <div class="measure-row"><span>ΔY:</span><span id="dy">-- px</span></div>
-              <div class="measure-row total"><span>DISTÂNCIA:</span><span id="totalDist">-- px</span></div>
-              <div class="measure-row"><span>Real:</span><span id="realDist">-- mm</span></div>
-              <div class="measure-row"><span>Real (m):</span><span id="realDistM">-- m</span></div>
-            </div>
-            <h3 style="margin-top:16px;">📋 Histórico</h3>
-            <div class="measurements-list" id="measurementsList">
-              <div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida</div>
-            </div>
-            <h3 style="margin-top:16px;">⬇️ Exportar</h3>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPNG()">⬇️ PNG</button>
-              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()">📊 CSV</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="page-settings" class="page hidden">
-        <div class="page-header"><h2>⚙️ Configurações</h2></div>
-        <div style="background:var(--surface);padding:20px;border-radius:12px;">
-          <h3>ℹ️ Sobre</h3>
-          <p><strong>Vexa Scan Pro Cloud v3.0</strong></p>
-          <p style="color:var(--text-muted);margin-top:8px;">Vídeo → Frames (resolução original) → Costura → Panorama → Medir</p>
-          <p style="color:var(--success);margin-top:8px;">✅ Sem redução de qualidade • ✅ Sem perda de precisão</p>
-        </div>
-      </div>
-
     </div>
   </main>
 </div>
 
 <script>
-// ========== ESTADO ==========
 let projects = [];
 let currentProject = null;
 let selectedFile = null;
-let panoramaDataUrl = null;
-let panoramaImage = null;
-let currentTool = null;
-let measurePoints = [];
+let extractedFrames = [];
+let wallImages = { front: null, back: null, left: null, right: null };
+let tourImages = [];
+let currentTourIndex = 0;
+let tourMeasureMode = false;
+let tourMeasurePoints = [];
 let scaleFactor = 1.0;
-let zoom = 1;
-let showGrid = false;
-let measurements = [];
-let processingCancelled = false;
 
-// ========== AUTH ==========
 function switchTab(tab, e) {
   e?.stopPropagation();
   document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.remove('active'));
@@ -348,486 +293,402 @@ function doLogin(e) {
   renderDashboard();
 }
 
-function logout() {
-  document.getElementById('app').classList.remove('active');
-  document.getElementById('authScreen').style.display = 'flex';
-}
-
 function showPage(page, e) {
   e?.stopPropagation?.();
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  const target = document.getElementById('page-' + page);
-  if (target) target.classList.remove('hidden');
+  document.getElementById('page-' + page).classList.remove('hidden');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navMap = { dashboard: 0, upload: 1, processing: 1, panorama: 2, settings: 3 };
+  const navMap = { dashboard: 0, upload: 1, classify: 2, walls: 3, tour: 4 };
   const navItems = document.querySelectorAll('.nav-item');
   if (navItems[navMap[page]]) navItems[navMap[page]].classList.add('active');
   if (page === 'dashboard') renderDashboard();
-  if (page === 'panorama') setTimeout(renderPanorama, 100);
+  if (page === 'classify') renderClassify();
+  if (page === 'walls') renderWalls();
+  if (page === 'tour') { renderTour(); setTimeout(renderTourCanvas, 100); }
 }
 
-// ========== DASHBOARD ==========
 function renderDashboard() {
   const empty = document.getElementById('emptyState');
   const list = document.getElementById('projectList');
-  if (projects.length === 0) {
-    empty.classList.remove('hidden');
-    list.classList.add('hidden');
-    return;
-  }
+  if (projects.length === 0) { empty.classList.remove('hidden'); list.classList.add('hidden'); return; }
   empty.classList.add('hidden');
   list.classList.remove('hidden');
   list.innerHTML = projects.map(p => `
     <div class="project-card" onclick="openProject(${p.id})">
       <strong>${p.name}</strong>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${p.date} • ${p.frames} frames • ${p.resolution || '--'}</div>
-      <span class="status ${p.status}">${p.status === 'processing' ? '⏳ Processando...' : '✓ Pronto'}</span>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${p.date} • ${p.frames} frames</div>
     </div>
   `).join('');
 }
 
 function openProject(id) {
-  const project = projects.find(p => p.id === id);
-  if (!project) return;
-  if (project.status === 'processing') {
-    alert('⏳ Projeto ainda processando!');
-    return;
-  }
-  currentProject = project;
-  if (project.panoramaDataUrl) {
-    panoramaDataUrl = project.panoramaDataUrl;
-    panoramaImage = new Image();
-    panoramaImage.onload = () => {
-      showPage('panorama');
-      document.getElementById('panoName').textContent = project.name;
-      document.getElementById('panoFrames').textContent = project.frames;
-      document.getElementById('panoRes').textContent = project.resolution || '--';
-    };
-    panoramaImage.src = panoramaDataUrl;
-  }
+  currentProject = projects.find(p => p.id === id);
+  if (currentProject) showPage('classify');
 }
 
-// ========== UPLOAD ==========
 function handleFileSelect(e) {
   const file = e.target.files[0];
-  if (!file) return;
-  if (!file.type.startsWith('video/')) { 
-    alert(' Selecione um vídeo válido!');
-    return; 
-  }
+  if (!file || !file.type.startsWith('video/')) { alert('Selecione um vídeo!'); return; }
   selectedFile = file;
   document.getElementById('uploadZone').classList.add('has-file');
-  document.getElementById('fileInfo').classList.add('active');
-  document.getElementById('fileName').textContent = file.name;
-  document.getElementById('fileSize').textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
   document.getElementById('uploadBtn').disabled = false;
-  document.getElementById('progressText').textContent = '✓ Vídeo selecionado! Resolução original será mantida.';
-  document.getElementById('progressText').style.color = 'var(--success)';
-  
-  // Preview da resolução
-  const video = document.createElement('video');
-  video.src = URL.createObjectURL(file);
-  video.onloadedmetadata = () => {
-    document.getElementById('fileResolução').textContent = `Resolução: ${video.videoWidth}x${video.videoHeight}`;
-    URL.revokeObjectURL(video.src);
-  };
+  document.getElementById('progressText').textContent = '✓ Vídeo selecionado!';
 }
 
-// ========== PROCESSAMENTO DE ALTA PRECISÃO ==========
 async function startProcessing() {
   if (!selectedFile) return;
-  processingCancelled = false;
-  showPage('processing');
+  showPage('classify');
   
   const video = document.getElementById('videoElement');
-  const videoURL = URL.createObjectURL(selectedFile);
-  video.src = videoURL;
+  video.src = URL.createObjectURL(selectedFile);
   video.muted = true;
-  video.playsInline = true;
   video.style.display = 'block';
-  document.getElementById('processingMessage').style.display = 'none';
+  document.getElementById('videoPlaceholder').style.display = 'none';
   
-  updateStep(1, 'completed', '✓ Completo');
-  updateProgress(5, 'Carregando vídeo...');
+  await new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Timeout')), 30000);
+    video.onloadedmetadata = () => { clearTimeout(timeout); resolve(); };
+    video.onerror = () => { clearTimeout(timeout); reject(new Error('Erro')); };
+  });
   
-  try {
-    // Aguarda metadados
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('Timeout ao carregar')), 30000);
-      video.onloadedmetadata = () => { clearTimeout(timeout); resolve(); };
-      video.onerror = () => { clearTimeout(timeout); reject(new Error('Erro no vídeo')); };
-    });
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const maxW = 800;
+  const scale = Math.min(1, maxW / video.videoWidth);
+  canvas.width = Math.floor(video.videoWidth * scale);
+  canvas.height = Math.floor(video.videoHeight * scale);
+  
+  const interval = parseFloat(document.querySelector('input[name="interval"]:checked')?.value || 1);
+  const duration = video.duration;
+  
+  extractedFrames = [];
+  const framesGrid = document.getElementById('framesGrid');
+  framesGrid.innerHTML = '';
+  
+  for (let t = 0; t < duration; t += interval) {
+    await seekVideo(video, t);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const frameData = canvas.toDataURL('image/jpeg', 0.8);
     
-    if (processingCancelled) throw new Error('Cancelado');
+    const frame = {
+      id: extractedFrames.length,
+      time: t,
+      data: frameData,
+      wall: 'none'
+    };
+    extractedFrames.push(frame);
     
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: false });
+    const card = document.createElement('div');
+    card.className = 'frame-card';
+    card.id = 'frame-' + frame.id;
+    card.innerHTML = `
+      <img src="${frameData}">
+      <div class="frame-info">Frame #${frame.id + 1} • ${t.toFixed(1)}s</div>
+      <div class="wall-selector">
+        <button class="wf" onclick="classifyFrame(${frame.id}, 'front', event)">Frente</button>
+        <button class="wb" onclick="classifyFrame(${frame.id}, 'back', event)">Trás</button>
+        <button class="wl" onclick="classifyFrame(${frame.id}, 'left', event)">Esq</button>
+        <button class="wr" onclick="classifyFrame(${frame.id}, 'right', event)">Dir</button>
+        <button class="wn" onclick="classifyFrame(${frame.id}, 'none', event)">-</button>
+      </div>
+      <div class="wall-tag wall-none" id="wall-tag-${frame.id}">Não classificado</div>
+    `;
+    framesGrid.appendChild(card);
     
-    // ✅ MANTER RESOLUÇÃO ORIGINAL (máx 1920px para não estourar memória)
-    const MAX_WIDTH = 1920;
-    const scale = Math.min(1, MAX_WIDTH / video.videoWidth);
-    canvas.width = Math.floor(video.videoWidth * scale);
-    canvas.height = Math.floor(video.videoHeight * scale);
-    
-    document.getElementById('statResolution').textContent = `${canvas.width}x${canvas.height}`;
-    
-    const interval = parseFloat(document.querySelector('input[name="interval"]:checked')?.value || 1);
-    const duration = video.duration;
-    const quality = document.querySelector('input[name="quality"]:checked')?.value || 'med';
-    const jpegQuality = quality === 'low' ? 0.7 : quality === 'high' ? 0.95 : 0.85;
-    
-    // ✅ SEM LIMITE ARTIFICIAL DE FRAMES - usa o intervalo escolhido pelo usuário
-    const totalFrames = Math.floor(duration / interval);
-    
-    updateStep(2, 'active', 'Extraindo...');
-    updateProgress(10, `Extraindo frames (resolução ${canvas.width}x${canvas.height})...`);
-    
-    // ✅ CANVAS DE COSTURA - desenha direto, sem guardar frames em memória
-    const cols = Math.min(totalFrames, Math.ceil(Math.sqrt(totalFrames * (canvas.width / canvas.height))));
-    const rows = Math.ceil(totalFrames / cols);
-    const stitchCanvas = document.createElement('canvas');
-    stitchCanvas.width = canvas.width * cols;
-    stitchCanvas.height = canvas.height * rows;
-    const stitchCtx = stitchCanvas.getContext('2d');
-    stitchCtx.fillStyle = '#000';
-    stitchCtx.fillRect(0, 0, stitchCanvas.width, stitchCanvas.height);
-    
-    let frameCount = 0;
-    const startTime = performance.now();
-    
-    // ✅ EXTRAÇÃO SEM TRAVAR - usa requestAnimationFrame para yield
-    for (let t = 0; t < duration; t += interval) {
-      if (processingCancelled) throw new Error('Cancelado pelo usuário');
-      
-      // Seek com timeout
-      await seekVideo(video, t);
-      
-      // Desenha no canvas temporário
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      // ✅ DESENHA DIRETO NO CANVAS FINAL (não guarda em array!)
-      const col = frameCount % cols;
-      const row = Math.floor(frameCount / cols);
-      stitchCtx.drawImage(canvas, col * canvas.width, row * canvas.height);
-      
-      frameCount++;
-      
-      // Atualiza UI a cada frame
-      const progress = 10 + (frameCount / totalFrames) * 70;
-      const elapsed = (performance.now() - startTime) / 1000;
-      const fps = frameCount / elapsed;
-      const remaining = ((totalFrames - frameCount) / fps).toFixed(0);
-      
-      updateProgress(progress, `Frame ${frameCount}/${totalFrames} • ${fps.toFixed(1)} fps`);
-      document.getElementById('statFrames').textContent = frameCount;
-      document.getElementById('statProgress').textContent = Math.round(progress) + '%';
-      document.getElementById('statTime').textContent = remaining + 's';
-      
-      // ✅ YIELD CORRETO - usa requestAnimationFrame (não setTimeout)
-      await new Promise(r => requestAnimationFrame(r));
-    }
-    
-    if (processingCancelled) throw new Error('Cancelado');
-    
-    updateStep(2, 'completed', `✓ ${frameCount} frames`);
-    updateProgress(85, 'Gerando panorama...');
-    
-    // Step 3: Gerar dataURL final
-    updateStep(3, 'active', 'Gerando imagem...');
-    document.getElementById('processingMessage').textContent = 'Gerando imagem final em alta qualidade...';
-    document.getElementById('processingMessage').style.display = 'block';
+    const progress = (t / duration) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressText').textContent = `Extraindo: ${extractedFrames.length} frames (${Math.round(progress)}%)`;
     
     await new Promise(r => requestAnimationFrame(r));
-    
-    panoramaDataUrl = stitchCanvas.toDataURL('image/png');
-    
-    updateStep(3, 'completed', '✓ Costurado');
-    updateStep(4, 'completed', '✓ Pronto!');
-    updateProgress(100, 'Concluído!');
-    document.getElementById('processingMessage').textContent = `✅ Panorama gerado! ${frameCount} frames em ${canvas.width}x${canvas.height}px`;
-    
-    const newProject = {
-      id: Date.now(),
-      name: selectedFile.name.replace(/\.[^/.]+$/, ""),
-      date: new Date().toLocaleDateString('pt-BR'),
-      frames: frameCount,
-      resolution: `${canvas.width}x${canvas.height}`,
-      status: 'ready',
-      panoramaDataUrl: panoramaDataUrl
-    };
-    projects.push(newProject);
-    currentProject = newProject;
-    
-    panoramaImage = new Image();
-    panoramaImage.onload = () => {
-      setTimeout(() => {
-        alert(` Processamento completo!\n\n✓ ${frameCount} frames extraídos\n✓ Resolução: ${canvas.width}x${canvas.height}px\n✓ Precisão: ALTA\n\nClique em "Panorama" para medir!`);
-        showPage('panorama');
-        document.getElementById('panoName').textContent = newProject.name;
-        document.getElementById('panoFrames').textContent = newProject.frames;
-        document.getElementById('panoRes').textContent = newProject.resolution;
-      }, 300);
-    };
-    panoramaImage.src = panoramaDataUrl;
-    
-  } catch (err) {
-    console.error('Erro:', err);
-    document.getElementById('processingMessage').textContent = ' ' + err.message;
-    document.getElementById('processingMessage').style.display = 'block';
-    updateStep(2, 'active', '❌ Erro');
   }
-}
-
-function cancelProcessing() {
-  processingCancelled = true;
-  alert('Processamento será cancelado...');
+  
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = `✓ ${extractedFrames.length} frames extraídos! Classifique cada um.`;
+  
+  const newProject = {
+    id: Date.now(),
+    name: selectedFile.name.replace(/\.[^/.]+$/, ""),
+    date: new Date().toLocaleDateString('pt-BR'),
+    frames: extractedFrames.length,
+    frames: extractedFrames
+  };
+  projects.push(newProject);
+  currentProject = newProject;
+  
+  updateStats();
 }
 
 function seekVideo(video, time) {
   return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      video.removeEventListener('seeked', onSeeked);
-      reject(new Error(`Timeout no seek`));
-    }, 5000);
-    
-    function onSeeked() {
-      clearTimeout(timeout);
-      video.removeEventListener('seeked', onSeeked);
-      resolve();
-    }
-    
+    const timeout = setTimeout(() => { video.removeEventListener('seeked', onSeeked); reject(new Error('Timeout')); }, 5000);
+    function onSeeked() { clearTimeout(timeout); video.removeEventListener('seeked', onSeeked); resolve(); }
     video.addEventListener('seeked', onSeeked);
     video.currentTime = time;
   });
 }
 
-function updateStep(num, status, text) {
-  const step = document.getElementById('step' + num);
-  const statusEl = document.getElementById('step' + num + 'Text');
-  if (step) step.className = 'step ' + status;
-  if (statusEl) statusEl.textContent = text;
-}
-
-function updateProgress(percent, text) {
-  document.getElementById('progressFill').style.width = percent + '%';
-  document.getElementById('progressText').textContent = text;
-  document.getElementById('progressPercent').textContent = Math.round(percent) + '%';
-}
-
-// ========== PANORAMA ==========
-function renderPanorama() {
-  const canvas = document.getElementById('panoramaCanvas');
-  const ctx = canvas.getContext('2d');
-  const viewer = document.getElementById('panoramaViewer');
+function classifyFrame(frameId, wall, event) {
+  event?.stopPropagation();
+  const frame = extractedFrames.find(f => f.id === frameId);
+  if (!frame) return;
+  frame.wall = wall;
   
-  if (!canvas || !ctx || !viewer) return;
+  const card = document.getElementById('frame-' + frameId);
+  card.querySelectorAll('.wall-tag').forEach(t => {
+    t.className = 'wall-tag wall-' + wall;
+    const labels = { front: '🔵 Frente', back: '🟢 Trás', left: '🟡 Esq', right: ' Dir', none: 'Não classificado' };
+    t.textContent = labels[wall];
+  });
+  
+  updateStats();
+}
+
+function updateStats() {
+  const counts = { front: 0, back: 0, left: 0, right: 0, none: 0 };
+  extractedFrames.forEach(f => counts[f.wall]++);
+  document.getElementById('statTotal').textContent = extractedFrames.length;
+  document.getElementById('statFront').textContent = counts.front;
+  document.getElementById('statBack').textContent = counts.back;
+  document.getElementById('statLeft').textContent = counts.left;
+  document.getElementById('statRight').textContent = counts.right;
+}
+
+function generateWalls() {
+  const walls = { front: [], back: [], left: [], right: [] };
+  extractedFrames.forEach(f => { if (f.wall !== 'none') walls[f.wall].push(f); });
+  
+  Object.keys(walls).forEach(wall => {
+    const frames = walls[wall];
+    if (frames.length === 0) {
+      wallImages[wall] = null;
+      return;
+    }
+    
+    // Combina frames da mesma parede em uma imagem (média/stitch simples)
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const firstImg = new Image();
+    firstImg.src = frames[0].data;
+    firstImg.onload = () => {
+      canvas.width = firstImg.width;
+      canvas.height = firstImg.height;
+      
+      // Desenha o primeiro frame
+      ctx.drawImage(firstImg, 0, 0);
+      
+      // Se tiver mais frames, faz blend simples
+      if (frames.length > 1) {
+        ctx.globalAlpha = 0.3;
+        for (let i = 1; i < frames.length; i++) {
+          const img = new Image();
+          img.src = frames[i].data;
+          img.onload = () => ctx.drawImage(img, 0, 0);
+        }
+        ctx.globalAlpha = 1.0;
+      }
+      
+      wallImages[wall] = canvas.toDataURL('image/png');
+      renderWalls();
+    };
+  });
+  
+  setTimeout(() => {
+    alert('🧱 4 Paredes geradas!\n\nClique em "4 Paredes" para ver o resultado\nou "Tour 3D" para navegar.');
+    showPage('walls');
+  }, 500);
+}
+
+function renderClassify() {
+  if (extractedFrames.length > 0) updateStats();
+}
+
+function renderWalls() {
+  const walls = ['front', 'back', 'left', 'right'];
+  const names = { front: 'Frontal', back: 'Traseira', left: 'Esquerda', right: 'Direita' };
+  
+  walls.forEach(wall => {
+    const img = document.getElementById('wall' + wall.charAt(0).toUpperCase() + wall.slice(1) + 'Img');
+    const info = document.getElementById('wall' + wall.charAt(0).toUpperCase() + wall.slice(1) + 'Info');
+    const frames = extractedFrames.filter(f => f.wall === wall);
+    
+    if (wallImages[wall]) {
+      img.src = wallImages[wall];
+      info.textContent = `${frames.length} frame(s) • Clique para medir`;
+      img.style.cursor = 'pointer';
+      img.onclick = () => {
+        tourImages = [wallImages[wall]];
+        currentTourIndex = 0;
+        showPage('tour');
+      };
+    } else {
+      img.src = '';
+      img.style.background = 'var(--surface-2)';
+      info.textContent = frames.length > 0 ? `${frames.length} frame(s) - processando...` : 'Nenhum frame classificado';
+    }
+  });
+}
+
+function renderTour() {
+  tourImages = [];
+  if (wallImages.front) tourImages.push(wallImages.front);
+  if (wallImages.back) tourImages.push(wallImages.back);
+  if (wallImages.left) tourImages.push(wallImages.left);
+  if (wallImages.right) tourImages.push(wallImages.right);
+  
+  if (tourImages.length === 0 && extractedFrames.length > 0) {
+    tourImages = extractedFrames.map(f => f.data);
+  }
+  
+  currentTourIndex = 0;
+  document.getElementById('tourIndex').textContent = `0/${tourImages.length}`;
+}
+
+function renderTourCanvas() {
+  const canvas = document.getElementById('tourCanvas');
+  const ctx = canvas.getContext('2d');
+  const viewer = document.getElementById('tourViewer');
   
   canvas.width = viewer.clientWidth;
   canvas.height = viewer.clientHeight;
   
-  ctx.fillStyle = '#0a0e1a';
+  ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  if (!panoramaImage || !panoramaImage.complete || !panoramaImage.naturalWidth) {
+  if (tourImages.length === 0 || !tourImages[currentTourIndex]) {
     ctx.fillStyle = '#94a3b8';
     ctx.font = '16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Carregando panorama...', canvas.width/2, canvas.height/2);
+    ctx.fillText('Nenhuma imagem disponível', canvas.width/2, canvas.height/2);
     return;
   }
   
-  const imgW = panoramaImage.width * zoom;
-  const imgH = panoramaImage.height * zoom;
-  const x = (canvas.width - imgW) / 2;
-  const y = (canvas.height - imgH) / 2;
+  const img = new Image();
+  img.src = tourImages[currentTourIndex];
+  img.onload = () => {
+    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+    const w = img.width * scale;
+    const h = img.height * scale;
+    const x = (canvas.width - w) / 2;
+    const y = (canvas.height - h) / 2;
+    ctx.drawImage(img, x, y, w, h);
+    
+    const labels = ['🔵 Frontal', '🟢 Traseira', ' Esquerda', '🔴 Direita'];
+    document.getElementById('tourCurrent').textContent = labels[currentTourIndex] || `Frame ${currentTourIndex + 1}`;
+    document.getElementById('tourIndex').textContent = `${currentTourIndex + 1}/${tourImages.length}`;
+  };
   
-  ctx.drawImage(panoramaImage, x, y, imgW, imgH);
-  
-  if (showGrid) {
-    ctx.strokeStyle = 'rgba(79, 70, 229, 0.3)';
-    ctx.lineWidth = 1;
-    const gridSize = 50 * zoom;
-    for (let gx = 0; gx < canvas.width; gx += gridSize) {
-      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, canvas.height); ctx.stroke();
-    }
-    for (let gy = 0; gy < canvas.height; gy += gridSize) {
-      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(canvas.width, gy); ctx.stroke();
-    }
-  }
-  
-  measurePoints.forEach((p, i) => {
+  // Desenha pontos de medição
+  tourMeasurePoints.forEach((p, i) => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
     ctx.fillStyle = i === 0 ? '#f59e0b' : '#10b981';
     ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
   });
   
-  if (measurePoints.length === 2) {
-    const p1 = measurePoints[0];
-    const p2 = measurePoints[1];
+  if (tourMeasurePoints.length === 2) {
+    const p1 = tourMeasurePoints[0];
+    const p2 = tourMeasurePoints[1];
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
     ctx.strokeStyle = '#ef4444';
     ctx.lineWidth = 3;
-    ctx.setLineDash([10, 5]);
     ctx.stroke();
-    ctx.setLineDash([]);
     
-    const distPx = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-    const distMm = distPx * scaleFactor;
-    
+    const dist = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
     ctx.fillStyle = '#ef4444';
     ctx.font = 'bold 14px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(distMm.toFixed(1) + ' mm', (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 - 15);
+    ctx.fillText((dist * scaleFactor).toFixed(1) + ' mm', (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 - 15);
   }
-  
-  document.getElementById('panoSize').textContent = panoramaImage.width + ' x ' + panoramaImage.height;
-  document.getElementById('zoomLevel').textContent = Math.round(zoom * 100);
 }
 
-document.getElementById('panoramaCanvas').addEventListener('click', (e) => {
-  if (!currentTool) return;
+function tourGo(index) {
+  if (index >= 0 && index < tourImages.length) {
+    currentTourIndex = index;
+    tourMeasurePoints = [];
+    renderTourCanvas();
+  }
+}
+
+function tourNext() {
+  if (currentTourIndex < tourImages.length - 1) tourGo(currentTourIndex + 1);
+}
+
+function tourPrev() {
+  if (currentTourIndex > 0) tourGo(currentTourIndex - 1);
+}
+
+function tourAutoPlay() {
+  let idx = 0;
+  const interval = setInterval(() => {
+    tourGo(idx);
+    idx++;
+    if (idx >= tourImages.length) {
+      clearInterval(interval);
+      alert('Tour completo!');
+    }
+  }, 2000);
+}
+
+function toggleTourMeasure() {
+  tourMeasureMode = !tourMeasureMode;
+  tourMeasurePoints = [];
+  const overlay = document.getElementById('measureOverlay');
+  overlay.classList.toggle('active', tourMeasureMode);
+  if (tourMeasureMode) {
+    overlay.textContent = '📏 Clique no 1º ponto';
+  } else {
+    overlay.style.display = 'none';
+  }
+}
+
+document.getElementById('tourCanvas').addEventListener('click', (e) => {
+  if (!tourMeasureMode) return;
   const rect = e.target.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
   
-  measurePoints.push({ x, y });
-  const status = document.getElementById('panoStatus');
+  tourMeasurePoints.push({ x, y });
+  const overlay = document.getElementById('measureOverlay');
   
-  if (measurePoints.length === 1) {
-    status.textContent = '📏 Clique no 2º ponto';
-    status.style.background = 'rgba(245, 158, 11, 0.9)';
-  } else if (measurePoints.length === 2) {
-    const p1 = measurePoints[0];
-    const p2 = measurePoints[1];
+  if (tourMeasurePoints.length === 1) {
+    overlay.textContent = '📏 Clique no 2º ponto';
+  } else if (tourMeasurePoints.length === 2) {
+    const p1 = tourMeasurePoints[0];
+    const p2 = tourMeasurePoints[1];
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
-    const distPx = Math.sqrt(dx * dx + dy * dy);
-    const distMm = distPx * scaleFactor;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const distMm = dist * scaleFactor;
     
-    document.getElementById('dx').textContent = Math.abs(dx).toFixed(1) + ' px';
-    document.getElementById('dy').textContent = Math.abs(dy).toFixed(1) + ' px';
-    document.getElementById('totalDist').textContent = distPx.toFixed(1) + ' px';
-    document.getElementById('realDist').textContent = distMm.toFixed(1) + ' mm';
-    document.getElementById('realDistM').textContent = (distMm / 1000).toFixed(3) + ' m';
+    document.getElementById('tourDx').textContent = Math.abs(dx).toFixed(1) + ' px';
+    document.getElementById('tourDy').textContent = Math.abs(dy).toFixed(1) + ' px';
+    document.getElementById('tourDist').textContent = dist.toFixed(1) + ' px';
+    document.getElementById('tourReal').textContent = distMm.toFixed(1) + ' mm';
     
-    status.textContent = '✓ ' + distMm.toFixed(1) + ' mm';
-    status.style.background = 'rgba(16, 185, 129, 0.9)';
-    
-    measurements.push({
-      type: 'Distância',
-      value: distMm.toFixed(1),
-      unit: 'mm',
-      date: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-    });
-    renderMeasurementsList();
+    overlay.textContent = '✓ ' + distMm.toFixed(1) + ' mm';
+    tourMeasureMode = false;
+    setTimeout(() => overlay.classList.remove('active'), 2000);
   }
   
-  renderPanorama();
+  renderTourCanvas();
 });
 
-function setTool(tool) {
-  currentTool = tool;
-  measurePoints = [];
-  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('btn-' + tool);
-  if (btn) btn.classList.add('active');
-  document.getElementById('scalePanel').classList.toggle('hidden', tool !== 'scale');
-  
-  const status = document.getElementById('panoStatus');
-  if (tool === 'measure' || tool === 'scale') {
-    status.textContent = '📏 Clique no 1º ponto';
-    status.style.background = 'rgba(245, 158, 11, 0.9)';
-  }
-  renderPanorama();
+function exportAllWalls() {
+  let exported = 0;
+  Object.keys(wallImages).forEach(wall => {
+    if (wallImages[wall]) {
+      const a = document.createElement('a');
+      a.href = wallImages[wall];
+      a.download = `parede_${wall}_${Date.now()}.png`;
+      a.click();
+      exported++;
+    }
+  });
+  if (exported > 0) alert(`💾 ${exported} parede(s) exportada(s)!`);
+  else alert('Nenhuma parede gerada ainda!');
 }
-
-function clearAllMeasurements() {
-  measurePoints = [];
-  measurements = [];
-  currentTool = null;
-  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('panoStatus').textContent = 'Pronto para medir';
-  document.getElementById('panoStatus').style.background = 'rgba(16, 185, 129, 0.9)';
-  document.getElementById('dx').textContent = '-- px';
-  document.getElementById('dy').textContent = '-- px';
-  document.getElementById('totalDist').textContent = '-- px';
-  document.getElementById('realDist').textContent = '-- mm';
-  document.getElementById('realDistM').textContent = '-- m';
-  renderMeasurementsList();
-  renderPanorama();
-}
-
-function calibrateScale() {
-  const real = parseFloat(document.getElementById('realDistance').value) || 5000;
-  if (measurements.length > 0) {
-    const lastDistPx = parseFloat(measurements[measurements.length - 1].value) / scaleFactor;
-    scaleFactor = real / lastDistPx;
-  } else {
-    scaleFactor = real / 1000;
-  }
-  document.getElementById('scaleStatusText').textContent = '✓ Calibrada';
-  document.getElementById('scaleStatusText').style.color = 'var(--success)';
-  document.getElementById('scaleFactor').textContent = scaleFactor.toFixed(4);
-  alert('✓ Escala calibrada!');
-}
-
-function renderMeasurementsList() {
-  const list = document.getElementById('measurementsList');
-  if (measurements.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:11px;padding:10px;">Nenhuma medida</div>';
-    return;
-  }
-  list.innerHTML = measurements.map((m, i) => `
-    <div class="measurement-item">
-      <div>
-        <div style="font-weight:600;">${m.type}: ${m.value} ${m.unit}</div>
-        <div style="color:var(--text-muted);font-size:10px;">${m.date}</div>
-      </div>
-      <button class="delete-btn" onclick="deleteMeasurement(${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function deleteMeasurement(i) {
-  measurements.splice(i, 1);
-  renderMeasurementsList();
-}
-
-function zoomIn() { zoom = Math.min(5, zoom * 1.3); renderPanorama(); }
-function zoomOut() { zoom = Math.max(0.1, zoom / 1.3); renderPanorama(); }
-function resetZoom() { zoom = 1; renderPanorama(); }
-function toggleGrid() { showGrid = !showGrid; renderPanorama(); }
-
-function exportPanorama() {
-  if (!panoramaDataUrl) { alert('Nenhum panorama!'); return; }
-  const a = document.createElement('a');
-  a.href = panoramaDataUrl;
-  a.download = `panorama_${currentProject?.name || 'vexa'}_${Date.now()}.png`;
-  a.click();
-}
-
-function exportPNG() { exportPanorama(); }
-
-function exportCSV() {
-  if (measurements.length === 0) { alert('Nenhuma medida!'); return; }
-  let csv = 'Tipo,Valor (mm),Unidade,Data\n';
-  measurements.forEach(m => csv += `${m.type},${m.value},${m.unit},${m.date}\n`);
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `medicoes_${currentProject?.name || 'vexa'}_${Date.now()}.csv`;
-  a.click();
-}
-
-window.addEventListener('resize', () => {
-  if (!document.getElementById('page-panorama').classList.contains('hidden')) renderPanorama();
-});
 </script>
 
 </body>
