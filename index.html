@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro - Tour 3D & Malha Texturizada</title>
+<title>Vexa Scan Pro - Tour 3D com Medição</title>
 <style>
-    :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --border: #334155; --radius: 8px; }
+    :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
     
-    /* UI Layout */
     .app { display: grid; grid-template-columns: 240px 1fr; height: 100vh; }
     .sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; }
     .sidebar-header { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
@@ -20,23 +19,36 @@
     .nav-item.active { background: var(--primary); color: white; }
     
     .main-content { position: relative; width: 100%; height: 100%; }
-    
-    /* 3D Canvas Container */
     #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000; }
     
-    /* HUD Overlay */
-    .hud-overlay { position: absolute; top: 20px; left: 20px; background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; pointer-events: none; }
+    /* HUD */
+    .hud-overlay { position: absolute; top: 20px; left: 20px; background: rgba(15, 23, 42, 0.85); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; pointer-events: none; min-width: 220px; }
     .hud-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
     .hud-stats { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
     .hud-stats span { color: var(--text); font-weight: 600; }
     
-    .controls-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 12px 24px; border-radius: 30px; color: white; font-size: 13px; z-index: 20; pointer-events: none; transition: opacity 0.3s; display: flex; gap: 20px; }
-    .key { background: var(--surface-2); padding: 4px 8px; border-radius: 4px; font-weight: bold; border: 1px solid var(--border); }
+    /* Painel de Medição */
+    .measure-panel { position: absolute; top: 20px; right: 20px; background: rgba(15, 23, 42, 0.9); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; min-width: 240px; }
+    .measure-panel h3 { font-size: 13px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--warning); }
+    .measure-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
+    .measure-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; font-weight: 600; color: var(--success); font-size: 14px; }
+    .measure-row .label { color: var(--text-muted); }
+    .measure-row .value { color: var(--text); font-weight: 600; }
     
-    .crosshair { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%, -50%); z-index: 15; pointer-events: none; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
+    /* Botões de Ferramentas */
+    .tools-bar { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: var(--radius); backdrop-filter: blur(8px); z-index: 20; }
+    .tool-btn { padding: 8px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .tool-btn:hover { background: var(--primary); border-color: var(--primary); }
+    .tool-btn.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 10px rgba(79, 70, 229, 0.5); }
+    
+    .controls-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; color: white; font-size: 12px; z-index: 20; pointer-events: none; display: flex; gap: 16px; }
+    .key { background: var(--surface-2); padding: 3px 7px; border-radius: 4px; font-weight: bold; border: 1px solid var(--border); font-size: 11px; }
+    
+    .crosshair { position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; border: 2px solid rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%, -50%); z-index: 15; pointer-events: none; }
+    .crosshair.measure-mode { border-color: var(--warning); background: rgba(245, 158, 11, 0.3); }
 
-    /* Upload Modal (Simulated) */
-    .upload-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface); padding: 32px; border-radius: 12px; border: 1px solid var(--border); z-index: 30; width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    /* Upload Modal */
+    .upload-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface); padding: 32px; border-radius: 12px; border: 1px solid var(--border); z-index: 30; width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     .upload-modal h2 { margin-bottom: 16px; }
     .upload-zone { border: 2px dashed var(--border); padding: 30px; border-radius: var(--radius); cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }
     .upload-zone:hover { border-color: var(--primary); background: rgba(79, 70, 229, 0.1); }
@@ -46,9 +58,11 @@
     .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 14px; }
     .btn-primary:hover { background: #4338ca; }
     .hidden { display: none !important; }
+    
+    .measure-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100px); background: rgba(245, 158, 11, 0.95); color: #1a1a1a; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 600; z-index: 25; pointer-events: none; display: none; }
+    .measure-status.active { display: block; }
 </style>
 
-<!-- Import Map for Three.js -->
 <script type="importmap">
 {
     "imports": {
@@ -69,7 +83,7 @@
                 <div style="font-size:11px;color:var(--text-muted);">Pro Cloud</div>
             </div>
         </div>
-        <div class="user-info"> João Silva<br><small>joao@email.com</small></div>
+        <div class="user-info">👤 João Silva<br><small>joao@email.com</small></div>
         <nav>
             <div class="nav-item">📊 Projetos</div>
             <div class="nav-item active" onclick="document.getElementById('uploadModal').classList.remove('hidden')">📹 Novo Scan</div>
@@ -82,21 +96,41 @@
     </aside>
 
     <main class="main-content">
-        <!-- 3D Canvas -->
         <div id="canvas-container"></div>
         
-        <!-- HUD -->
         <div class="hud-overlay">
             <div class="hud-title">🏠 Dormitório - Tour 3D</div>
             <div class="hud-stats">
                 Malha: <span>Texturizada (GLB)</span><br>
-                Polígonos: <span>12.450</span><br>
-                Textura: <span>4K Mapeada</span><br>
+                Polígonos: <span id="polyCount">0</span><br>
+                Paredes: <span>4</span><br>
                 Modo: <span id="modeText">Navegação</span>
             </div>
         </div>
 
-        <div class="crosshair"></div>
+        <!-- Painel de Medição -->
+        <div class="measure-panel">
+            <h3>📏 Medição 3D</h3>
+            <div class="measure-row"><span class="label">Ponto 1:</span><span class="value" id="point1">--</span></div>
+            <div class="measure-row"><span class="label">Ponto 2:</span><span class="value" id="point2">--</span></div>
+            <div class="measure-row"><span class="label">ΔX:</span><span class="value" id="dx">-- m</span></div>
+            <div class="measure-row"><span class="label">ΔY:</span><span class="value" id="dy">-- m</span></div>
+            <div class="measure-row"><span class="label">ΔZ:</span><span class="value" id="dz">-- m</span></div>
+            <div class="measure-row total"><span class="label">DISTÂNCIA:</span><span class="value" id="totalDist">-- m</span></div>
+            <div style="margin-top:10px;font-size:11px;color:var(--text-muted);">
+                💡 Ative "Medir" e clique em 2 pontos na parede
+            </div>
+        </div>
+
+        <div class="crosshair" id="crosshair"></div>
+        <div class="measure-status" id="measureStatus">📏 Clique no 1º ponto da parede</div>
+
+        <div class="tools-bar">
+            <button class="tool-btn" id="btnMeasure" onclick="toggleMeasure()">📏 Medir</button>
+            <button class="tool-btn" onclick="clearMeasurements()">🗑️ Limpar</button>
+            <button class="tool-btn" onclick="toggleViewMode()">🎲 Vista Geral</button>
+            <button class="tool-btn" onclick="resetCamera()">🔄 Reset</button>
+        </div>
 
         <div class="controls-hint" id="controlsHint">
             <span><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> Mover</span>
@@ -108,7 +142,7 @@
         <div class="upload-modal" id="uploadModal">
             <h2>📹 Gerar Tour 3D</h2>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
-                Envie o vídeo do ambiente. Nossa IA extrairá a malha e aplicará as texturas automaticamente.
+                Envie o vídeo do ambiente. Nossa IA extrairá a malha com 4 paredes e aplicará as texturas.
             </p>
             <div class="upload-zone" onclick="startProcessing()">
                 <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
@@ -128,40 +162,44 @@
     import * as THREE from 'three';
     import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-    // --- Variáveis Globais ---
     let camera, scene, renderer, controls;
     let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
     let prevTime = performance.now();
     const velocity = new THREE.Vector3();
     const direction = new THREE.Vector3();
     let isTourActive = false;
+    let isMeasureMode = false;
+    let isOverviewMode = false;
+    
+    // Sistema de medição
+    let measurePoints = [];
+    let measureLine = null;
+    let measureMarkers = [];
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let clickableObjects = []; // Paredes e objetos que podem ser medidos
 
-    // --- Inicialização da Cena 3D (A Malha) ---
+    // --- Inicialização da Cena 3D ---
     function init3DScene() {
         const container = document.getElementById('canvas-container');
         
-        // Cena
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x111111);
-        scene.fog = new THREE.Fog(0x111111, 0, 30); // Neblina para realismo
+        scene.fog = new THREE.Fog(0x111111, 0, 30);
 
-        // Câmera (Altura dos olhos ~1.7m)
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.7, 5); // Começa fora da sala
+        camera.position.set(0, 1.7, 5);
 
-        // Renderizador
         renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight); // Ajuste para o container
+        renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
 
-        // Controles (Tour em Primeira Pessoa)
         controls = new PointerLockControls(camera, document.body);
         
-        const canvasEl = renderer.domElement;
-        canvasEl.addEventListener('click', () => {
-            if (!isTourActive) return;
+        renderer.domElement.addEventListener('click', () => {
+            if (!isTourActive || isMeasureMode) return;
             controls.lock();
         });
 
@@ -175,75 +213,121 @@
             document.getElementById('modeText').textContent = 'Navegação';
         });
 
-        // --- CONSTRUÇÃO DA MALHA (O Ambiente) ---
-        // Simulando a malha texturizada gerada pelo vídeo
+        // --- CONSTRUÇÃO DA MALHA (4 PAREDES) ---
         
-        // 1. Chão (Textura de madeira procedural)
+        // 1. Chão
         const floorGeo = new THREE.PlaneGeometry(10, 10);
-        const floorMat = new THREE.MeshStandardMaterial({ 
-            color: 0x8b5a2b, roughness: 0.8, metalness: 0.1 
-        });
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.8, metalness: 0.1 });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
+        floor.userData = { type: 'floor' };
         scene.add(floor);
+        clickableObjects.push(floor);
 
         // 2. Teto
         const ceilGeo = new THREE.PlaneGeometry(10, 10);
         const ceilMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
         const ceiling = new THREE.Mesh(ceilGeo, ceilMat);
         ceiling.rotation.x = Math.PI / 2;
-        ceiling.position.y = 2.8; // Pé direito 2.8m
+        ceiling.position.y = 2.8;
         scene.add(ceiling);
+        clickableObjects.push(ceiling);
 
-        // 3. Paredes (A Malha Principal)
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.6 });
+        // 3. PAREDES (4 paredes completas)
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.6, side: THREE.DoubleSide });
         
-        // Parede Fundo
+        // Parede TRASEIRA (Z = -5)
         const wallBack = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
         wallBack.position.set(0, 1.4, -5);
         wallBack.receiveShadow = true;
+        wallBack.userData = { type: 'wall', name: 'Parede Traseira' };
         scene.add(wallBack);
+        clickableObjects.push(wallBack);
 
-        // Parede Esquerda
+        // Parede ESQUERDA (X = -5)
         const wallLeft = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
         wallLeft.rotation.y = Math.PI / 2;
         wallLeft.position.set(-5, 1.4, 0);
         wallLeft.receiveShadow = true;
+        wallLeft.userData = { type: 'wall', name: 'Parede Esquerda' };
         scene.add(wallLeft);
+        clickableObjects.push(wallLeft);
 
-        // Parede Direita
+        // Parede DIREITA (X = 5)
         const wallRight = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
         wallRight.rotation.y = -Math.PI / 2;
         wallRight.position.set(5, 1.4, 0);
         wallRight.receiveShadow = true;
+        wallRight.userData = { type: 'wall', name: 'Parede Direita' };
         scene.add(wallRight);
+        clickableObjects.push(wallRight);
 
-        // 4. Objetos (Simulando móveis detectados)
-        // Cama
+        // Parede FRONTAL (Z = 5) - COM ABERTURA DE PORTA
+        // Criada com Shape para ter abertura
+        const frontWallShape = new THREE.Shape();
+        frontWallShape.moveTo(-5, 0);
+        frontWallShape.lineTo(5, 0);
+        frontWallShape.lineTo(5, 2.8);
+        frontWallShape.lineTo(-5, 2.8);
+        frontWallShape.lineTo(-5, 0);
+        
+        // Abertura da porta (1m de largura, 2.1m de altura, centralizada)
+        const doorHole = new THREE.Path();
+        doorHole.moveTo(-0.5, 0);
+        doorHole.lineTo(0.5, 0);
+        doorHole.lineTo(0.5, 2.1);
+        doorHole.lineTo(-0.5, 2.1);
+        doorHole.lineTo(-0.5, 0);
+        frontWallShape.holes.push(doorHole);
+        
+        const frontWallGeo = new THREE.ShapeGeometry(frontWallShape);
+        const frontWall = new THREE.Mesh(frontWallGeo, wallMat);
+        frontWall.rotation.y = Math.PI; // Virada para dentro
+        frontWall.position.set(0, 0, 5);
+        frontWall.receiveShadow = true;
+        frontWall.userData = { type: 'wall', name: 'Parede Frontal (com porta)' };
+        scene.add(frontWall);
+        clickableObjects.push(frontWall);
+
+        // Moldura da porta
+        const doorFrameMat = new THREE.MeshStandardMaterial({ color: 0x5c4033 });
+        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.1, 0.1), doorFrameMat);
+        frameTop.position.set(0, 2.1, 5);
+        scene.add(frameTop);
+        const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.1, 0.1), doorFrameMat);
+        frameLeft.position.set(-0.5, 1.05, 5);
+        scene.add(frameLeft);
+        const frameRight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.1, 0.1), doorFrameMat);
+        frameRight.position.set(0.5, 1.05, 5);
+        scene.add(frameRight);
+
+        // 4. Móveis (Cama, Guarda-roupa)
         const bedGeo = new THREE.BoxGeometry(2, 0.5, 3);
         const bedMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
         const bed = new THREE.Mesh(bedGeo, bedMat);
         bed.position.set(-3, 0.25, -3);
         bed.castShadow = true;
+        bed.userData = { type: 'furniture', name: 'Cama' };
         scene.add(bed);
+        clickableObjects.push(bed);
         
-        // Travesseiro
         const pillowGeo = new THREE.BoxGeometry(1.8, 0.2, 0.6);
         const pillowMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const pillow = new THREE.Mesh(pillowGeo, pillowMat);
         pillow.position.set(-3, 0.6, -4.2);
         scene.add(pillow);
 
-        // Guarda-roupa
         const wardrobeGeo = new THREE.BoxGeometry(2.5, 2.2, 0.6);
         const wardrobeMat = new THREE.MeshStandardMaterial({ color: 0x5c4033 });
         const wardrobe = new THREE.Mesh(wardrobeGeo, wardrobeMat);
         wardrobe.position.set(3.5, 1.1, -4.7);
         wardrobe.castShadow = true;
+        wardrobe.userData = { type: 'furniture', name: 'Guarda-roupa' };
         scene.add(wardrobe);
+        clickableObjects.push(wardrobe);
 
-        // --- Iluminação ---
+        // Iluminação
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
 
@@ -252,20 +336,31 @@
         dirLight.castShadow = true;
         scene.add(dirLight);
 
-        // Luz do teto (simulando luminária)
         const pointLight = new THREE.PointLight(0xfff0e6, 1, 10);
         pointLight.position.set(0, 2.7, 0);
         scene.add(pointLight);
 
-        // --- Event Listeners ---
+        // Contagem de polígonos
+        let polyCount = 0;
+        scene.traverse((obj) => {
+            if (obj.isMesh && obj.geometry) {
+                const geo = obj.geometry;
+                if (geo.index) polyCount += geo.index.count / 3;
+                else if (geo.attributes.position) polyCount += geo.attributes.position.count / 3;
+            }
+        });
+        document.getElementById('polyCount').textContent = Math.round(polyCount).toLocaleString('pt-BR');
+
+        // Event Listeners
         document.addEventListener('keydown', onKeyDown);
         document.addEventListener('keyup', onKeyUp);
         window.addEventListener('resize', onWindowResize);
+        renderer.domElement.addEventListener('click', onCanvasClick);
 
         animate();
     }
 
-    // --- Lógica de Movimento (FPS) ---
+    // --- Movimento FPS ---
     function onKeyDown(event) {
         switch (event.code) {
             case 'ArrowUp': case 'KeyW': moveForward = true; break;
@@ -290,13 +385,157 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
+    // --- Sistema de Medição com Raycasting ---
+    function onCanvasClick(event) {
+        if (!isMeasureMode || !isTourActive) return;
+        if (controls.isLocked) return; // Não medir enquanto está em modo imersivo
+        
+        // Calcula posição do mouse normalizada (-1 a +1)
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(clickableObjects);
+
+        if (intersects.length > 0) {
+            const point = intersects[0].point;
+            addMeasurePoint(point);
+        }
+    }
+
+    function addMeasurePoint(point3D) {
+        if (measurePoints.length >= 2) return;
+        
+        measurePoints.push(point3D.clone());
+        
+        // Criar marcador visual (esfera)
+        const markerGeo = new THREE.SphereGeometry(0.05, 16, 16);
+        const markerMat = new THREE.MeshBasicMaterial({ 
+            color: measurePoints.length === 1 ? 0xf59e0b : 0x10b981 
+        });
+        const marker = new THREE.Mesh(markerGeo, markerMat);
+        marker.position.copy(point3D);
+        scene.add(marker);
+        measureMarkers.push(marker);
+
+        // Atualizar UI
+        const status = document.getElementById('measureStatus');
+        if (measurePoints.length === 1) {
+            document.getElementById('point1').textContent = `(${point3D.x.toFixed(2)}, ${point3D.y.toFixed(2)}, ${point3D.z.toFixed(2)})`;
+            status.textContent = '📏 Clique no 2º ponto';
+        } else if (measurePoints.length === 2) {
+            document.getElementById('point2').textContent = `(${point3D.x.toFixed(2)}, ${point3D.y.toFixed(2)}, ${point3D.z.toFixed(2)})`;
+            status.textContent = '✓ Medição completa!';
+            status.style.background = 'rgba(16, 185, 129, 0.95)';
+            drawMeasureLine();
+            calculateDistance();
+            
+            setTimeout(() => {
+                status.classList.remove('active');
+            }, 2000);
+        }
+    }
+
+    function drawMeasureLine() {
+        if (measureLine) scene.remove(measureLine);
+        
+        const p1 = measurePoints[0];
+        const p2 = measurePoints[1];
+        
+        const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+        const material = new THREE.LineBasicMaterial({ 
+            color: 0xef4444, 
+            linewidth: 3 
+        });
+        measureLine = new THREE.Line(geometry, material);
+        scene.add(measureLine);
+    }
+
+    function calculateDistance() {
+        const p1 = measurePoints[0];
+        const p2 = measurePoints[1];
+        
+        const dx = Math.abs(p2.x - p1.x);
+        const dy = Math.abs(p2.y - p1.y);
+        const dz = Math.abs(p2.z - p1.z);
+        const total = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        
+        document.getElementById('dx').textContent = dx.toFixed(3) + ' m';
+        document.getElementById('dy').textContent = dy.toFixed(3) + ' m';
+        document.getElementById('dz').textContent = dz.toFixed(3) + ' m';
+        document.getElementById('totalDist').textContent = total.toFixed(3) + ' m';
+    }
+
+    function clearMeasurements() {
+        measurePoints = [];
+        measureMarkers.forEach(m => scene.remove(m));
+        measureMarkers = [];
+        if (measureLine) {
+            scene.remove(measureLine);
+            measureLine = null;
+        }
+        document.getElementById('point1').textContent = '--';
+        document.getElementById('point2').textContent = '--';
+        document.getElementById('dx').textContent = '-- m';
+        document.getElementById('dy').textContent = '-- m';
+        document.getElementById('dz').textContent = '-- m';
+        document.getElementById('totalDist').textContent = '-- m';
+        document.getElementById('measureStatus').classList.remove('active');
+    }
+
+    // --- Controles de UI ---
+    window.toggleMeasure = function() {
+        isMeasureMode = !isMeasureMode;
+        const btn = document.getElementById('btnMeasure');
+        const crosshair = document.getElementById('crosshair');
+        const status = document.getElementById('measureStatus');
+        
+        if (isMeasureMode) {
+            btn.classList.add('active');
+            crosshair.classList.add('measure-mode');
+            if (controls.isLocked) controls.unlock();
+            status.classList.add('active');
+            status.textContent = ' Clique no 1º ponto da parede';
+            status.style.background = 'rgba(245, 158, 11, 0.95)';
+            clearMeasurements();
+            setTimeout(() => status.classList.add('active'), 100);
+        } else {
+            btn.classList.remove('active');
+            crosshair.classList.remove('measure-mode');
+            status.classList.remove('active');
+        }
+    };
+
+    window.clearMeasurements = clearMeasurements;
+
+    window.toggleViewMode = function() {
+        isOverviewMode = !isOverviewMode;
+        if (isOverviewMode) {
+            controls.unlock();
+            camera.position.set(0, 8, 12);
+            camera.lookAt(0, 1, 0);
+            document.getElementById('modeText').textContent = 'Vista Geral';
+        } else {
+            camera.position.set(0, 1.7, 3);
+            document.getElementById('modeText').textContent = 'Navegação';
+        }
+    };
+
+    window.resetCamera = function() {
+        isOverviewMode = false;
+        camera.position.set(0, 1.7, 3);
+        camera.rotation.set(0, 0, 0);
+        document.getElementById('modeText').textContent = 'Navegação';
+        clearMeasurements();
+    };
+
     // --- Loop de Renderização ---
     function animate() {
         requestAnimationFrame(animate);
 
         const time = performance.now();
 
-        if (controls.isLocked === true) {
+        if (controls.isLocked === true && !isOverviewMode) {
             const delta = (time - prevTime) / 1000;
 
             velocity.x -= velocity.x * 10.0 * delta;
@@ -306,25 +545,26 @@
             direction.x = Number(moveRight) - Number(moveLeft);
             direction.normalize();
 
-            if (moveForward || moveBackward) velocity.z -= direction.z * 100.0 * delta; // Velocidade
+            if (moveForward || moveBackward) velocity.z -= direction.z * 100.0 * delta;
             if (moveLeft || moveRight) velocity.x -= direction.x * 100.0 * delta;
 
             controls.moveRight(-velocity.x * delta);
             controls.moveForward(-velocity.z * delta);
             
-            // Colisão simples com as paredes (Limites da sala 10x10)
+            // Colisão simples com paredes
             const pos = controls.getObject().position;
             if (pos.x < -4.5) pos.x = -4.5;
             if (pos.x > 4.5) pos.x = 4.5;
             if (pos.z < -4.5) pos.z = -4.5;
             if (pos.z > 4.5) pos.z = 4.5;
+            pos.y = 1.7; // Manter altura dos olhos
         }
 
         prevTime = time;
         renderer.render(scene, camera);
     }
 
-    // --- Simulação do Processamento de Vídeo para Malha ---
+    // --- Simulação de Processamento ---
     window.startProcessing = function() {
         document.querySelector('.upload-zone').classList.add('hidden');
         document.getElementById('progressContainer').style.display = 'block';
@@ -335,18 +575,20 @@
         
         const steps = [
             "Extraindo frames do vídeo...",
-            "Calculando profundidade (AI)...",
+            "Detectando 4 paredes...",
+            "Calculando profundidade (IA)...",
             "Gerando malha triangular...",
             "Mapeando texturas 4K...",
+            "Criando abertura da porta...",
             "Otimizando para WebGL...",
-            "Tour 3D Pronto!"
+            "Tour 3D com medição pronto!"
         ];
 
         const interval = setInterval(() => {
             progress += 2;
             fill.style.width = progress + '%';
             
-            const stepIndex = Math.min(Math.floor(progress / 20), steps.length - 1);
+            const stepIndex = Math.min(Math.floor(progress / 13), steps.length - 1);
             text.textContent = steps[stepIndex];
 
             if (progress >= 100) {
@@ -354,21 +596,19 @@
                 setTimeout(() => {
                     document.getElementById('uploadModal').classList.add('hidden');
                     isTourActive = true;
-                    // Move a câmera para dentro da sala
                     camera.position.set(0, 1.7, 3);
-                    alert("✅ Malha gerada com sucesso!\n\nClique na tela para ativar o Tour em Primeira Pessoa.\nUse W,A,S,D para andar e o Mouse para olhar.");
+                    alert("✅ Malha 3D gerada com sucesso!\n\n 4 paredes detectadas (com porta)\n📏 Sistema de medição ativado\n\nComo usar:\n1. Clique '📏 Medir' na barra inferior\n2. Clique em 2 pontos nas paredes\n3. Veja a distância real em metros!");
                 }, 500);
             }
-        }, 50); // 2.5 segundos de simulação
+        }, 50);
     }
 
-    // Inicia a cena 3D vazia (ou com um grid) até o processamento
+    // Inicializar
     init3DScene();
     
-    // Renderiza um grid inicial antes do tour
+    // Grid inicial
     const gridHelper = new THREE.GridHelper(20, 20, 0x4f46e5, 0x334155);
     scene.add(gridHelper);
-
 </script>
 </body>
 </html>
