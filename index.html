@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro - Correção de Proporção 3D</title>
+<title>Vexa Scan Pro - Tour 3D Completo</title>
 <style>
     :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,8 +19,7 @@
     .nav-item.active { background: var(--primary); color: white; }
     
     .main-content { position: relative; width: 100%; height: 100%; overflow: hidden; }
-    /* CORREÇÃO: Container do canvas deve ocupar exatamente o espaço disponível */
-    #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000; display: block; }
+    #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #000; }
     
     .hud-overlay { position: absolute; top: 20px; left: 20px; background: rgba(15, 23, 42, 0.9); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; pointer-events: none; min-width: 220px; }
     .hud-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
@@ -88,7 +87,7 @@
         <div class="user-info">👤 João Silva<br><small>joao@email.com</small></div>
         <nav>
             <div class="nav-item"> Projetos</div>
-            <div class="nav-item active" onclick="document.getElementById('uploadModal').classList.remove('hidden')">📹 Novo Scan</div>
+            <div class="nav-item active" onclick="document.getElementById('uploadModal').classList.remove('hidden')"> Novo Scan</div>
             <div class="nav-item"> Visualizar</div>
             <div class="nav-item">⚙️ Configurações</div>
         </nav>
@@ -121,23 +120,19 @@
             <div class="measure-row"><span class="label">Real:</span><span class="value" id="realDist">-- mm</span></div>
             
             <div class="scale-control">
-                <label>📐 Escala Real (mm por metro)</label>
+                <label> Escala Real (mm por metro)</label>
                 <input type="number" id="scaleInput" value="1000" onchange="updateScale()">
             </div>
             
             <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
-                <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">🎯 Pontos de Snap Disponíveis:</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">🎯 Pontos de Snap:</div>
                 <div style="font-size:11px;color:var(--success);font-weight:600;" id="snapCount">0 pontos</div>
-                <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">
-                    💡 Aproxime o cursor dos cantos (raio: <span id="snapRadius">0.8</span>m)<br>
-                    💡 Ative "Medir" e clique perto dos cantos
-                </div>
             </div>
         </div>
 
         <div class="crosshair" id="crosshair"></div>
         <div class="measure-status" id="measureStatus">📏 Clique no 1º ponto</div>
-        <div class="snap-indicator" id="snapIndicator"> Canto detectado</div>
+        <div class="snap-indicator" id="snapIndicator">🎯 Canto detectado</div>
 
         <div class="tools-bar">
             <button class="tool-btn" id="btnMeasure" onclick="toggleMeasure()">📏 Medir</button>
@@ -150,6 +145,7 @@
             <span><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> Mover</span>
             <span><span class="key">Mouse</span> Olhar</span>
             <span><span class="key">Scroll</span> Zoom</span>
+            <span><span class="key">Botão Dir</span> Pan</span>
             <span><span class="key">ESC</span> Sair</span>
         </div>
 
@@ -183,6 +179,11 @@
     let isMeasureMode = false;
     let isOverviewMode = false;
     
+    // Sistema de Pan
+    let isPanning = false;
+    let panStartX = 0, panStartY = 0;
+    let panOffsetX = 0, panOffsetY = 0;
+    
     let measurePoints = [];
     let measureLine = null;
     let measureMarkers = [];
@@ -193,16 +194,12 @@
     let clickableObjects = [];
     
     let snapPoints = [];
-    const SNAP_THRESHOLD = 0.6; // Ajustado para ser preciso sem ser difícil
+    const SNAP_THRESHOLD = 0.6;
     let scaleFactor = 1000;
     let currentSnapPoint = null;
 
-    // --- Definição dos Snap Points ---
     function createSnapPoints() {
-        snapPoints = [];
-        
-        // Cantos das 4 paredes (chão e teto)
-        const corners = [
+        snapPoints = [
             { x: -5, y: 0, z: -5, label: 'Canto chão esq (trás)' },
             { x: 5, y: 0, z: -5, label: 'Canto chão dir (trás)' },
             { x: -5, y: 2.8, z: -5, label: 'Canto teto esq (trás)' },
@@ -215,9 +212,6 @@
             { x: 0.5, y: 0, z: 5, label: 'Porta - base dir' },
             { x: -0.5, y: 2.1, z: 5, label: 'Porta - topo esq' },
             { x: 0.5, y: 2.1, z: 5, label: 'Porta - topo dir' },
-        ];
-        
-        const mids = [
             { x: 0, y: 0, z: -5, label: 'Meio rodapé (trás)' },
             { x: 0, y: 2.8, z: -5, label: 'Meio teto (trás)' },
             { x: 0, y: 1.4, z: -5, label: 'Meio parede (trás)' },
@@ -228,8 +222,6 @@
             { x: 5, y: 2.8, z: 0, label: 'Meio teto (dir)' },
             { x: 5, y: 1.4, z: 0, label: 'Meio parede (dir)' },
         ];
-        
-        snapPoints = [...corners, ...mids];
         
         snapPoints.forEach((sp, idx) => {
             const markerGeo = new THREE.SphereGeometry(0.05, 12, 12);
@@ -242,7 +234,6 @@
         });
         
         document.getElementById('snapCount').textContent = snapPoints.length + ' pontos';
-        document.getElementById('snapRadius').textContent = SNAP_THRESHOLD.toFixed(1);
     }
 
     function findNearestSnapPoint(point) {
@@ -266,17 +257,12 @@
         scene.add(snapHighlight);
     }
 
-    // --- CORREÇÃO CRÍTICA: Redimensionamento correto do Canvas ---
     function updateCanvasSize() {
         const container = document.getElementById('canvas-container');
         const width = container.clientWidth;
         const height = container.clientHeight;
-
-        // Atualiza a câmera com a proporção correta do container
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-
-        // Atualiza o renderer para o tamanho real em pixels
         renderer.setSize(width, height);
     }
 
@@ -287,12 +273,11 @@
         scene.background = new THREE.Color(0x111111);
         scene.fog = new THREE.Fog(0x111111, 0, 30);
 
-        // FOV ajustado para 60 (mais natural, menos distorção de lente)
         camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(0, 1.7, 0); // Começa dentro da sala
+        camera.position.set(0, 1.7, 0);
 
         renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setPixelRatio(window.devicePixelRatio); // Importante para telas retina
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
@@ -300,7 +285,7 @@
         controls = new PointerLockControls(camera, renderer.domElement);
         
         renderer.domElement.addEventListener('click', () => {
-            if (!isTourActive || isMeasureMode) return;
+            if (!isTourActive || isMeasureMode || isPanning) return;
             controls.lock();
         });
 
@@ -356,7 +341,6 @@
         scene.add(frontWall);
         clickableObjects.push(frontWall);
 
-        // Móveis
         const bed = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 3), new THREE.MeshStandardMaterial({ color: 0x3b82f6 }));
         bed.position.set(-3, 0.25, -3);
         scene.add(bed);
@@ -381,14 +365,51 @@
         createSnapHighlight();
 
         // Listeners
-        window.addEventListener('resize', updateCanvasSize); // CORREÇÃO: Resize global
+        window.addEventListener('resize', updateCanvasSize);
         renderer.domElement.addEventListener('click', onCanvasClick);
         renderer.domElement.addEventListener('wheel', onWheelZoom, { passive: false });
         renderer.domElement.addEventListener('mousemove', onMouseMoveSnap);
+        renderer.domElement.addEventListener('mousedown', onMouseDown);
+        renderer.domElement.addEventListener('mouseup', onMouseUp);
+        renderer.domElement.addEventListener('mouseleave', onMouseUp);
+        renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
         document.addEventListener('keydown', onKeyDown);
         document.addEventListener('keyup', onKeyUp);
 
         animate();
+    }
+
+    // ========== SISTEMA DE PAN ==========
+    function onMouseDown(event) {
+        // Botão direito (2) ou botão do meio (1) = Pan
+        if (event.button === 2 || event.button === 1) {
+            if (isMeasureMode) return; // Não faz pan no modo medição
+            isPanning = true;
+            panStartX = event.clientX - panOffsetX;
+            panStartY = event.clientY - panOffsetY;
+            renderer.domElement.style.cursor = 'grabbing';
+            if (controls.isLocked) controls.unlock();
+        }
+    }
+
+    function onMouseUp() {
+        isPanning = false;
+        renderer.domElement.style.cursor = 'grab';
+    }
+
+    function applyPan(deltaX, deltaY) {
+        // Move a câmera lateralmente baseado na direção que está olhando
+        const forward = new THREE.Vector3();
+        camera.getWorldDirection(forward);
+        forward.y = 0;
+        forward.normalize();
+        
+        const right = new THREE.Vector3();
+        right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+        
+        const panSpeed = 0.01;
+        camera.position.add(right.multiplyScalar(-deltaX * panSpeed));
+        camera.position.add(forward.multiplyScalar(-deltaY * panSpeed));
     }
 
     function onWheelZoom(event) {
@@ -400,7 +421,6 @@
         document.getElementById('zoomLevel').textContent = Math.round((60 / camera.fov) * 100) + '%';
     }
 
-    // --- CORREÇÃO CRÍTICA: Cálculo do Mouse baseado no Container ---
     function updateMouseCoordinates(event) {
         const rect = renderer.domElement.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -408,6 +428,16 @@
     }
 
     function onMouseMoveSnap(event) {
+        // Se está fazendo pan, aplica o movimento
+        if (isPanning) {
+            const deltaX = event.clientX - panStartX - panOffsetX;
+            const deltaY = event.clientY - panStartY - panOffsetY;
+            panOffsetX = event.clientX - panStartX;
+            panOffsetY = event.clientY - panStartY;
+            applyPan(deltaX, deltaY);
+            return;
+        }
+        
         if (!isMeasureMode) {
             if (snapHighlight) snapHighlight.visible = false;
             document.getElementById('crosshair').classList.remove('snap-active');
@@ -416,8 +446,7 @@
             return;
         }
         
-        updateMouseCoordinates(event); // Usa a função corrigida
-
+        updateMouseCoordinates(event);
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(clickableObjects);
 
@@ -432,7 +461,7 @@
                 currentSnapPoint = nearestSnap;
                 crosshair.classList.add('snap-active');
                 snapIndicator.classList.add('active');
-                snapIndicator.textContent = `🎯 ${nearestSnap.label}`;
+                snapIndicator.textContent = ` ${nearestSnap.label}`;
                 
                 if (snapHighlight) {
                     snapHighlight.position.set(nearestSnap.x, nearestSnap.y, nearestSnap.z);
@@ -471,11 +500,10 @@
     }
 
     function onCanvasClick(event) {
-        if (!isMeasureMode || !isTourActive) return;
+        if (!isMeasureMode || !isTourActive || isPanning) return;
         if (controls.isLocked) return;
         
-        updateMouseCoordinates(event); // Usa a função corrigida
-
+        updateMouseCoordinates(event);
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(clickableObjects);
 
@@ -524,7 +552,7 @@
         
         if (measurePoints.length === 1) {
             document.getElementById('point1').textContent = (snapped ? '🎯 ' : '') + coordText;
-            status.textContent = '📏 Clique no 2º ponto';
+            status.textContent = ' Clique no 2º ponto';
         } else if (measurePoints.length === 2) {
             document.getElementById('point2').textContent = (snapped ? '🎯 ' : '') + coordText;
             status.textContent = '✓ Medição completa!';
@@ -614,6 +642,8 @@
         isOverviewMode = false;
         camera.position.set(0, 1.7, 0);
         camera.rotation.set(0, 0, 0);
+        panOffsetX = 0;
+        panOffsetY = 0;
         document.getElementById('modeText').textContent = 'Navegação';
         clearMeasurements();
     };
@@ -622,7 +652,7 @@
         requestAnimationFrame(animate);
         const time = performance.now();
 
-        if (controls.isLocked === true && !isOverviewMode) {
+        if (controls.isLocked === true && !isOverviewMode && !isPanning) {
             const delta = (time - prevTime) / 1000;
             velocity.x -= velocity.x * 10.0 * delta;
             velocity.z -= velocity.z * 10.0 * delta;
@@ -668,15 +698,15 @@
                 setTimeout(() => {
                     document.getElementById('uploadModal').classList.add('hidden');
                     isTourActive = true;
-                    updateCanvasSize(); // Garante tamanho correto ao iniciar
-                    alert("✅ Malha 3D gerada!\n\nA proporção foi corrigida.\nAgora o snap deve funcionar perfeitamente nos cantos.");
+                    updateCanvasSize();
+                    alert("✅ Sistema completo!\n\nControles:\n• WASD: Andar\n• Mouse: Olhar\n• Scroll: Zoom\n• Botão Direito: Pan (arrastar)\n• ESC: Sair do modo imersivo\n\nClique em '📏 Medir' para medir paredes!");
                 }, 500);
             }
         }, 50);
     }
 
     init3DScene();
-    updateCanvasSize(); // Chamada inicial crucial
+    updateCanvasSize();
 </script>
 </body>
 </html>
