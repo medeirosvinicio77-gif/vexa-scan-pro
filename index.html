@@ -53,8 +53,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .status.processing { background: var(--warning); color: #1a1a1a; }
 .status.ready { background: var(--success); color: white; }
 .viewer-container { background: var(--surface); border-radius: 12px; padding: 16px; height: calc(100vh - 120px); display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
-.viewer-3d { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; cursor: grab; }
-.viewer-3d:active { cursor: grabbing; }
+.viewer-3d { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; }
 #canvas3d { width: 100%; height: 100%; display: block; }
 .viewer-controls { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; flex-wrap: wrap; background: rgba(0,0,0,0.7); padding: 8px; border-radius: var(--radius); backdrop-filter: blur(8px); z-index: 10; }
 .view-btn { padding: 6px 10px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 12px; }
@@ -114,7 +113,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
       <div class="checkbox-row"><input type="checkbox" id="remember"><label for="remember">Lembrar de mim</label></div>
       <a href="#" class="forgot-link">Esqueci a senha</a>
       <button type="submit" class="btn-primary">🔐 Entrar</button>
-      <button type="button" class="btn-demo" onclick="doLogin(event, true)"> Acessar em Modo Demo</button>
+      <button type="button" class="btn-demo" onclick="doLogin(event, true)">🚀 Acessar em Modo Demo</button>
     </form>
     <form id="registerForm" class="hidden" onsubmit="doLogin(event)">
       <div class="form-group"><label>Nome completo</label><input type="text" required placeholder="João Silva"></div>
@@ -161,7 +160,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
       </div>
 
       <div id="page-upload" class="page hidden">
-        <div class="page-header"><h2> Novo Scan</h2></div>
+        <div class="page-header"><h2>📹 Novo Scan</h2></div>
         <div class="upload-panel">
           <h3 style="margin-bottom:16px;">1. Upload do Vídeo</h3>
           <div class="upload-zone" id="uploadZone">
@@ -206,8 +205,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <canvas id="canvas3d"></canvas>
             <div class="viewer-info">
               <span>📐 <span id="pointCount">12.458</span> pts</span>
-              <span> <span id="fpsCount">60</span> FPS</span>
-              <span> Grid</span>
+              <span>🎯 <span id="fpsCount">60</span> FPS</span>
+              <span>🔲 Grid</span>
             </div>
             <div class="scale-status" id="scaleStatus">📏 Clique no 1º ponto</div>
             <div class="legend">
@@ -227,13 +226,13 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             </div>
           </div>
           <div class="tools-panel">
-            <h3> Detalhes do Projeto</h3>
+            <h3>📋 Detalhes do Projeto</h3>
             <div id="projectDetails">
               <p style="color:var(--text-muted);font-size:12px;">Selecione um projeto no dashboard</p>
             </div>
-            <h3>️ Ferramentas</h3>
+            <h3>⚙️ Ferramentas</h3>
             <div class="tool-grid">
-              <button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji"></span>Medir</button>
+              <button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji">📏</span>Medir</button>
               <button class="tool-btn" id="btn-scale" onclick="setTool('scale', event)"><span class="emoji">📐</span>Escala</button>
               <button class="tool-btn" id="btn-cut" onclick="setTool('cut', event)"><span class="emoji">✂️</span>Corte</button>
               <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()"><span class="emoji">🗑️</span>Limpar</button>
@@ -261,7 +260,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <h3 style="margin-top:16px;">⬇️ Exportar</h3>
             <div style="display:flex;gap:6px;">
               <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPLY()">⬇️ PLY</button>
-              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()"> CSV</button>
+              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()">📊 CSV</button>
             </div>
           </div>
         </div>
@@ -278,10 +277,10 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <button class="btn-primary">💾 Salvar alterações</button>
           </div>
           <div class="settings-card">
-            <h3> Notificações</h3>
+            <h3>🔔 Notificações</h3>
             <div class="checkbox-row"><input type="checkbox" id="notifEmail" checked><label for="notifEmail">📧 Email quando pronto</label></div>
             <div class="checkbox-row"><input type="checkbox" id="notifWhats" checked><label for="notifWhats">💬 WhatsApp quando pronto</label></div>
-            <button class="btn-primary"> Salvar preferências</button>
+            <button class="btn-primary">💾 Salvar preferências</button>
           </div>
           <div class="settings-card">
             <h3>ℹ️ Sobre</h3>
@@ -304,270 +303,164 @@ let measurePoints = [];
 let scaleFactor = 1.0;
 let clickCount = 0;
 let currentProject = null;
-let camera = { x: 0, y: 0, z: 8000, rotX: 0.3, rotY: 0, zoom: 1, panX: 0, panY: 0 };
+let camera = { x: 2500, y: 1400, z: -3000, rotX: 0, rotY: 0, zoom: 1 };
 const ROOM_WIDTH = 5000, ROOM_DEPTH = 4000, ROOM_HEIGHT = 2800;
-const environment = {
-  walls: [
-    { x: 0, y: 0, z: 0, w: ROOM_WIDTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Frontal' },
-    { x: 0, y: 0, z: ROOM_DEPTH, w: ROOM_WIDTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Traseira' },
-    { x: 0, y: 0, z: 0, w: ROOM_DEPTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Esquerda', axis: 'z' },
-    { x: ROOM_WIDTH, y: 0, z: 0, w: ROOM_DEPTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Direita', axis: 'z' }
-  ],
-  door: { x: 2000, y: 0, z: 0, w: 1000, h: 2100, color: '#f59e0b', label: 'Porta 1.00m' },
-  window: { x: 0, y: 800, z: 1500, w: 1300, h: 1200, color: '#3b82f6', label: 'Janela 1.30m', axis: 'z' },
-  electric: [
-    { x: 1000, y: 300, z: 0, label: 'Tomada T1', icon: '⚡' },
-    { x: 4000, y: 300, z: 0, label: 'Tomada T2', icon: '⚡' },
-    { x: 2500, y: 300, z: ROOM_DEPTH, label: 'Tomada T3', icon: '' },
-    { x: 2200, y: 1200, z: 0, label: 'Interruptor', icon: '🔲' },
-    { x: 2500, y: 2700, z: 2000, label: 'Luminária', icon: '💡' }
-  ]
-};
+
 const canvas = document.getElementById('canvas3d');
 const ctx = canvas.getContext('2d');
-let isDragging = false, lastMouseX = 0, lastMouseY = 0, dragButton = 0;
 
 function resizeCanvas() {
   const container = document.getElementById('viewer3d');
   canvas.width = container.clientWidth;
   canvas.height = container.clientHeight;
-  render();
-}
-window.addEventListener('resize', resizeCanvas);
-
-function project3D(x, y, z) {
-  let dx = x - camera.x, dy = y - camera.y, dz = z - camera.z;
-  let cosY = Math.cos(camera.rotY), sinY = Math.sin(camera.rotY);
-  let x1 = dx * cosY - dz * sinY, z1 = dx * sinY + dz * cosY;
-  let cosX = Math.cos(camera.rotX), sinX = Math.sin(camera.rotX);
-  let y1 = dy * cosX - z1 * sinX, z2 = dy * sinX + z1 * cosX;
-  if (z2 <= 10) return null;
-  let fov = 1000 * camera.zoom;
-  return { x: (x1 * fov / z2) + canvas.width / 2 + camera.panX, y: (y1 * fov / z2) + canvas.height / 2 + camera.panY, z: z2 };
+  renderScene();
 }
 
-function drawWall(wall) {
-  let corners;
-  if (wall.axis === 'z') {
-    corners = [project3D(wall.x, wall.y, wall.z), project3D(wall.x, wall.y, wall.z + wall.w), project3D(wall.x, wall.y + wall.h, wall.z + wall.w), project3D(wall.x, wall.y + wall.h, wall.z)];
-  } else {
-    corners = [project3D(wall.x, wall.y, wall.z), project3D(wall.x + wall.w, wall.y, wall.z), project3D(wall.x + wall.w, wall.y + wall.h, wall.z), project3D(wall.x, wall.y + wall.h, wall.z)];
-  }
-  if (corners.some(c => c === null)) return;
-  ctx.beginPath();
-  ctx.moveTo(corners[0].x, corners[0].y);
-  for (let i = 1; i < corners.length; i++) ctx.lineTo(corners[i].x, corners[i].y);
-  ctx.closePath();
-  ctx.fillStyle = wall.color + '40';
-  ctx.strokeStyle = wall.color;
-  ctx.lineWidth = 3;
-  ctx.fill();
-  ctx.stroke();
-  if (wall.label) {
-    let center = project3D(wall.axis === 'z' ? wall.x : wall.x + wall.w/2, wall.y + wall.h/2, wall.axis === 'z' ? wall.z + wall.w/2 : wall.z);
-    if (center && center.z < 5000) {
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 14px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(wall.label, center.x, center.y);
-    }
-  }
-}
-
-function drawDoor() {
-  const door = environment.door;
-  const corners = [project3D(door.x, door.y, door.z), project3D(door.x + door.w, door.y, door.z), project3D(door.x + door.w, door.y + door.h, door.z), project3D(door.x, door.y + door.h, door.z)];
-  if (corners.some(c => c === null)) return;
-  ctx.beginPath();
-  ctx.moveTo(corners[0].x, corners[0].y);
-  for (let i = 1; i < corners.length; i++) ctx.lineTo(corners[i].x, corners[i].y);
-  ctx.closePath();
-  ctx.fillStyle = door.color + '60';
-  ctx.strokeStyle = door.color;
-  ctx.lineWidth = 3;
-  ctx.fill();
-  ctx.stroke();
-  let center = project3D(door.x + door.w/2, door.y + door.h/2, door.z);
-  if (center) { ctx.fillStyle = door.color; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText(door.label, center.x, center.y); }
-}
-
-function drawWindow() {
-  const win = environment.window;
-  const corners = [project3D(win.x, win.y, win.z), project3D(win.x, win.y, win.z + win.w), project3D(win.x, win.y + win.h, win.z + win.w), project3D(win.x, win.y + win.h, win.z)];
-  if (corners.some(c => c === null)) return;
-  ctx.beginPath();
-  ctx.moveTo(corners[0].x, corners[0].y);
-  for (let i = 1; i < corners.length; i++) ctx.lineTo(corners[i].x, corners[i].y);
-  ctx.closePath();
-  ctx.fillStyle = win.color + '60';
-  ctx.strokeStyle = win.color;
-  ctx.lineWidth = 3;
-  ctx.fill();
-  ctx.stroke();
-  let midZ = project3D(win.x, win.y, win.z + win.w/2), midZ2 = project3D(win.x, win.y + win.h, win.z + win.w/2);
-  if (midZ && midZ2) { ctx.beginPath(); ctx.moveTo(midZ.x, midZ.y); ctx.lineTo(midZ2.x, midZ2.y); ctx.stroke(); }
-  let midY = project3D(win.x, win.y + win.h/2, win.z), midY2 = project3D(win.x, win.y + win.h/2, win.z + win.w);
-  if (midY && midY2) { ctx.beginPath(); ctx.moveTo(midY.x, midY.y); ctx.lineTo(midY2.x, midY2.y); ctx.stroke(); }
-  let center = project3D(win.x, win.y + win.h/2, win.z + win.w/2);
-  if (center) { ctx.fillStyle = win.color; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText(win.label, center.x - 80, center.y); }
-}
-
-function drawElectric() {
-  environment.electric.forEach(el => {
-    const center = project3D(el.x, el.y, el.z);
-    if (!center || center.z > 4000) return;
-    const size = Math.max(8, 30 / center.z * 500);
-    ctx.beginPath();
-    ctx.arc(center.x, center.y, size, 0, Math.PI * 2);
-    ctx.fillStyle = '#fbbf24';
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.fillStyle = '#000';
-    ctx.font = `bold ${size}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.fillText(el.icon, center.x, center.y + size/3);
-    if (center.z < 2500) { ctx.fillStyle = '#fbbf24'; ctx.font = '12px Arial'; ctx.fillText(el.label, center.x, center.y + size + 15); }
-  });
-}
-
-function drawGrid() {
-  ctx.strokeStyle = 'rgba(79, 70, 229, 0.2)';
+function renderScene() {
+  ctx.fillStyle = '#0a0e1a';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Grid do chão
+  ctx.strokeStyle = 'rgba(79, 70, 229, 0.3)';
   ctx.lineWidth = 1;
-  for (let x = 0; x <= ROOM_WIDTH; x += 500) {
-    let p1 = project3D(x, ROOM_HEIGHT, 0), p2 = project3D(x, ROOM_HEIGHT, ROOM_DEPTH);
-    if (p1 && p2) { ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); }
+  const gridSize = 100;
+  for (let x = 0; x < canvas.width; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
   }
-  for (let z = 0; z <= ROOM_DEPTH; z += 500) {
-    let p1 = project3D(0, ROOM_HEIGHT, z), p2 = project3D(ROOM_WIDTH, ROOM_HEIGHT, z);
-    if (p1 && p2) { ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); }
+  for (let y = 0; y < canvas.height; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
   }
-}
-
-function drawMeasurements() {
+  
+  // Parede frontal (retângulo cinza)
+  ctx.fillStyle = 'rgba(203, 213, 225, 0.8)';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3;
+  ctx.fillRect(100, 100, 600, 400);
+  ctx.strokeRect(100, 100, 600, 400);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 16px Arial';
+  ctx.fillText('PAREDE FRONTAL', 120, 130);
+  
+  // Porta (retângulo laranja)
+  ctx.fillStyle = 'rgba(245, 158, 11, 0.8)';
+  ctx.strokeStyle = '#f59e0b';
+  ctx.fillRect(350, 350, 100, 150);
+  ctx.strokeRect(350, 350, 100, 150);
+  ctx.fillStyle = '#fff';
+  ctx.fillText('PORTA 1.00m', 365, 430);
+  
+  // Janela (retângulo azul)
+  ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
+  ctx.strokeStyle = '#3b82f6';
+  ctx.fillRect(150, 150, 120, 80);
+  ctx.strokeRect(150, 150, 120, 80);
+  ctx.fillStyle = '#fff';
+  ctx.fillText('JANELA 1.30m', 155, 195);
+  
+  // Tomadas (círculos amarelos)
+  ctx.fillStyle = '#fbbf24';
+  ctx.beginPath(); ctx.arc(200, 450, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 10px Arial';
+  ctx.fillText('T', 196, 454);
+  ctx.fillStyle = '#fbbf24';
+  ctx.beginPath(); ctx.arc(600, 450, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.fillText('T', 596, 454);
+  
+  // Interruptor
+  ctx.fillStyle = 'rgba(251, 191, 36, 0.5)';
+  ctx.strokeStyle = '#fbbf24';
+  ctx.beginPath(); ctx.arc(470, 450, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'bold 9px Arial';
+  ctx.fillText('I', 466, 454);
+  
+  // Luminária
+  ctx.fillStyle = 'rgba(251, 191, 36, 0.3)';
+  ctx.strokeStyle = '#fbbf24';
+  ctx.beginPath(); ctx.arc(400, 250, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(390, 240); ctx.lineTo(410, 260); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(390, 260); ctx.lineTo(410, 240); ctx.stroke();
+  
+  // Cotas
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(100, 80); ctx.lineTo(700, 80); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(100, 75); ctx.lineTo(100, 85); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(700, 75); ctx.lineTo(700, 85); ctx.stroke();
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText('5.00 m', 380, 75);
+  
+  ctx.beginPath(); ctx.moveTo(80, 100); ctx.lineTo(80, 500); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(75, 100); ctx.lineTo(85, 100); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(75, 500); ctx.lineTo(85, 500); ctx.stroke();
+  ctx.save();
+  ctx.translate(70, 300);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('4.00 m', 0, 0);
+  ctx.restore();
+  
+  // Medidas do usuário
   measurePoints.forEach((p, i) => {
-    const proj = project3D(p.x, p.y, p.z);
-    if (!proj) return;
     ctx.beginPath();
-    ctx.arc(proj.x, proj.y, 10, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
     ctx.fillStyle = i === 0 ? '#f59e0b' : '#10b981';
     ctx.fill();
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 2;
     ctx.stroke();
   });
+  
   if (measurePoints.length === 2) {
-    const p1 = project3D(measurePoints[0].x, measurePoints[0].y, measurePoints[0].z);
-    const p2 = project3D(measurePoints[1].x, measurePoints[1].y, measurePoints[1].z);
-    if (p1 && p2) {
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([10, 5]);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      const dist = Math.sqrt(Math.pow(measurePoints[1].x - measurePoints[0].x, 2) + Math.pow(measurePoints[1].y - measurePoints[0].y, 2) + Math.pow(measurePoints[1].z - measurePoints[0].z, 2));
-      const distM = (dist / 1000).toFixed(2);
-      ctx.fillStyle = '#ef4444';
-      ctx.font = 'bold 16px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(distM + ' m', (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 - 20);
-    }
+    const p1 = measurePoints[0];
+    const p2 = measurePoints[1];
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([10, 5]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const dist = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+    const distMm = dist * scaleFactor;
+    ctx.fillStyle = '#ef4444';
+    ctx.font = 'bold 14px Arial';
+    ctx.fillText(distMm.toFixed(1) + ' mm', (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 - 15);
   }
 }
 
-function render() {
-  ctx.fillStyle = '#0a0e1a';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  drawGrid();
-  environment.walls.forEach(drawWall);
-  drawDoor();
-  drawWindow();
-  drawElectric();
-  drawMeasurements();
-}
+window.addEventListener('resize', resizeCanvas);
 
-canvas.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  lastMouseX = e.clientX;
-  lastMouseY = e.clientY;
-  dragButton = e.button;
-  if (e.button === 0 && currentTool) {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left, y = e.clientY - rect.top;
-    const point = unproject2D(x, y);
-    if (point) {
-      measurePoints.push(point);
-      clickCount++;
-      const status = document.getElementById('scaleStatus');
-      if (clickCount === 1) { status.textContent = '📏 Clique no 2º ponto'; }
-      else if (clickCount === 2) {
-        const dist = Math.sqrt(Math.pow(measurePoints[1].x - measurePoints[0].x, 2) + Math.pow(measurePoints[1].y - measurePoints[0].y, 2) + Math.pow(measurePoints[1].z - measurePoints[0].z, 2));
-        const distMm = dist * scaleFactor;
-        document.getElementById('dx').textContent = Math.abs(measurePoints[1].x - measurePoints[0].x).toFixed(0) + ' mm';
-        document.getElementById('dy').textContent = Math.abs(measurePoints[1].y - measurePoints[0].y).toFixed(0) + ' mm';
-        document.getElementById('dz').textContent = Math.abs(measurePoints[1].z - measurePoints[0].z).toFixed(0) + ' mm';
-        document.getElementById('total').textContent = distMm.toFixed(0) + ' mm';
-        document.getElementById('horiz').textContent = Math.sqrt(Math.pow(measurePoints[1].x - measurePoints[0].x, 2) + Math.pow(measurePoints[1].z - measurePoints[0].z, 2)).toFixed(0) + ' mm';
-        status.textContent = '✓ Medido: ' + distMm.toFixed(0) + ' mm';
-        status.style.background = 'rgba(16, 185, 129, 0.9)';
-        clickCount = 0;
-        measurePoints = [];
-      }
-    }
+canvas.addEventListener('click', (e) => {
+  if (!currentTool) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  measurePoints.push({ x, y });
+  clickCount++;
+  const status = document.getElementById('scaleStatus');
+  if (clickCount === 1) {
+    status.textContent = '📏 Clique no 2º ponto';
+  } else if (clickCount === 2) {
+    const p1 = measurePoints[0];
+    const p2 = measurePoints[1];
+    const dist = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+    const distMm = dist * scaleFactor;
+    document.getElementById('dx').textContent = Math.abs(p2.x - p1.x).toFixed(1) + ' px';
+    document.getElementById('dy').textContent = Math.abs(p2.y - p1.y).toFixed(1) + ' px';
+    document.getElementById('dz').textContent = '0.0 px';
+    document.getElementById('total').textContent = distMm.toFixed(1) + ' mm';
+    document.getElementById('horiz').textContent = dist.toFixed(1) + ' px';
+    status.textContent = '✓ Medido: ' + distMm.toFixed(1) + ' mm';
+    status.style.background = 'rgba(16, 185, 129, 0.9)';
+    clickCount = 0;
+    measurePoints = [];
   }
+  renderScene();
 });
-
-canvas.addEventListener('mousemove', (e) => {
-  if (!isDragging) return;
-  const deltaX = e.clientX - lastMouseX, deltaY = e.clientY - lastMouseY;
-  if (dragButton === 0 && !currentTool) {
-    camera.rotY += deltaX * 0.005;
-    camera.rotX += deltaY * 0.005;
-    camera.rotX = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotX));
-  } else if (dragButton === 2 || dragButton === 1) {
-    camera.panX += deltaX;
-    camera.panY += deltaY;
-  }
-  lastMouseX = e.clientX;
-  lastMouseY = e.clientY;
-  render();
-});
-
-canvas.addEventListener('mouseup', () => isDragging = false);
-canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-canvas.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  camera.zoom *= e.deltaY > 0 ? 0.9 : 1.1;
-  camera.zoom = Math.max(0.3, Math.min(3, camera.zoom));
-  render();
-});
-
-function unproject2D(x, y) {
-  return { x: camera.x + (x - canvas.width/2 - camera.panX) * 10, y: camera.y + (y - canvas.height/2 - camera.panY) * 10, z: camera.z - 1000 };
-}
-
-function setView(view) {
-  const views = {
-    'front': { x: 2500, y: 1400, z: -2000, rotX: 0, rotY: 0 },
-    'back': { x: 2500, y: 1400, z: ROOM_DEPTH + 2000, rotX: 0, rotY: Math.PI },
-    'left': { x: -2000, y: 1400, z: 2000, rotX: 0, rotY: -Math.PI/2 },
-    'right': { x: ROOM_WIDTH + 2000, y: 1400, z: 2000, rotX: 0, rotY: Math.PI/2 },
-    'top': { x: 2500, y: -3000, z: 2000, rotX: Math.PI/2, rotY: 0 },
-    'iso': { x: 7000, y: 5000, z: 7000, rotX: 0.5, rotY: 0.7 }
-  };
-  const v = views[view];
-  if (v) { camera.x = v.x; camera.y = v.y; camera.z = v.z; camera.rotX = v.rotX; camera.rotY = v.rotY; camera.panX = 0; camera.panY = 0; camera.zoom = 1; render(); }
-}
-
-function resetView() {
-  camera = { x: 0, y: 0, z: 8000, rotX: 0.3, rotY: 0, zoom: 1, panX: 0, panY: 0 };
-  clearMeasurements();
-  render();
-}
 
 function switchTab(tab, e) {
   e?.stopPropagation();
@@ -599,7 +492,7 @@ function showPage(page, e) {
   const navItems = document.querySelectorAll('.nav-item');
   if (navItems[navMap[page]]) navItems[navMap[page]].classList.add('active');
   if (page === 'dashboard') renderDashboard();
-  if (page === 'viewer') setTimeout(() => { resizeCanvas(); render(); }, 100);
+  if (page === 'viewer') setTimeout(() => { resizeCanvas(); }, 100);
 }
 
 function renderDashboard() {
@@ -643,7 +536,7 @@ function openProject(id) {
       <div><strong>Status:</strong> <span style="color:var(--success);">✓ Pronto</span></div>
     </div>
   `;
-  setTimeout(() => { resizeCanvas(); render(); }, 100);
+  setTimeout(() => { resizeCanvas(); }, 100);
 }
 
 let selectedFile = null;
@@ -725,7 +618,7 @@ function setTool(tool, e) {
   const status = document.getElementById('scaleStatus');
   if (tool === 'measure' || tool === 'scale') {
     status.classList.add('active');
-    status.textContent = ' Clique no 1º ponto';
+    status.textContent = '📏 Clique no 1º ponto';
     status.style.background = 'rgba(245, 158, 11, 0.9)';
   } else { status.classList.remove('active'); }
 }
@@ -741,7 +634,7 @@ function clearMeasurements() {
   document.getElementById('scaleStatus').classList.remove('active');
   currentTool = null;
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-  render();
+  renderScene();
 }
 
 function calibrateScale() {
@@ -756,6 +649,16 @@ function calibrateScale() {
 function resetCut() {
   document.getElementById('cutHeight').value = 1.0;
   document.getElementById('cutValue').textContent = '1.0 m';
+}
+
+function setView(view) {
+  alert('Vista: ' + view);
+}
+
+function resetView() {
+  camera = { x: 2500, y: 1400, z: -3000, rotX: 0, rotY: 0, zoom: 1 };
+  clearMeasurements();
+  renderScene();
 }
 
 function exportPLY() { alert('⬇️ Exportando PLY...'); }
