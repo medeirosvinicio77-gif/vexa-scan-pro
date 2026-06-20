@@ -8,7 +8,6 @@
 :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
 .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
 .auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
 .auth-card h1 { text-align: center; margin-bottom: 8px; }
@@ -25,7 +24,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-demo { width: 100%; padding: 12px; margin-top: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 14px; }
 .forgot-link { display: block; text-align: right; color: var(--primary); font-size: 13px; margin-bottom: 16px; text-decoration: none; }
-
 .app { display: none; height: 100vh; }
 .app.active { display: grid; grid-template-columns: 240px 1fr; }
 .sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
@@ -40,7 +38,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .content { flex: 1; padding: 24px; overflow-y: auto; }
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .page-header h2 { font-size: 22px; }
-
 .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 12px; border: 2px dashed var(--border); }
 .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
 .empty-state h3 { margin-bottom: 8px; }
@@ -55,8 +52,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .project-card .status { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
 .status.processing { background: var(--warning); color: #1a1a1a; }
 .status.ready { background: var(--success); color: white; }
-
-/* UPLOAD */
 .upload-panel { background: var(--surface); border-radius: 12px; padding: 24px; max-width: 700px; margin: 0 auto; }
 .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; position: relative; }
 .upload-zone:hover { border-color: var(--primary); background: var(--surface-2); }
@@ -74,8 +69,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .radio-group input:checked + span { background: var(--primary); color: white; display: block; padding: 8px; margin: -8px; border-radius: 6px; }
 .progress-bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin-top: 12px; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #8b5cf6); width: 0%; transition: width 0.3s; }
-
-/* PROCESSAMENTO */
 .processing-panel { background: var(--surface); border-radius: 12px; padding: 24px; max-width: 900px; margin: 0 auto; }
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
 .step { background: var(--surface-2); padding: 16px; border-radius: var(--radius); text-align: center; border: 2px solid var(--border); }
@@ -84,23 +77,20 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .step .icon { font-size: 28px; margin-bottom: 6px; }
 .step .label { font-size: 12px; color: var(--text-muted); }
 .step .status-text { font-size: 11px; margin-top: 4px; font-weight: 600; }
-.video-preview { background: #000; border-radius: var(--radius); padding: 16px; margin-bottom: 16px; text-align: center; min-height: 200px; display: flex; align-items: center; justify-content: center; }
-#videoElement { max-width: 100%; max-height: 300px; border-radius: var(--radius); }
-.frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-top: 16px; max-height: 180px; overflow-y: auto; }
-.frame-thumb { border: 2px solid var(--border); border-radius: 6px; overflow: hidden; }
-.frame-thumb img { width: 100%; height: 70px; object-fit: cover; display: block; }
-.frame-thumb .num { background: var(--surface-2); padding: 3px; text-align: center; font-size: 10px; }
-
-/* PANORAMA */
+.video-preview { background: #000; border-radius: var(--radius); padding: 16px; margin-bottom: 16px; text-align: center; min-height: 150px; display: flex; align-items: center; justify-content: center; }
+#videoElement { max-width: 100%; max-height: 250px; border-radius: var(--radius); }
+.frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; margin-top: 16px; max-height: 160px; overflow-y: auto; padding: 8px; background: var(--surface-2); border-radius: var(--radius); }
+.frame-thumb { border: 2px solid var(--border); border-radius: 6px; overflow: hidden; background: #000; }
+.frame-thumb img { width: 100%; height: 60px; object-fit: cover; display: block; }
+.frame-thumb .num { background: var(--surface); padding: 3px; text-align: center; font-size: 10px; color: var(--text-muted); }
 .panorama-container { background: var(--surface); border-radius: 12px; padding: 16px; height: calc(100vh - 120px); display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
 .panorama-viewer { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; cursor: crosshair; }
 #panoramaCanvas { display: block; width: 100%; height: 100%; }
-.panorama-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; z-index: 10; }
+.panorama-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; z-index: 10; display: flex; gap: 12px; }
 .panorama-status { position: absolute; top: 12px; right: 12px; background: rgba(16, 185, 129, 0.9); color: white; padding: 8px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 600; z-index: 10; }
-.panorama-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; background: rgba(0,0,0,0.7); padding: 8px; border-radius: var(--radius); z-index: 10; }
+.panorama-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; background: rgba(0,0,0,0.7); padding: 8px; border-radius: var(--radius); z-index: 10; flex-wrap: wrap; justify-content: center; }
 .ctrl-btn { padding: 6px 10px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 12px; }
 .ctrl-btn:hover { background: var(--primary); }
-
 .tools-panel { background: var(--surface); border-radius: var(--radius); padding: 16px; overflow-y: auto; }
 .tools-panel h3 { font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
@@ -118,6 +108,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .measurement-item { background: var(--surface-2); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
 .delete-btn { background: var(--danger); border: none; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px; }
 .hidden { display: none !important; }
+.error-box { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); color: #fca5a5; padding: 12px; border-radius: var(--radius); margin-top: 12px; font-size: 13px; display: none; }
+.error-box.active { display: block; }
 </style>
 </head>
 <body>
@@ -152,21 +144,20 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
     <div class="sidebar-header"><div class="logo">V</div><div><div style="font-weight:600;">Vexa Scan</div><div style="font-size:11px;color:var(--text-muted);">Cloud Demo</div></div></div>
     <div class="user-info">👤 João Silva<br><small>joao@email.com</small></div>
     <nav>
-      <div class="nav-item active" onclick="showPage('dashboard', event)"> Projetos</div>
+      <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
       <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
-      <div class="nav-item" onclick="showPage('panorama', event)">🖼️ Panorama</div>
+      <div class="nav-item" onclick="showPage('panorama', event)">️ Panorama</div>
       <div class="nav-item" onclick="showPage('settings', event)">⚙️ Configurações</div>
     </nav>
-    <div class="sidebar-footer"><div class="nav-item" onclick="logout()">🚪 Sair</div></div>
+    <div class="sidebar-footer"><div class="nav-item" onclick="logout()"> Sair</div></div>
   </aside>
 
   <main class="main">
     <div class="content">
 
-      <!-- DASHBOARD -->
       <div id="page-dashboard" class="page">
         <div class="page-header">
-          <h2> Meus Projetos</h2>
+          <h2>📊 Meus Projetos</h2>
           <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="showPage('upload', event)">➕ Novo Scan</button>
         </div>
         <div class="processing-banner" id="processingBanner">
@@ -182,7 +173,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
         <div class="project-list hidden" id="projectList"></div>
       </div>
 
-      <!-- UPLOAD -->
       <div id="page-upload" class="page hidden">
         <div class="page-header"><h2>📹 Novo Scan</h2></div>
         <div class="upload-panel">
@@ -191,7 +181,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <input type="file" accept="video/*" id="videoInput" onchange="handleFileSelect(event)">
             <div class="icon">📹</div>
             <p><strong>Clique para selecionar</strong> ou arraste o vídeo aqui</p>
-            <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">MP4, MOV, AVI até 2GB</p>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">MP4, MOV, AVI até 500MB (recomendado)</p>
           </div>
           <div class="file-info" id="fileInfo">
             <div class="file-name">✓ <span id="fileName">arquivo.mp4</span></div>
@@ -216,31 +206,31 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
               </div>
             </div>
           </div>
-          <button class="btn-primary" id="uploadBtn" onclick="startProcessing()" disabled> Processar Vídeo</button>
+          <button class="btn-primary" id="uploadBtn" onclick="startProcessing()" disabled>🚀 Processar Vídeo</button>
           <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
           <p style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;" id="progressText">Selecione um vídeo para começar</p>
+          <div class="error-box" id="errorBox"></div>
         </div>
       </div>
 
-      <!-- PROCESSAMENTO (etapas) -->
       <div id="page-processing" class="page hidden">
-        <div class="page-header"><h2>🎬 Processamento</h2></div>
+        <div class="page-header"><h2> Processamento</h2></div>
         <div class="processing-panel">
           <div class="steps">
             <div class="step" id="step1"><div class="icon">📹</div><div class="label">Upload</div><div class="status-text" id="step1Text">Aguardando</div></div>
-            <div class="step" id="step2"><div class="icon">️</div><div class="label">Frames</div><div class="status-text" id="step2Text">Aguardando</div></div>
+            <div class="step" id="step2"><div class="icon">🎞️</div><div class="label">Frames</div><div class="status-text" id="step2Text">Aguardando</div></div>
             <div class="step" id="step3"><div class="icon">🧵</div><div class="label">Costura</div><div class="status-text" id="step3Text">Aguardando</div></div>
-            <div class="step" id="step4"><div class="icon">️</div><div class="label">Panorama</div><div class="status-text" id="step4Text">Aguardando</div></div>
+            <div class="step" id="step4"><div class="icon">🖼️</div><div class="label">Panorama</div><div class="status-text" id="step4Text">Aguardando</div></div>
           </div>
           <div class="video-preview">
-            <video id="videoElement" controls style="display:none;"></video>
+            <video id="videoElement" controls style="display:none;" muted></video>
             <div id="processingMessage" style="color:var(--text-muted);">Aguardando...</div>
           </div>
           <div class="frames-grid" id="framesGrid"></div>
+          <div class="error-box" id="errorBoxProcessing"></div>
         </div>
       </div>
 
-      <!-- PANORAMA -->
       <div id="page-panorama" class="page hidden">
         <div class="page-header">
           <h2>🖼️ Panorama - Medir</h2>
@@ -250,15 +240,15 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
           <div class="panorama-viewer" id="panoramaViewer">
             <canvas id="panoramaCanvas"></canvas>
             <div class="panorama-info">
-              <span> <span id="panoSize">0 x 0</span> px</span>
-              <span>🔍 <span id="zoomLevel">100</span>%</span>
+              <span>📐 <span id="panoSize">0 x 0</span> px</span>
+              <span> <span id="zoomLevel">100</span>%</span>
             </div>
             <div class="panorama-status" id="panoStatus">Pronto para medir</div>
             <div class="panorama-controls">
-              <button class="ctrl-btn" onclick="zoomIn()">🔍+</button>
+              <button class="ctrl-btn" onclick="zoomIn()">+</button>
               <button class="ctrl-btn" onclick="zoomOut()">🔍-</button>
               <button class="ctrl-btn" onclick="resetZoom()">🔄 Reset</button>
-              <button class="ctrl-btn" onclick="toggleGrid()">🔲 Grid</button>
+              <button class="ctrl-btn" onclick="toggleGrid()"> Grid</button>
               <button class="ctrl-btn" onclick="clearAllMeasurements()">🗑️ Limpar</button>
             </div>
           </div>
@@ -282,7 +272,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
                 <div class="measure-row"><span>Fator:</span><span id="scaleFactor">1.000</span></div>
               </div>
             </div>
-            <h3 style="margin-top:16px;">📊 Medição</h3>
+            <h3 style="margin-top:16px;"> Medição</h3>
             <div class="measure-display">
               <div class="measure-row"><span>ΔX:</span><span id="dx">-- px</span></div>
               <div class="measure-row"><span>ΔY:</span><span id="dy">-- px</span></div>
@@ -295,18 +285,17 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             </div>
             <h3 style="margin-top:16px;">⬇️ Exportar</h3>
             <div style="display:flex;gap:6px;">
-              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPNG()">⬇️ PNG</button>
+              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPNG()">️ PNG</button>
               <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()">📊 CSV</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- SETTINGS -->
       <div id="page-settings" class="page hidden">
-        <div class="page-header"><h2>⚙️ Configurações</h2></div>
+        <div class="page-header"><h2>️ Configurações</h2></div>
         <div style="background:var(--surface);padding:20px;border-radius:12px;">
-          <h3>️ Sobre</h3>
+          <h3>ℹ️ Sobre</h3>
           <p><strong>Vexa Scan Pro Cloud v2.0</strong></p>
           <p style="color:var(--text-muted);margin-top:8px;">Vídeo → Frames → Costura → Panorama → Medir</p>
         </div>
@@ -357,7 +346,8 @@ function logout() {
 function showPage(page, e) {
   e?.stopPropagation?.();
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.getElementById('page-' + page).classList.remove('hidden');
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.remove('hidden');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const navMap = { dashboard: 0, upload: 1, processing: 1, panorama: 2, settings: 3 };
   const navItems = document.querySelectorAll('.nav-item');
@@ -383,7 +373,7 @@ function renderDashboard() {
     <div class="project-card" onclick="openProject(${p.id})">
       <strong>${p.name}</strong>
       <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${p.date} • ${p.frames} frames</div>
-      <span class="status ${p.status}">${p.status === 'processing' ? '⏳ Processando...' : '✓ Pronto'}</span>
+      <span class="status ${p.status}">${p.status === 'processing' ? ' Processando...' : '✓ Pronto'}</span>
     </div>
   `).join('');
 }
@@ -392,20 +382,23 @@ function openProject(id) {
   const project = projects.find(p => p.id === id);
   if (!project) return;
   if (project.status === 'processing') {
-    alert('⏳ Projeto ainda processando!');
+    alert(' Projeto ainda processando!');
     return;
   }
   currentProject = project;
   if (project.panoramaDataUrl) {
     panoramaDataUrl = project.panoramaDataUrl;
     panoramaImage = new Image();
-    panoramaImage.src = panoramaDataUrl;
     panoramaImage.onload = () => {
       showPage('panorama');
       document.getElementById('panoName').textContent = project.name;
       document.getElementById('panoFrames').textContent = project.frames;
       document.getElementById('panoRes').textContent = panoramaImage.width + 'x' + panoramaImage.height;
     };
+    panoramaImage.onerror = () => {
+      alert('❌ Erro ao carregar panorama!');
+    };
+    panoramaImage.src = panoramaDataUrl;
   } else {
     alert('⚠️ Panorama não gerado ainda!');
   }
@@ -415,129 +408,211 @@ function openProject(id) {
 function handleFileSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('video/')) { alert('❌ Selecione um vídeo!'); return; }
+  if (!file.type.startsWith('video/')) { 
+    showError('❌ Arquivo não é um vídeo válido!');
+    return; 
+  }
+  if (file.size > 500 * 1024 * 1024) { 
+    showError('❌ Arquivo muito grande! Máximo recomendado: 500MB');
+    return; 
+  }
   selectedFile = file;
   document.getElementById('uploadZone').classList.add('has-file');
   document.getElementById('fileInfo').classList.add('active');
   document.getElementById('fileName').textContent = file.name;
   document.getElementById('fileSize').textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
   document.getElementById('uploadBtn').disabled = false;
-  document.getElementById('progressText').textContent = '✓ Vídeo selecionado!';
+  document.getElementById('progressText').textContent = '✓ Vídeo selecionado! Clique em "Processar Vídeo"';
   document.getElementById('progressText').style.color = 'var(--success)';
+  hideError();
 }
 
-// ========== PROCESSAMENTO COMPLETO ==========
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  if (box) {
+    box.textContent = msg;
+    box.classList.add('active');
+  }
+  alert(msg);
+}
+
+function hideError() {
+  const box = document.getElementById('errorBox');
+  if (box) box.classList.remove('active');
+}
+
+// ========== PROCESSAMENTO ==========
 async function startProcessing() {
   if (!selectedFile) return;
+  hideError();
   showPage('processing');
   
   const video = document.getElementById('videoElement');
   const videoURL = URL.createObjectURL(selectedFile);
   video.src = videoURL;
+  video.muted = true;
   video.style.display = 'block';
   document.getElementById('processingMessage').style.display = 'none';
+  document.getElementById('errorBoxProcessing').classList.remove('active');
   
-  // Step 1: Upload
   updateStep(1, 'completed', '✓ Completo');
   await sleep(500);
   
-  // Step 2: Extrair frames
-  updateStep(2, 'active', 'Extraindo...');
-  document.getElementById('processingMessage').textContent = 'Extraindo frames...';
-  document.getElementById('processingMessage').style.display = 'block';
-  
-  await new Promise(r => { video.onloadedmetadata = r; });
-  
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  
-  const interval = parseFloat(document.querySelector('input[name="interval"]:checked')?.value || 2);
-  const duration = video.duration;
-  extractedFrames = [];
-  const framesGrid = document.getElementById('framesGrid');
-  framesGrid.innerHTML = '';
-  
-  for (let t = 0; t < duration; t += interval) {
-    video.currentTime = t;
-    await new Promise(r => { video.onseeked = r; });
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const frameData = canvas.toDataURL('image/jpeg', 0.85);
-    extractedFrames.push(frameData);
+  try {
+    updateStep(2, 'active', 'Preparando...');
+    document.getElementById('processingMessage').textContent = 'Carregando vídeo...';
+    document.getElementById('processingMessage').style.display = 'block';
     
-    const thumb = document.createElement('div');
-    thumb.className = 'frame-thumb';
-    thumb.innerHTML = `<img src="${frameData}"><div class="num">#${extractedFrames.length}</div>`;
-    framesGrid.appendChild(thumb);
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('Timeout ao carregar vídeo')), 30000);
+      video.onloadedmetadata = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
+      video.onerror = () => {
+        clearTimeout(timeout);
+        reject(new Error('Erro ao carregar vídeo'));
+      };
+    });
     
-    updateStep(2, 'active', `${extractedFrames.length} frames`);
-    await sleep(50);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const maxW = 640;
+    const scale = Math.min(1, maxW / video.videoWidth);
+    canvas.width = Math.floor(video.videoWidth * scale);
+    canvas.height = Math.floor(video.videoHeight * scale);
+    
+    const interval = parseFloat(document.querySelector('input[name="interval"]:checked')?.value || 2);
+    const duration = video.duration;
+    const quality = document.querySelector('input[name="quality"]:checked')?.value || 'med';
+    const jpegQuality = quality === 'low' ? 0.6 : quality === 'high' ? 0.9 : 0.75;
+    
+    const maxFrames = 60;
+    const actualInterval = Math.max(interval, duration / maxFrames);
+    
+    extractedFrames = [];
+    const framesGrid = document.getElementById('framesGrid');
+    framesGrid.innerHTML = '';
+    
+    for (let t = 0; t < duration && extractedFrames.length < maxFrames; t += actualInterval) {
+      await seekVideo(video, t);
+      
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const frameData = canvas.toDataURL('image/jpeg', jpegQuality);
+      extractedFrames.push(frameData);
+      
+      const thumb = document.createElement('div');
+      thumb.className = 'frame-thumb';
+      thumb.innerHTML = `<img src="${frameData}"><div class="num">#${extractedFrames.length}</div>`;
+      framesGrid.appendChild(thumb);
+      
+      const progress = Math.round((t / duration) * 100);
+      updateStep(2, 'active', `${extractedFrames.length} frames (${progress}%)`);
+      
+      await sleep(10);
+    }
+    
+    updateStep(2, 'completed', `✓ ${extractedFrames.length} frames`);
+    await sleep(500);
+    
+    updateStep(3, 'active', 'Costurando...');
+    document.getElementById('processingMessage').textContent = 'Costurando frames em panorama...';
+    
+    const stitchCanvas = document.createElement('canvas');
+    const stitchCtx = stitchCanvas.getContext('2d');
+    const frameW = canvas.width;
+    const frameH = canvas.height;
+    
+    const cols = Math.min(extractedFrames.length, Math.ceil(Math.sqrt(extractedFrames.length * 2)));
+    const rows = Math.ceil(extractedFrames.length / cols);
+    stitchCanvas.width = frameW * cols;
+    stitchCanvas.height = frameH * rows;
+    
+    stitchCtx.fillStyle = '#000';
+    stitchCtx.fillRect(0, 0, stitchCanvas.width, stitchCanvas.height);
+    
+    for (let i = 0; i < extractedFrames.length; i++) {
+      const img = new Image();
+      img.src = extractedFrames[i];
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Timeout')), 5000);
+        img.onload = () => { clearTimeout(timeout); resolve(); };
+        img.onerror = () => { clearTimeout(timeout); resolve(); };
+      });
+      
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      stitchCtx.drawImage(img, col * frameW, row * frameH);
+      
+      const progress = Math.round(((i + 1) / extractedFrames.length) * 100);
+      updateStep(3, 'active', `${progress}%`);
+      await sleep(10);
+    }
+    
+    panoramaDataUrl = stitchCanvas.toDataURL('image/png');
+    updateStep(3, 'completed', '✓ Costurado');
+    await sleep(500);
+    
+    updateStep(4, 'completed', '✓ Pronto!');
+    document.getElementById('processingMessage').textContent = '✅ Panorama gerado com sucesso!';
+    
+    const newProject = {
+      id: Date.now(),
+      name: selectedFile.name.replace(/\.[^/.]+$/, ""),
+      date: new Date().toLocaleDateString('pt-BR'),
+      frames: extractedFrames.length,
+      status: 'ready',
+      panoramaDataUrl: panoramaDataUrl
+    };
+    projects.push(newProject);
+    currentProject = newProject;
+    
+    panoramaImage = new Image();
+    panoramaImage.onload = () => {
+      setTimeout(() => {
+        alert(`🎉 Processamento completo!\n\n✓ ${extractedFrames.length} frames extraídos\n✓ Panorama costurado\n✓ Resolução: ${panoramaImage.width}x${panoramaImage.height}px\n\nClique em "Panorama" no menu para medir!`);
+        showPage('panorama');
+        document.getElementById('panoName').textContent = newProject.name;
+        document.getElementById('panoFrames').textContent = newProject.frames;
+        document.getElementById('panoRes').textContent = panoramaImage.width + 'x' + panoramaImage.height;
+      }, 300);
+    };
+    panoramaImage.src = panoramaDataUrl;
+    
+  } catch (err) {
+    console.error('Erro no processamento:', err);
+    document.getElementById('errorBoxProcessing').textContent = '❌ Erro: ' + err.message;
+    document.getElementById('errorBoxProcessing').classList.add('active');
+    document.getElementById('processingMessage').textContent = '❌ Erro no processamento: ' + err.message;
+    document.getElementById('processingMessage').style.display = 'block';
+    updateStep(2, 'active', '❌ Erro');
   }
-  
-  updateStep(2, 'completed', `✓ ${extractedFrames.length} frames`);
-  await sleep(500);
-  
-  // Step 3: Costura (stitching) - frames lado a lado
-  updateStep(3, 'active', 'Costurando...');
-  document.getElementById('processingMessage').textContent = 'Costurando frames em panorama...';
-  
-  const stitchCanvas = document.createElement('canvas');
-  const stitchCtx = stitchCanvas.getContext('2d');
-  
-  // Layout: todos os frames em uma linha horizontal (panorama)
-  const frameW = canvas.width;
-  const frameH = canvas.height;
-  stitchCanvas.width = frameW * extractedFrames.length;
-  stitchCanvas.height = frameH;
-  
-  for (let i = 0; i < extractedFrames.length; i++) {
-    const img = new Image();
-    img.src = extractedFrames[i];
-    await new Promise(r => { img.onload = r; });
-    stitchCtx.drawImage(img, i * frameW, 0);
-    updateStep(3, 'active', `${Math.round((i+1)/extractedFrames.length*100)}%`);
-    await sleep(30);
-  }
-  
-  panoramaDataUrl = stitchCanvas.toDataURL('image/png');
-  updateStep(3, 'completed', '✓ Costurado');
-  await sleep(500);
-  
-  // Step 4: Finalizar
-  updateStep(4, 'completed', '✓ Pronto!');
-  document.getElementById('processingMessage').textContent = '✅ Panorama gerado com sucesso!';
-  
-  // Salvar no projeto
-  const newProject = {
-    id: Date.now(),
-    name: selectedFile.name.replace(/\.[^/.]+$/, ""),
-    date: new Date().toLocaleDateString('pt-BR'),
-    frames: extractedFrames.length,
-    status: 'ready',
-    panoramaDataUrl: panoramaDataUrl
-  };
-  projects.push(newProject);
-  currentProject = newProject;
-  
-  panoramaImage = new Image();
-  panoramaImage.src = panoramaDataUrl;
-  panoramaImage.onload = () => {
-    setTimeout(() => {
-      alert(`🎉 Processamento completo!\n\n✓ ${extractedFrames.length} frames extraídos\n✓ Panorama costurado\n✓ Resolução: ${panoramaImage.width}x${panoramaImage.height}px\n\nClique em "Panorama" para medir!`);
-      showPage('panorama');
-      document.getElementById('panoName').textContent = newProject.name;
-      document.getElementById('panoFrames').textContent = newProject.frames;
-      document.getElementById('panoRes').textContent = panoramaImage.width + 'x' + panoramaImage.height;
-    }, 500);
-  };
+}
+
+function seekVideo(video, time) {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      video.removeEventListener('seeked', onSeeked);
+      reject(new Error(`Timeout no seek em ${time}s`));
+    }, 5000);
+    
+    function onSeeked() {
+      clearTimeout(timeout);
+      video.removeEventListener('seeked', onSeeked);
+      resolve();
+    }
+    
+    video.addEventListener('seeked', onSeeked);
+    video.currentTime = time;
+  });
 }
 
 function updateStep(num, status, text) {
   const step = document.getElementById('step' + num);
   const statusEl = document.getElementById('step' + num + 'Text');
-  step.className = 'step ' + status;
-  statusEl.textContent = text;
+  if (step) step.className = 'step ' + status;
+  if (statusEl) statusEl.textContent = text;
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -548,13 +623,15 @@ function renderPanorama() {
   const ctx = canvas.getContext('2d');
   const viewer = document.getElementById('panoramaViewer');
   
+  if (!canvas || !ctx || !viewer) return;
+  
   canvas.width = viewer.clientWidth;
   canvas.height = viewer.clientHeight;
   
   ctx.fillStyle = '#0a0e1a';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  if (!panoramaImage || !panoramaImage.complete) {
+  if (!panoramaImage || !panoramaImage.complete || !panoramaImage.naturalWidth) {
     ctx.fillStyle = '#94a3b8';
     ctx.font = '16px Arial';
     ctx.textAlign = 'center';
@@ -562,7 +639,6 @@ function renderPanorama() {
     return;
   }
   
-  // Aplicar zoom e pan
   const imgW = panoramaImage.width * zoom;
   const imgH = panoramaImage.height * zoom;
   const x = (canvas.width - imgW) / 2 + panX;
@@ -570,13 +646,12 @@ function renderPanorama() {
   
   ctx.drawImage(panoramaImage, x, y, imgW, imgH);
   
-  // Grid
   if (showGrid) {
     ctx.strokeStyle = 'rgba(79, 70, 229, 0.3)';
     ctx.lineWidth = 1;
     const gridSize = 50 * zoom;
-    const offsetX = x % gridSize;
-    const offsetY = y % gridSize;
+    const offsetX = ((x % gridSize) + gridSize) % gridSize;
+    const offsetY = ((y % gridSize) + gridSize) % gridSize;
     for (let gx = offsetX; gx < canvas.width; gx += gridSize) {
       ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, canvas.height); ctx.stroke();
     }
@@ -585,10 +660,9 @@ function renderPanorama() {
     }
   }
   
-  // Medidas
   measurePoints.forEach((p, i) => {
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 8 * zoom, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
     ctx.fillStyle = i === 0 ? '#f59e0b' : '#10b981';
     ctx.fill();
     ctx.strokeStyle = '#fff';
@@ -621,13 +695,11 @@ function renderPanorama() {
   document.getElementById('zoomLevel').textContent = Math.round(zoom * 100);
 }
 
-// Controles do panorama
-function zoomIn() { zoom *= 1.3; renderPanorama(); }
-function zoomOut() { zoom /= 1.3; renderPanorama(); }
+function zoomIn() { zoom = Math.min(5, zoom * 1.3); renderPanorama(); }
+function zoomOut() { zoom = Math.max(0.1, zoom / 1.3); renderPanorama(); }
 function resetZoom() { zoom = 1; panX = 0; panY = 0; renderPanorama(); }
 function toggleGrid() { showGrid = !showGrid; renderPanorama(); }
 
-// Pan com arrastar (botão direito ou meio)
 document.getElementById('panoramaCanvas').addEventListener('mousedown', (e) => {
   if (e.button === 2 || e.button === 1) {
     isDragging = true;
@@ -637,7 +709,6 @@ document.getElementById('panoramaCanvas').addEventListener('mousedown', (e) => {
     return;
   }
   
-  // Clique para medir
   if (!currentTool) return;
   const rect = e.target.getBoundingClientRect();
   const x = e.clientX - rect.left;
@@ -695,7 +766,6 @@ document.getElementById('panoramaCanvas').addEventListener('wheel', (e) => {
   renderPanorama();
 });
 
-// ========== FERRAMENTAS ==========
 function setTool(tool) {
   currentTool = tool;
   measurePoints = [];
@@ -729,7 +799,6 @@ function clearAllMeasurements() {
 
 function calibrateScale() {
   const real = parseFloat(document.getElementById('realDistance').value) || 5000;
-  // Assume que a última medição em pixels corresponde a esse valor real
   if (measurements.length > 0) {
     const lastDistPx = parseFloat(measurements[measurements.length - 1].value) / scaleFactor;
     scaleFactor = real / lastDistPx;
@@ -754,7 +823,7 @@ function renderMeasurementsList() {
         <div style="font-weight:600;">${m.type}: ${m.value} ${m.unit}</div>
         <div style="color:var(--text-muted);font-size:10px;">${m.date}</div>
       </div>
-      <button class="delete-btn" onclick="deleteMeasurement(${i})"></button>
+      <button class="delete-btn" onclick="deleteMeasurement(${i})">✕</button>
     </div>
   `).join('');
 }
@@ -770,7 +839,7 @@ function exportPanorama() {
   a.href = panoramaDataUrl;
   a.download = `panorama_${currentProject?.name || 'vexa'}_${Date.now()}.png`;
   a.click();
-  alert('💾 Panorama exportado!');
+  alert(' Panorama exportado!');
 }
 
 function exportPNG() { exportPanorama(); }
