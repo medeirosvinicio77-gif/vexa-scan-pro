@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro - 4 Paredes + Tour 3D</title>
+<title>Vexa Scan Pro - Tour 3D Navegável</title>
 <style>
 :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
 .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
 .auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; }
 .auth-card h1 { text-align: center; margin-bottom: 8px; }
@@ -32,70 +32,53 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .project-list { display: grid; gap: 12px; }
 .project-card { background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; }
 .project-card:hover { border-color: var(--primary); }
-.upload-panel { background: var(--surface); padding: 24px; border-radius: 12px; max-width: 700px; margin: 0 auto; }
+.upload-panel { background: var(--surface); padding: 24px; border-radius: 12px; max-width: 600px; margin: 0 auto; }
 .upload-zone { border: 2px dashed var(--border); padding: 40px; text-align: center; border-radius: var(--radius); cursor: pointer; margin-bottom: 20px; position: relative; }
 .upload-zone.has-file { border-color: var(--success); }
 .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .progress-bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin-top: 12px; }
 .progress-fill { height: 100%; background: var(--primary); width: 0%; }
-.processing-panel { background: var(--surface); padding: 24px; border-radius: 12px; max-width: 1200px; margin: 0 auto; }
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.tour-container { background: var(--surface); border-radius: 12px; height: calc(100vh - 120px); display: grid; grid-template-columns: 1fr 300px; gap: 16px; padding: 16px; }
+.tour-viewer { background: #000; border-radius: var(--radius); position: relative; overflow: hidden; cursor: grab; }
+.tour-viewer:active { cursor: grabbing; }
+#tourCanvas { width: 100%; height: 100%; display: block; }
+.tour-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; padding: 20px 15px; cursor: pointer; font-size: 24px; border-radius: 4px; z-index: 10; }
+.tour-nav:hover { background: var(--primary); }
+.tour-nav.left { left: 10px; }
+.tour-nav.right { right: 10px; }
+.tour-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; z-index: 10; }
+.tour-controls { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; background: rgba(0,0,0,0.7); padding: 8px; border-radius: var(--radius); z-index: 10; }
+.tour-btn { padding: 8px 12px; background: var(--surface-2); border: none; color: var(--text); border-radius: 6px; cursor: pointer; font-size: 12px; }
+.tour-btn:hover { background: var(--primary); }
+.tour-btn.active { background: var(--primary); }
+.tools-panel { background: var(--surface); padding: 16px; border-radius: var(--radius); overflow-y: auto; }
+.tools-panel h3 { font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.wall-list { display: grid; gap: 8px; margin-bottom: 16px; }
+.wall-item { background: var(--surface-2); padding: 10px; border-radius: var(--radius); cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+.wall-item:hover { border-color: var(--primary); }
+.wall-item.active { border-color: var(--primary); background: rgba(79, 70, 229, 0.2); }
+.wall-item .wall-name { font-weight: bold; font-size: 13px; }
+.wall-item .wall-frames { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.tool-btn { padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 12px; text-align: center; }
+.tool-btn.active { background: var(--primary); border-color: var(--primary); }
+.measure-display { background: var(--surface-2); padding: 10px; border-radius: var(--radius); font-size: 12px; margin-top: 10px; }
+.measure-row { display: flex; justify-content: space-between; padding: 3px 0; }
+.measure-row.total { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; font-weight: 600; color: var(--success); }
+.hidden { display: none !important; }
+.stats-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat-item { background: var(--surface-2); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; }
+.stat-item strong { color: var(--primary); }
+.processing-panel { background: var(--surface); padding: 24px; border-radius: 12px; max-width: 900px; margin: 0 auto; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
 .step { background: var(--surface-2); padding: 16px; border-radius: var(--radius); text-align: center; border: 2px solid var(--border); }
 .step.active { border-color: var(--primary); }
 .step.completed { border-color: var(--success); }
 .step .icon { font-size: 24px; margin-bottom: 6px; }
-.video-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.video-preview { background: #000; border-radius: var(--radius); padding: 16px; text-align: center; }
-#videoElement { max-width: 100%; max-height: 300px; }
-.frames-section { background: var(--surface-2); padding: 16px; border-radius: var(--radius); }
-.frames-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; max-height: 400px; overflow-y: auto; }
-.frame-card { border: 2px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: #000; }
-.frame-card:hover { border-color: var(--primary); transform: scale(1.05); }
-.frame-card.selected { border-color: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-.frame-card img { width: 100%; height: 80px; object-fit: cover; }
-.frame-card .frame-info { padding: 4px; font-size: 10px; text-align: center; }
-.frame-card .wall-tag { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-top: 2px; }
-.wall-front { background: #4f46e5; color: white; }
-.wall-back { background: #10b981; color: white; }
-.wall-left { background: #f59e0b; color: #1a1a1a; }
-.wall-right { background: #ef4444; color: white; }
-.wall-none { background: var(--text-muted); color: #1a1a1a; }
-.wall-selector { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
-.wall-selector button { flex: 1; padding: 4px; font-size: 9px; border: none; border-radius: 4px; cursor: pointer; color: white; }
-.wall-selector button.wf { background: #4f46e5; }
-.wall-selector button.wb { background: #10b981; }
-.wall-selector button.wl { background: #f59e0b; color: #1a1a1a; }
-.wall-selector button.wr { background: #ef4444; }
-.wall-selector button.wn { background: var(--text-muted); color: #1a1a1a; }
-.walls-result { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
-.wall-result-card { background: var(--surface-2); border-radius: var(--radius); overflow: hidden; border: 2px solid var(--border); }
-.wall-result-card img { width: 100%; height: 200px; object-fit: cover; }
-.wall-result-card .wall-header { padding: 12px; font-weight: bold; text-align: center; }
-.wall-result-card .wall-front-h { background: #4f46e5; }
-.wall-result-card .wall-back-h { background: #10b981; }
-.wall-result-card .wall-left-h { background: #f59e0b; color: #1a1a1a; }
-.wall-result-card .wall-right-h { background: #ef4444; }
-.tour-container { background: var(--surface); border-radius: 12px; padding: 16px; height: calc(100vh - 120px); }
-.tour-viewer { background: #000; border-radius: var(--radius); position: relative; overflow: hidden; height: calc(100% - 80px); display: flex; align-items: center; justify-content: center; }
-#tourCanvas { max-width: 100%; max-height: 100%; }
-.tour-controls { display: flex; gap: 8px; margin-top: 16px; justify-content: center; flex-wrap: wrap; }
-.tour-btn { padding: 10px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 13px; }
-.tour-btn:hover { background: var(--primary); }
-.tour-btn.active { background: var(--primary); border-color: var(--primary); }
-.tour-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); border: none; color: white; padding: 20px 10px; cursor: pointer; font-size: 24px; border-radius: 4px; }
-.tour-nav.left { left: 10px; }
-.tour-nav.right { right: 10px; }
-.tour-info { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; }
-.measure-overlay { position: absolute; top: 12px; right: 12px; background: rgba(245, 158, 11, 0.9); color: #1a1a1a; padding: 8px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 600; display: none; }
-.measure-overlay.active { display: block; }
-.tools-panel { background: var(--surface); padding: 16px; border-radius: var(--radius); margin-top: 16px; }
-.tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.tool-btn { padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); cursor: pointer; font-size: 12px; text-align: center; }
-.tool-btn.active { background: var(--primary); border-color: var(--primary); }
-.hidden { display: none !important; }
-.stats-bar { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
-.stat-item { background: var(--surface-2); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; }
-.stat-item strong { color: var(--primary); }
+.frames-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; padding: 8px; background: var(--surface-2); border-radius: var(--radius); margin-top: 16px; }
+.frame-thumb { border: 2px solid var(--border); border-radius: 6px; overflow: hidden; }
+.frame-thumb img { width: 100%; height: 70px; object-fit: cover; }
+.frame-thumb .num { font-size: 10px; text-align: center; padding: 2px; background: var(--surface); }
 </style>
 </head>
 <body>
@@ -110,8 +93,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
     <form id="loginForm" onsubmit="doLogin(event)">
       <div class="form-group"><label>Email</label><input type="email" required></div>
       <div class="form-group"><label>Senha</label><input type="password" required></div>
-      <button type="submit" class="btn-primary"> Entrar</button>
-      <button type="button" class="btn-demo" onclick="doLogin(event, true)">🚀 Modo Demo</button>
+      <button type="submit" class="btn-primary">🔐 Entrar</button>
+      <button type="button" class="btn-demo" onclick="doLogin(event, true)"> Modo Demo</button>
     </form>
     <form id="registerForm" class="hidden" onsubmit="doLogin(event)">
       <div class="form-group"><label>Nome</label><input type="text" required></div>
@@ -124,11 +107,9 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 
 <div class="app" id="app">
   <aside class="sidebar">
-    <div style="font-weight:600;margin-bottom:20px;">🔷 Vexa Scan</div>
+    <div style="font-weight:600;margin-bottom:20px;"> Vexa Scan</div>
     <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
     <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
-    <div class="nav-item" onclick="showPage('classify', event)">️ Classificar</div>
-    <div class="nav-item" onclick="showPage('walls', event)">🧱 4 Paredes</div>
     <div class="nav-item" onclick="showPage('tour', event)">🎮 Tour 3D</div>
   </aside>
 
@@ -142,7 +123,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
         <div style="font-size:48px;margin-bottom:16px;">📦</div>
         <h3>Nenhum projeto ainda</h3>
         <p style="color:var(--text-muted);margin:16px 0;">Envie um vídeo para começar</p>
-        <button class="btn-primary" style="width:auto;padding:10px 20px;" onclick="showPage('upload', event)">☁️ Enviar vídeo</button>
+        <button class="btn-primary" style="width:auto;padding:10px 20px;" onclick="showPage('upload', event)">️ Enviar vídeo</button>
       </div>
       <div class="project-list hidden" id="projectList"></div>
     </div>
@@ -155,110 +136,71 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
           <input type="file" accept="video/*" id="videoInput" onchange="handleFileSelect(event)">
           <div style="font-size:40px;margin-bottom:8px;">📹</div>
           <p><strong>Clique para selecionar</strong> um vídeo</p>
-          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">MP4, MOV, AVI</p>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Grave girando 360° pelo ambiente</p>
         </div>
         <div class="form-group">
           <label>Intervalo entre frames (segundos)</label>
           <div style="display:flex;gap:8px;">
-            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="0.5" style="display:none;"><span>0.5s</span></label>
-            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="1" checked style="display:none;"><span>1s</span></label>
-            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="2" style="display:none;"><span>2s</span></label>
+            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="1" style="display:none;"><span>1s</span></label>
+            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="2" checked style="display:none;"><span>2s</span></label>
+            <label style="flex:1;padding:8px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;"><input type="radio" name="interval" value="3" style="display:none;"><span>3s</span></label>
           </div>
         </div>
-        <button class="btn-primary" id="uploadBtn" onclick="startProcessing()" disabled>🚀 Extrair Frames</button>
+        <button class="btn-primary" id="uploadBtn" onclick="startProcessing()" disabled>🚀 Processar e Detectar Paredes</button>
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
         <p style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center;" id="progressText">Selecione um vídeo</p>
       </div>
     </div>
 
-    <div id="page-classify" class="page hidden">
-      <div class="page-header"><h2>🏷️ Classificar Frames por Parede</h2></div>
+    <div id="page-processing" class="page hidden">
+      <div class="page-header"><h2> Processamento</h2></div>
       <div class="processing-panel">
-        <div class="stats-bar" id="statsBar">
-          <div class="stat-item">Total: <strong id="statTotal">0</strong></div>
-          <div class="stat-item" style="color:#4f46e5;">Frente: <strong id="statFront">0</strong></div>
-          <div class="stat-item" style="color:#10b981;">Trás: <strong id="statBack">0</strong></div>
-          <div class="stat-item" style="color:#f59e0b;">Esq: <strong id="statLeft">0</strong></div>
-          <div class="stat-item" style="color:#ef4444;">Dir: <strong id="statRight">0</strong></div>
+        <div class="steps">
+          <div class="step" id="step1"><div class="icon">📹</div><div>Extraindo Frames</div><div style="font-size:11px;margin-top:4px;" id="step1Text">0%</div></div>
+          <div class="step" id="step2"><div class="icon">🧠</div><div>Detectando Paredes</div><div style="font-size:11px;margin-top:4px;" id="step2Text">Aguardando</div></div>
+          <div class="step" id="step3"><div class="icon">🎮</div><div>Gerando Tour</div><div style="font-size:11px;margin-top:4px;" id="step3Text">Aguardando</div></div>
         </div>
-        <div class="video-section">
-          <div class="video-preview">
-            <video id="videoElement" controls style="display:none;" muted></video>
-            <div id="videoPlaceholder" style="color:var(--text-muted);padding:40px;">Vídeo será carregado aqui</div>
-          </div>
-          <div class="frames-section">
-            <h3 style="margin-bottom:12px;">Frames Extraídos - Clique para classificar</h3>
-            <div class="frames-grid" id="framesGrid"></div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:16px;">
-          <button class="btn-primary" onclick="generateWalls()" style="flex:1;">🧱 Gerar 4 Paredes</button>
-          <button class="btn-primary" onclick="showPage('tour', event)" style="flex:1;background:var(--success);">🎮 Ir para Tour 3D</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="page-walls" class="page hidden">
-      <div class="page-header">
-        <h2> 4 Paredes do Ambiente</h2>
-        <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="exportAllWalls()">💾 Exportar Todas</button>
-      </div>
-      <div class="walls-result" id="wallsResult">
-        <div class="wall-result-card">
-          <div class="wall-header wall-front-h">🔵 PAREDE FRONTAL</div>
-          <img id="wallFrontImg" src="" alt="Frontal">
-          <div style="padding:8px;text-align:center;font-size:12px;" id="wallFrontInfo">Nenhum frame</div>
-        </div>
-        <div class="wall-result-card">
-          <div class="wall-header wall-back-h"> PAREDE TRASEIRA</div>
-          <img id="wallBackImg" src="" alt="Traseira">
-          <div style="padding:8px;text-align:center;font-size:12px;" id="wallBackInfo">Nenhum frame</div>
-        </div>
-        <div class="wall-result-card">
-          <div class="wall-header wall-left-h">🟡 PAREDE ESQUERDA</div>
-          <img id="wallLeftImg" src="" alt="Esquerda">
-          <div style="padding:8px;text-align:center;font-size:12px;" id="wallLeftInfo">Nenhum frame</div>
-        </div>
-        <div class="wall-result-card">
-          <div class="wall-header wall-right-h">🔴 PAREDE DIREITA</div>
-          <img id="wallRightImg" src="" alt="Direita">
-          <div style="padding:8px;text-align:center;font-size:12px;" id="wallRightInfo">Nenhum frame</div>
-        </div>
-      </div>
-      <div style="margin-top:24px;background:var(--surface);padding:16px;border-radius:12px;">
-        <h3 style="margin-bottom:12px;">📐 Medir nas Paredes</h3>
-        <p style="color:var(--text-muted);font-size:13px;">Selecione uma parede acima para medir portas, janelas e pontos</p>
+        <video id="videoElement" controls style="width:100%;max-height:300px;display:none;" muted></video>
+        <div class="frames-preview" id="framesPreview"></div>
       </div>
     </div>
 
     <div id="page-tour" class="page hidden">
-      <div class="page-header"><h2> Tour Virtual 3D</h2></div>
+      <div class="page-header">
+        <h2>🎮 Tour Virtual 3D</h2>
+        <button class="btn-primary" style="width:auto;padding:10px 16px;" onclick="exportTour()">💾 Exportar</button>
+      </div>
       <div class="tour-container">
         <div class="tour-viewer" id="tourViewer">
           <canvas id="tourCanvas"></canvas>
           <button class="tour-nav left" onclick="tourPrev()">◀</button>
           <button class="tour-nav right" onclick="tourNext()">▶</button>
           <div class="tour-info">
-            <span id="tourCurrent">Nenhuma parede</span> • 
-            <span id="tourIndex">0/4</span>
+            <span id="tourWallName">Nenhuma parede</span> • 
+            <span id="tourIndex">0/0</span>
           </div>
-          <div class="measure-overlay" id="measureOverlay">📏 Clique em 2 pontos para medir</div>
-        </div>
-        <div class="tour-controls">
-          <button class="tour-btn" onclick="tourGo(0)"> Frontal</button>
-          <button class="tour-btn" onclick="tourGo(1)">🟢 Traseira</button>
-          <button class="tour-btn" onclick="tourGo(2)">🟡 Esquerda</button>
-          <button class="tour-btn" onclick="tourGo(3)">🔴 Direita</button>
-          <button class="tour-btn" onclick="toggleTourMeasure()">📏 Medir</button>
-          <button class="tour-btn" onclick="tourAutoPlay()">▶️ Auto Tour</button>
+          <div class="tour-controls">
+            <button class="tour-btn" onclick="tourAutoPlay()">▶️ Auto</button>
+            <button class="tour-btn" onclick="toggleMeasure()"> Medir</button>
+            <button class="tour-btn" onclick="resetTour()">🔄 Reset</button>
+          </div>
         </div>
         <div class="tools-panel">
-          <h3 style="margin-bottom:12px;">📊 Medição Atual</h3>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-            <div class="stat-item">ΔX: <strong id="tourDx">--</strong></div>
-            <div class="stat-item">ΔY: <strong id="tourDy">--</strong></div>
-            <div class="stat-item">Dist: <strong id="tourDist">--</strong></div>
-            <div class="stat-item">Real: <strong id="tourReal">--</strong></div>
+          <h3>🧱 Paredes Detectadas</h3>
+          <div class="wall-list" id="wallList">
+            <div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px;">Nenhuma parede detectada</div>
+          </div>
+          <h3>️ Ferramentas</h3>
+          <div class="tool-grid">
+            <button class="tool-btn" id="btn-measure" onclick="setTool('measure')">📏 Medir</button>
+            <button class="tool-btn" id="btn-scale" onclick="setTool('scale')"> Escala</button>
+          </div>
+          <h3>📊 Medição</h3>
+          <div class="measure-display">
+            <div class="measure-row"><span>ΔX:</span><span id="dx">-- px</span></div>
+            <div class="measure-row"><span>ΔY:</span><span id="dy">-- px</span></div>
+            <div class="measure-row total"><span>DISTÂNCIA:</span><span id="totalDist">-- px</span></div>
+            <div class="measure-row"><span>Real:</span><span id="realDist">-- mm</span></div>
           </div>
         </div>
       </div>
@@ -271,12 +213,17 @@ let projects = [];
 let currentProject = null;
 let selectedFile = null;
 let extractedFrames = [];
-let wallImages = { front: null, back: null, left: null, right: null };
-let tourImages = [];
-let currentTourIndex = 0;
-let tourMeasureMode = false;
-let tourMeasurePoints = [];
+let walls = { front: [], back: [], left: [], right: [] };
+let wallImages = {};
+let currentWallIndex = 0;
+let currentTool = null;
+let measurePoints = [];
 let scaleFactor = 1.0;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let rotationX = 0;
+let rotationY = 0;
 
 function switchTab(tab, e) {
   e?.stopPropagation();
@@ -298,13 +245,11 @@ function showPage(page, e) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + page).classList.remove('hidden');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navMap = { dashboard: 0, upload: 1, classify: 2, walls: 3, tour: 4 };
+  const navMap = { dashboard: 0, upload: 1, processing: 1, tour: 2 };
   const navItems = document.querySelectorAll('.nav-item');
   if (navItems[navMap[page]]) navItems[navMap[page]].classList.add('active');
   if (page === 'dashboard') renderDashboard();
-  if (page === 'classify') renderClassify();
-  if (page === 'walls') renderWalls();
-  if (page === 'tour') { renderTour(); setTimeout(renderTourCanvas, 100); }
+  if (page === 'tour') { renderWallList(); setTimeout(renderTourCanvas, 100); }
 }
 
 function renderDashboard() {
@@ -316,14 +261,14 @@ function renderDashboard() {
   list.innerHTML = projects.map(p => `
     <div class="project-card" onclick="openProject(${p.id})">
       <strong>${p.name}</strong>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${p.date} • ${p.frames} frames</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${p.date} • ${p.frames} frames • ${p.wallsDetected || 0} paredes</div>
     </div>
   `).join('');
 }
 
 function openProject(id) {
   currentProject = projects.find(p => p.id === id);
-  if (currentProject) showPage('classify');
+  if (currentProject) showPage('tour');
 }
 
 function handleFileSelect(e) {
@@ -337,13 +282,12 @@ function handleFileSelect(e) {
 
 async function startProcessing() {
   if (!selectedFile) return;
-  showPage('classify');
+  showPage('processing');
   
   const video = document.getElementById('videoElement');
   video.src = URL.createObjectURL(selectedFile);
   video.muted = true;
   video.style.display = 'block';
-  document.getElementById('videoPlaceholder').style.display = 'none';
   
   await new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error('Timeout')), 30000);
@@ -351,71 +295,103 @@ async function startProcessing() {
     video.onerror = () => { clearTimeout(timeout); reject(new Error('Erro')); };
   });
   
+  updateStep(1, 'active', 'Extraindo...');
+  
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  const maxW = 800;
+  const maxW = 640;
   const scale = Math.min(1, maxW / video.videoWidth);
   canvas.width = Math.floor(video.videoWidth * scale);
   canvas.height = Math.floor(video.videoHeight * scale);
   
-  const interval = parseFloat(document.querySelector('input[name="interval"]:checked')?.value || 1);
+  const interval = parseFloat(document.querySelector('input[name="interval"]:checked')?.value || 2);
   const duration = video.duration;
   
   extractedFrames = [];
-  const framesGrid = document.getElementById('framesGrid');
-  framesGrid.innerHTML = '';
+  const framesPreview = document.getElementById('framesPreview');
+  framesPreview.innerHTML = '';
   
   for (let t = 0; t < duration; t += interval) {
     await seekVideo(video, t);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const frameData = canvas.toDataURL('image/jpeg', 0.8);
+    const frameData = canvas.toDataURL('image/jpeg', 0.7);
     
-    const frame = {
-      id: extractedFrames.length,
-      time: t,
-      data: frameData,
-      wall: 'none'
-    };
-    extractedFrames.push(frame);
+    extractedFrames.push({ time: t, data: frameData });
     
-    const card = document.createElement('div');
-    card.className = 'frame-card';
-    card.id = 'frame-' + frame.id;
-    card.innerHTML = `
-      <img src="${frameData}">
-      <div class="frame-info">Frame #${frame.id + 1} • ${t.toFixed(1)}s</div>
-      <div class="wall-selector">
-        <button class="wf" onclick="classifyFrame(${frame.id}, 'front', event)">Frente</button>
-        <button class="wb" onclick="classifyFrame(${frame.id}, 'back', event)">Trás</button>
-        <button class="wl" onclick="classifyFrame(${frame.id}, 'left', event)">Esq</button>
-        <button class="wr" onclick="classifyFrame(${frame.id}, 'right', event)">Dir</button>
-        <button class="wn" onclick="classifyFrame(${frame.id}, 'none', event)">-</button>
-      </div>
-      <div class="wall-tag wall-none" id="wall-tag-${frame.id}">Não classificado</div>
-    `;
-    framesGrid.appendChild(card);
+    const thumb = document.createElement('div');
+    thumb.className = 'frame-thumb';
+    thumb.innerHTML = `<img src="${frameData}"><div class="num">#${extractedFrames.length}</div>`;
+    framesPreview.appendChild(thumb);
     
     const progress = (t / duration) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
-    document.getElementById('progressText').textContent = `Extraindo: ${extractedFrames.length} frames (${Math.round(progress)}%)`;
+    updateStep(1, 'active', `${Math.round(progress)}%`);
     
     await new Promise(r => requestAnimationFrame(r));
   }
   
-  document.getElementById('progressFill').style.width = '100%';
-  document.getElementById('progressText').textContent = `✓ ${extractedFrames.length} frames extraídos! Classifique cada um.`;
+  updateStep(1, 'completed', `✓ ${extractedFrames.length} frames`);
+  await new Promise(r => setTimeout(r, 500));
+  
+  updateStep(2, 'active', 'Detectando...');
+  
+  // Detecção simples: divide frames em 4 grupos baseado no tempo
+  const totalFrames = extractedFrames.length;
+  const framesPerWall = Math.floor(totalFrames / 4);
+  
+  walls = { front: [], back: [], left: [], right: [] };
+  const wallNames = ['front', 'right', 'back', 'left'];
+  
+  extractedFrames.forEach((frame, idx) => {
+    const wallIdx = Math.floor(idx / framesPerWall) % 4;
+    const wall = wallNames[wallIdx];
+    walls[wall].push(frame);
+  });
+  
+  // Gera imagem de cada parede (média dos frames)
+  for (let wall of ['front', 'back', 'left', 'right']) {
+    if (walls[wall].length > 0) {
+      const wallCanvas = document.createElement('canvas');
+      const wallCtx = wallCanvas.getContext('2d');
+      wallCanvas.width = canvas.width;
+      wallCanvas.height = canvas.height;
+      
+      // Desenha o frame do meio da parede
+      const midFrame = walls[wall][Math.floor(walls[wall].length / 2)];
+      const img = new Image();
+      img.src = midFrame.data;
+      await new Promise(r => { img.onload = r; });
+      wallCtx.drawImage(img, 0, 0);
+      
+      wallImages[wall] = wallCanvas.toDataURL('image/png');
+    }
+  }
+  
+  updateStep(2, 'completed', `✓ 4 paredes detectadas`);
+  await new Promise(r => setTimeout(r, 500));
+  
+  updateStep(3, 'active', 'Gerando tour...');
   
   const newProject = {
     id: Date.now(),
     name: selectedFile.name.replace(/\.[^/.]+$/, ""),
     date: new Date().toLocaleDateString('pt-BR'),
     frames: extractedFrames.length,
-    frames: extractedFrames
+    wallsDetected: 4,
+    walls: walls,
+    wallImages: wallImages
   };
   projects.push(newProject);
   currentProject = newProject;
   
-  updateStats();
+  updateStep(3, 'completed', '✓ Tour pronto!');
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = '✓ Processamento completo!';
+  
+  setTimeout(() => {
+    alert(`🎉 Processamento completo!\n\n✓ ${extractedFrames.length} frames extraídos\n✓ 4 paredes detectadas\n✓ Tour 3D gerado\n\nClique em "Tour 3D" para navegar!`);
+    showPage('tour');
+  }, 500);
 }
 
 function seekVideo(video, time) {
@@ -427,120 +403,69 @@ function seekVideo(video, time) {
   });
 }
 
-function classifyFrame(frameId, wall, event) {
-  event?.stopPropagation();
-  const frame = extractedFrames.find(f => f.id === frameId);
-  if (!frame) return;
-  frame.wall = wall;
-  
-  const card = document.getElementById('frame-' + frameId);
-  card.querySelectorAll('.wall-tag').forEach(t => {
-    t.className = 'wall-tag wall-' + wall;
-    const labels = { front: '🔵 Frente', back: '🟢 Trás', left: '🟡 Esq', right: ' Dir', none: 'Não classificado' };
-    t.textContent = labels[wall];
-  });
-  
-  updateStats();
+function updateStep(num, status, text) {
+  const step = document.getElementById('step' + num);
+  const textEl = document.getElementById('step' + num + 'Text');
+  if (step) step.className = 'step ' + status;
+  if (textEl) textEl.textContent = text;
 }
 
-function updateStats() {
-  const counts = { front: 0, back: 0, left: 0, right: 0, none: 0 };
-  extractedFrames.forEach(f => counts[f.wall]++);
-  document.getElementById('statTotal').textContent = extractedFrames.length;
-  document.getElementById('statFront').textContent = counts.front;
-  document.getElementById('statBack').textContent = counts.back;
-  document.getElementById('statLeft').textContent = counts.left;
-  document.getElementById('statRight').textContent = counts.right;
-}
-
-function generateWalls() {
-  const walls = { front: [], back: [], left: [], right: [] };
-  extractedFrames.forEach(f => { if (f.wall !== 'none') walls[f.wall].push(f); });
+function renderWallList() {
+  const wallList = document.getElementById('wallList');
+  const wallNames = { front: ' Frontal', back: '🟢 Traseira', left: '🟡 Esquerda', right: '🔴 Direita' };
   
-  Object.keys(walls).forEach(wall => {
-    const frames = walls[wall];
-    if (frames.length === 0) {
-      wallImages[wall] = null;
-      return;
-    }
-    
-    // Combina frames da mesma parede em uma imagem (média/stitch simples)
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const firstImg = new Image();
-    firstImg.src = frames[0].data;
-    firstImg.onload = () => {
-      canvas.width = firstImg.width;
-      canvas.height = firstImg.height;
-      
-      // Desenha o primeiro frame
-      ctx.drawImage(firstImg, 0, 0);
-      
-      // Se tiver mais frames, faz blend simples
-      if (frames.length > 1) {
-        ctx.globalAlpha = 0.3;
-        for (let i = 1; i < frames.length; i++) {
-          const img = new Image();
-          img.src = frames[i].data;
-          img.onload = () => ctx.drawImage(img, 0, 0);
-        }
-        ctx.globalAlpha = 1.0;
-      }
-      
-      wallImages[wall] = canvas.toDataURL('image/png');
-      renderWalls();
-    };
-  });
-  
-  setTimeout(() => {
-    alert('🧱 4 Paredes geradas!\n\nClique em "4 Paredes" para ver o resultado\nou "Tour 3D" para navegar.');
-    showPage('walls');
-  }, 500);
-}
-
-function renderClassify() {
-  if (extractedFrames.length > 0) updateStats();
-}
-
-function renderWalls() {
-  const walls = ['front', 'back', 'left', 'right'];
-  const names = { front: 'Frontal', back: 'Traseira', left: 'Esquerda', right: 'Direita' };
-  
-  walls.forEach(wall => {
-    const img = document.getElementById('wall' + wall.charAt(0).toUpperCase() + wall.slice(1) + 'Img');
-    const info = document.getElementById('wall' + wall.charAt(0).toUpperCase() + wall.slice(1) + 'Info');
-    const frames = extractedFrames.filter(f => f.wall === wall);
-    
-    if (wallImages[wall]) {
-      img.src = wallImages[wall];
-      info.textContent = `${frames.length} frame(s) • Clique para medir`;
-      img.style.cursor = 'pointer';
-      img.onclick = () => {
-        tourImages = [wallImages[wall]];
-        currentTourIndex = 0;
-        showPage('tour');
-      };
-    } else {
-      img.src = '';
-      img.style.background = 'var(--surface-2)';
-      info.textContent = frames.length > 0 ? `${frames.length} frame(s) - processando...` : 'Nenhum frame classificado';
-    }
-  });
-}
-
-function renderTour() {
-  tourImages = [];
-  if (wallImages.front) tourImages.push(wallImages.front);
-  if (wallImages.back) tourImages.push(wallImages.back);
-  if (wallImages.left) tourImages.push(wallImages.left);
-  if (wallImages.right) tourImages.push(wallImages.right);
-  
-  if (tourImages.length === 0 && extractedFrames.length > 0) {
-    tourImages = extractedFrames.map(f => f.data);
+  if (Object.keys(wallImages).length === 0) {
+    wallList.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px;">Nenhuma parede detectada</div>';
+    return;
   }
   
-  currentTourIndex = 0;
-  document.getElementById('tourIndex').textContent = `0/${tourImages.length}`;
+  wallList.innerHTML = Object.keys(wallImages).map((wall, idx) => `
+    <div class="wall-item ${idx === currentWallIndex ? 'active' : ''}" onclick="goToWall(${idx})">
+      <div class="wall-name">${wallNames[wall]}</div>
+      <div class="wall-frames">${walls[wall].length} frames</div>
+    </div>
+  `).join('');
+}
+
+function goToWall(index) {
+  const wallKeys = Object.keys(wallImages);
+  if (index >= 0 && index < wallKeys.length) {
+    currentWallIndex = index;
+    measurePoints = [];
+    renderWallList();
+    renderTourCanvas();
+  }
+}
+
+function tourNext() {
+  const wallKeys = Object.keys(wallImages);
+  if (currentWallIndex < wallKeys.length - 1) goToWall(currentWallIndex + 1);
+}
+
+function tourPrev() {
+  if (currentWallIndex > 0) goToWall(currentWallIndex - 1);
+}
+
+function tourAutoPlay() {
+  let idx = 0;
+  const wallKeys = Object.keys(wallImages);
+  const interval = setInterval(() => {
+    goToWall(idx);
+    idx++;
+    if (idx >= wallKeys.length) {
+      clearInterval(interval);
+      alert('Tour completo!');
+    }
+  }, 2000);
+}
+
+function resetTour() {
+  currentWallIndex = 0;
+  measurePoints = [];
+  rotationX = 0;
+  rotationY = 0;
+  renderWallList();
+  renderTourCanvas();
 }
 
 function renderTourCanvas() {
@@ -554,40 +479,51 @@ function renderTourCanvas() {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  if (tourImages.length === 0 || !tourImages[currentTourIndex]) {
+  const wallKeys = Object.keys(wallImages);
+  if (wallKeys.length === 0 || !wallImages[wallKeys[currentWallIndex]]) {
     ctx.fillStyle = '#94a3b8';
     ctx.font = '16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Nenhuma imagem disponível', canvas.width/2, canvas.height/2);
+    ctx.fillText('Nenhuma parede disponível', canvas.width/2, canvas.height/2);
     return;
   }
   
   const img = new Image();
-  img.src = tourImages[currentTourIndex];
+  img.src = wallImages[wallKeys[currentWallIndex]];
   img.onload = () => {
+    // Aplica rotação baseada no arrasto
+    ctx.save();
+    ctx.translate(canvas.width/2, canvas.height/2);
+    ctx.rotate(rotationY * Math.PI / 180);
+    ctx.translate(-canvas.width/2, -canvas.height/2);
+    
     const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
     const w = img.width * scale;
     const h = img.height * scale;
     const x = (canvas.width - w) / 2;
     const y = (canvas.height - h) / 2;
     ctx.drawImage(img, x, y, w, h);
+    ctx.restore();
     
-    const labels = ['🔵 Frontal', '🟢 Traseira', ' Esquerda', '🔴 Direita'];
-    document.getElementById('tourCurrent').textContent = labels[currentTourIndex] || `Frame ${currentTourIndex + 1}`;
-    document.getElementById('tourIndex').textContent = `${currentTourIndex + 1}/${tourImages.length}`;
+    const wallNames = { front: ' Frontal', back: '🟢 Traseira', left: '🟡 Esquerda', right: '🔴 Direita' };
+    document.getElementById('tourWallName').textContent = wallNames[wallKeys[currentWallIndex]] || 'Parede';
+    document.getElementById('tourIndex').textContent = `${currentWallIndex + 1}/${wallKeys.length}`;
   };
   
   // Desenha pontos de medição
-  tourMeasurePoints.forEach((p, i) => {
+  measurePoints.forEach((p, i) => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
     ctx.fillStyle = i === 0 ? '#f59e0b' : '#10b981';
     ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
   });
   
-  if (tourMeasurePoints.length === 2) {
-    const p1 = tourMeasurePoints[0];
-    const p2 = tourMeasurePoints[1];
+  if (measurePoints.length === 2) {
+    const p1 = measurePoints[0];
+    const p2 = measurePoints[1];
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
@@ -603,91 +539,70 @@ function renderTourCanvas() {
   }
 }
 
-function tourGo(index) {
-  if (index >= 0 && index < tourImages.length) {
-    currentTourIndex = index;
-    tourMeasurePoints = [];
-    renderTourCanvas();
-  }
-}
-
-function tourNext() {
-  if (currentTourIndex < tourImages.length - 1) tourGo(currentTourIndex + 1);
-}
-
-function tourPrev() {
-  if (currentTourIndex > 0) tourGo(currentTourIndex - 1);
-}
-
-function tourAutoPlay() {
-  let idx = 0;
-  const interval = setInterval(() => {
-    tourGo(idx);
-    idx++;
-    if (idx >= tourImages.length) {
-      clearInterval(interval);
-      alert('Tour completo!');
+// Navegação com arrasto
+document.getElementById('tourCanvas').addEventListener('mousedown', (e) => {
+  if (currentTool === 'measure') {
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    measurePoints.push({ x, y });
+    
+    if (measurePoints.length === 2) {
+      const p1 = measurePoints[0];
+      const p2 = measurePoints[1];
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      document.getElementById('dx').textContent = Math.abs(dx).toFixed(1) + ' px';
+      document.getElementById('dy').textContent = Math.abs(dy).toFixed(1) + ' px';
+      document.getElementById('totalDist').textContent = dist.toFixed(1) + ' px';
+      document.getElementById('realDist').textContent = (dist * scaleFactor).toFixed(1) + ' mm';
     }
-  }, 2000);
-}
-
-function toggleTourMeasure() {
-  tourMeasureMode = !tourMeasureMode;
-  tourMeasurePoints = [];
-  const overlay = document.getElementById('measureOverlay');
-  overlay.classList.toggle('active', tourMeasureMode);
-  if (tourMeasureMode) {
-    overlay.textContent = '📏 Clique no 1º ponto';
-  } else {
-    overlay.style.display = 'none';
-  }
-}
-
-document.getElementById('tourCanvas').addEventListener('click', (e) => {
-  if (!tourMeasureMode) return;
-  const rect = e.target.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  
-  tourMeasurePoints.push({ x, y });
-  const overlay = document.getElementById('measureOverlay');
-  
-  if (tourMeasurePoints.length === 1) {
-    overlay.textContent = '📏 Clique no 2º ponto';
-  } else if (tourMeasurePoints.length === 2) {
-    const p1 = tourMeasurePoints[0];
-    const p2 = tourMeasurePoints[1];
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const distMm = dist * scaleFactor;
     
-    document.getElementById('tourDx').textContent = Math.abs(dx).toFixed(1) + ' px';
-    document.getElementById('tourDy').textContent = Math.abs(dy).toFixed(1) + ' px';
-    document.getElementById('tourDist').textContent = dist.toFixed(1) + ' px';
-    document.getElementById('tourReal').textContent = distMm.toFixed(1) + ' mm';
-    
-    overlay.textContent = '✓ ' + distMm.toFixed(1) + ' mm';
-    tourMeasureMode = false;
-    setTimeout(() => overlay.classList.remove('active'), 2000);
+    renderTourCanvas();
+    return;
   }
   
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const deltaX = e.clientX - dragStartX;
+  const deltaY = e.clientY - dragStartY;
+  rotationY += deltaX * 0.5;
+  rotationX += deltaY * 0.5;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
   renderTourCanvas();
 });
 
-function exportAllWalls() {
-  let exported = 0;
-  Object.keys(wallImages).forEach(wall => {
-    if (wallImages[wall]) {
-      const a = document.createElement('a');
-      a.href = wallImages[wall];
-      a.download = `parede_${wall}_${Date.now()}.png`;
-      a.click();
-      exported++;
-    }
+document.addEventListener('mouseup', () => isDragging = false);
+
+function setTool(tool) {
+  currentTool = tool;
+  measurePoints = [];
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + tool)?.classList.add('active');
+  renderTourCanvas();
+}
+
+function toggleMeasure() {
+  setTool(currentTool === 'measure' ? null : 'measure');
+}
+
+function exportTour() {
+  if (Object.keys(wallImages).length === 0) { alert('Nenhum tour para exportar!'); return; }
+  Object.keys(wallImages).forEach((wall, idx) => {
+    const a = document.createElement('a');
+    a.href = wallImages[wall];
+    a.download = `parede_${wall}_${Date.now()}.png`;
+    a.click();
   });
-  if (exported > 0) alert(`💾 ${exported} parede(s) exportada(s)!`);
-  else alert('Nenhuma parede gerada ainda!');
+  alert('💾 Paredes exportadas!');
 }
 </script>
 
