@@ -5,23 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vexa Scan Pro Cloud</title>
 <style>
-:root {
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --bg: #0f172a;
-  --surface: #1e293b;
-  --surface-2: #334155;
-  --text: #f1f5f9;
-  --text-muted: #94a3b8;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --border: #334155;
-  --radius: 8px;
-}
+:root { --primary: #4f46e5; --primary-dark: #4338ca; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
-
 .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
 .auth-card { background: var(--surface); padding: 32px; border-radius: 12px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
 .auth-card h1 { text-align: center; margin-bottom: 8px; }
@@ -38,7 +24,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .btn-primary:hover { background: var(--primary-dark); }
 .btn-demo { width: 100%; padding: 12px; margin-top: 10px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 14px; }
 .forgot-link { display: block; text-align: right; color: var(--primary); font-size: 13px; margin-bottom: 16px; text-decoration: none; }
-
 .app { display: none; height: 100vh; }
 .app.active { display: grid; grid-template-columns: 240px 1fr; }
 .sidebar { background: var(--surface); padding: 20px 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
@@ -53,7 +38,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .content { flex: 1; padding: 24px; overflow-y: auto; }
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .page-header h2 { font-size: 22px; }
-
 .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: 12px; border: 2px dashed var(--border); }
 .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
 .empty-state h3 { margin-bottom: 8px; }
@@ -68,7 +52,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .project-card .status { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
 .status.processing { background: var(--warning); color: #1a1a1a; }
 .status.ready { background: var(--success); color: white; }
-
 .viewer-container { background: var(--surface); border-radius: 12px; padding: 16px; height: calc(100vh - 120px); display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
 .viewer-3d { background: #0a0e1a; border-radius: var(--radius); position: relative; overflow: hidden; cursor: grab; }
 .viewer-3d:active { cursor: grabbing; }
@@ -82,7 +65,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .legend { position: absolute; bottom: 80px; left: 16px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: var(--radius); font-size: 11px; z-index: 10; backdrop-filter: blur(8px); }
 .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .legend-color { width: 16px; height: 3px; }
-
 .tools-panel { background: var(--surface); border-radius: var(--radius); padding: 16px; overflow-y: auto; }
 .tools-panel h3 { font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
@@ -90,7 +72,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .tool-btn:hover { border-color: var(--primary); }
 .tool-btn.active { background: var(--primary); border-color: var(--primary); }
 .tool-btn .emoji { font-size: 18px; }
-
 .upload-panel { background: var(--surface); border-radius: 12px; padding: 24px; max-width: 600px; margin: 0 auto; }
 .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; position: relative; }
 .upload-zone:hover { border-color: var(--primary); background: var(--surface-2); }
@@ -108,7 +89,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .radio-group input:checked + span { background: var(--primary); color: white; display: block; padding: 8px; margin: -8px; border-radius: 6px; }
 .progress-bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin-top: 12px; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #8b5cf6); width: 0%; transition: width 0.3s; }
-
 .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
 .settings-card { background: var(--surface); border-radius: 12px; padding: 20px; }
 .settings-card h3 { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
@@ -134,7 +114,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
       <div class="checkbox-row"><input type="checkbox" id="remember"><label for="remember">Lembrar de mim</label></div>
       <a href="#" class="forgot-link">Esqueci a senha</a>
       <button type="submit" class="btn-primary">🔐 Entrar</button>
-      <button type="button" class="btn-demo" onclick="doLogin(event, true)">🚀 Acessar em Modo Demo</button>
+      <button type="button" class="btn-demo" onclick="doLogin(event, true)"> Acessar em Modo Demo</button>
     </form>
     <form id="registerForm" class="hidden" onsubmit="doLogin(event)">
       <div class="form-group"><label>Nome completo</label><input type="text" required placeholder="João Silva"></div>
@@ -149,7 +129,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="app" id="app">
   <aside class="sidebar">
     <div class="sidebar-header"><div class="logo">V</div><div><div style="font-weight:600;">Vexa Scan</div><div style="font-size:11px;color:var(--text-muted);">Cloud Demo</div></div></div>
-    <div class="user-info"> João Silva<br><small>joao@email.com</small></div>
+    <div class="user-info">👤 João Silva<br><small>joao@email.com</small></div>
     <nav>
       <div class="nav-item active" onclick="showPage('dashboard', event)">📊 Projetos</div>
       <div class="nav-item" onclick="showPage('upload', event)">📹 Novo Scan</div>
@@ -226,8 +206,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <canvas id="canvas3d"></canvas>
             <div class="viewer-info">
               <span>📐 <span id="pointCount">12.458</span> pts</span>
-              <span>🎯 <span id="fpsCount">60</span> FPS</span>
-              <span>🔲 Grid</span>
+              <span> <span id="fpsCount">60</span> FPS</span>
+              <span> Grid</span>
             </div>
             <div class="scale-status" id="scaleStatus">📏 Clique no 1º ponto</div>
             <div class="legend">
@@ -247,16 +227,16 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             </div>
           </div>
           <div class="tools-panel">
-            <h3>📋 Detalhes do Projeto</h3>
+            <h3> Detalhes do Projeto</h3>
             <div id="projectDetails">
               <p style="color:var(--text-muted);font-size:12px;">Selecione um projeto no dashboard</p>
             </div>
-            <h3>⚙️ Ferramentas</h3>
+            <h3>️ Ferramentas</h3>
             <div class="tool-grid">
-              <button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji">📏</span>Medir</button>
+              <button class="tool-btn" id="btn-measure" onclick="setTool('measure', event)"><span class="emoji"></span>Medir</button>
               <button class="tool-btn" id="btn-scale" onclick="setTool('scale', event)"><span class="emoji">📐</span>Escala</button>
               <button class="tool-btn" id="btn-cut" onclick="setTool('cut', event)"><span class="emoji">✂️</span>Corte</button>
-              <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()"><span class="emoji">️</span>Limpar</button>
+              <button class="tool-btn" id="btn-clear" onclick="clearMeasurements()"><span class="emoji">🗑️</span>Limpar</button>
             </div>
             <div id="scalePanel" class="hidden">
               <div class="form-group"><label>Distância Real (mm)</label><input type="number" id="realDistance" placeholder="Ex: 5000" value="5000"></div>
@@ -281,14 +261,14 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <h3 style="margin-top:16px;">⬇️ Exportar</h3>
             <div style="display:flex;gap:6px;">
               <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;" onclick="exportPLY()">⬇️ PLY</button>
-              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()">📊 CSV</button>
+              <button class="btn-primary" style="flex:1;padding:8px;font-size:12px;background:var(--success);" onclick="exportCSV()"> CSV</button>
             </div>
           </div>
         </div>
       </div>
 
       <div id="page-settings" class="page hidden">
-        <div class="page-header"><h2>️ Configurações</h2></div>
+        <div class="page-header"><h2>⚙️ Configurações</h2></div>
         <div class="settings-grid">
           <div class="settings-card">
             <h3>👤 Perfil</h3>
@@ -298,16 +278,16 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
             <button class="btn-primary">💾 Salvar alterações</button>
           </div>
           <div class="settings-card">
-            <h3>🔔 Notificações</h3>
+            <h3> Notificações</h3>
             <div class="checkbox-row"><input type="checkbox" id="notifEmail" checked><label for="notifEmail">📧 Email quando pronto</label></div>
             <div class="checkbox-row"><input type="checkbox" id="notifWhats" checked><label for="notifWhats">💬 WhatsApp quando pronto</label></div>
-            <button class="btn-primary">💾 Salvar preferências</button>
+            <button class="btn-primary"> Salvar preferências</button>
           </div>
           <div class="settings-card">
             <h3>ℹ️ Sobre</h3>
             <p><strong>Vexa Scan Pro Cloud v2.0</strong></p>
             <p style="color:var(--text-muted);margin-top:8px;font-size:13px;">Reconstrução 3D profissional.</p>
-            <p style="margin-top:12px;font-size:13px;">📧 suporte@vexascan.com<br> vexascan.com</p>
+            <p style="margin-top:12px;font-size:13px;">📧 suporte@vexascan.com<br>🌐 vexascan.com</p>
           </div>
         </div>
       </div>
@@ -317,7 +297,6 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 </div>
 
 <script>
-// ========== ESTADO GLOBAL ==========
 let projects = [];
 let processingTimer = null;
 let currentTool = null;
@@ -325,15 +304,8 @@ let measurePoints = [];
 let scaleFactor = 1.0;
 let clickCount = 0;
 let currentProject = null;
-
-// ========== CÂMERA 3D ==========
 let camera = { x: 0, y: 0, z: 8000, rotX: 0.3, rotY: 0, zoom: 1, panX: 0, panY: 0 };
-
-// ========== AMBIENTE ==========
-const ROOM_WIDTH = 5000;
-const ROOM_DEPTH = 4000;
-const ROOM_HEIGHT = 2800;
-
+const ROOM_WIDTH = 5000, ROOM_DEPTH = 4000, ROOM_HEIGHT = 2800;
 const environment = {
   walls: [
     { x: 0, y: 0, z: 0, w: ROOM_WIDTH, h: ROOM_HEIGHT, color: '#cbd5e1', label: 'Parede Frontal' },
@@ -345,14 +317,12 @@ const environment = {
   window: { x: 0, y: 800, z: 1500, w: 1300, h: 1200, color: '#3b82f6', label: 'Janela 1.30m', axis: 'z' },
   electric: [
     { x: 1000, y: 300, z: 0, label: 'Tomada T1', icon: '⚡' },
-    { x: 4000, y: 300, z: 0, label: 'Tomada T2', icon: '' },
-    { x: 2500, y: 300, z: ROOM_DEPTH, label: 'Tomada T3', icon: '⚡' },
+    { x: 4000, y: 300, z: 0, label: 'Tomada T2', icon: '⚡' },
+    { x: 2500, y: 300, z: ROOM_DEPTH, label: 'Tomada T3', icon: '' },
     { x: 2200, y: 1200, z: 0, label: 'Interruptor', icon: '🔲' },
-    { x: 2500, y: 2700, z: 2000, label: 'Luminária', icon: '' }
+    { x: 2500, y: 2700, z: 2000, label: 'Luminária', icon: '💡' }
   ]
 };
-
-// ========== CANVAS ==========
 const canvas = document.getElementById('canvas3d');
 const ctx = canvas.getContext('2d');
 let isDragging = false, lastMouseX = 0, lastMouseY = 0, dragButton = 0;
@@ -365,7 +335,6 @@ function resizeCanvas() {
 }
 window.addEventListener('resize', resizeCanvas);
 
-// ========== PROJEÇÃO 3D ==========
 function project3D(x, y, z) {
   let dx = x - camera.x, dy = y - camera.y, dz = z - camera.z;
   let cosY = Math.cos(camera.rotY), sinY = Math.sin(camera.rotY);
@@ -377,7 +346,6 @@ function project3D(x, y, z) {
   return { x: (x1 * fov / z2) + canvas.width / 2 + camera.panX, y: (y1 * fov / z2) + canvas.height / 2 + camera.panY, z: z2 };
 }
 
-// ========== RENDERIZAÇÃO ==========
 function drawWall(wall) {
   let corners;
   if (wall.axis === 'z') {
@@ -522,7 +490,6 @@ function render() {
   drawMeasurements();
 }
 
-// ========== CONTROLES ==========
 canvas.addEventListener('mousedown', (e) => {
   isDragging = true;
   lastMouseX = e.clientX;
@@ -602,7 +569,6 @@ function resetView() {
   render();
 }
 
-// ========== AUTH ==========
 function switchTab(tab, e) {
   e?.stopPropagation();
   document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.remove('active'));
@@ -636,39 +602,29 @@ function showPage(page, e) {
   if (page === 'viewer') setTimeout(() => { resizeCanvas(); render(); }, 100);
 }
 
-// ========== DASHBOARD ==========
 function renderDashboard() {
   const empty = document.getElementById('emptyState');
   const banner = document.getElementById('processingBanner');
   const list = document.getElementById('projectList');
-
   if (projects.length === 0) {
     empty.classList.remove('hidden');
     banner.classList.remove('active');
     list.classList.add('hidden');
     return;
   }
-
   empty.classList.add('hidden');
   list.classList.remove('hidden');
-
   const hasProcessing = projects.some(p => p.status === 'processing');
   banner.classList.toggle('active', hasProcessing);
-
   if (hasProcessing) {
     const proc = projects.find(p => p.status === 'processing');
     document.getElementById('processingText').textContent = `Processando "${proc.name}"... Aguarde`;
   }
-
   list.innerHTML = projects.map(p => `
     <div class="project-card" onclick="openProject(${p.id})">
       <strong>${p.name}</strong>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">
-        Criado em ${p.date} • ${p.frames} frames
-      </div>
-      <span class="status ${p.status}">
-        ${p.status === 'processing' ? '⏳ Processando...' : '✓ Pronto'}
-      </span>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Criado em ${p.date} • ${p.frames} frames</div>
+      <span class="status ${p.status}">${p.status === 'processing' ? '⏳ Processando...' : '✓ Pronto'}</span>
     </div>
   `).join('');
 }
@@ -676,10 +632,7 @@ function renderDashboard() {
 function openProject(id) {
   const project = projects.find(p => p.id === id);
   if (!project) { alert('❌ Projeto não encontrado!'); return; }
-  if (project.status === 'processing') {
-    alert(' Este projeto ainda está sendo processado!\n\nAguarde alguns minutos e tente novamente.');
-    return;
-  }
+  if (project.status === 'processing') { alert('⏳ Este projeto ainda está sendo processado!\n\nAguarde alguns minutos.'); return; }
   currentProject = project;
   showPage('viewer');
   document.getElementById('projectDetails').innerHTML = `
@@ -687,20 +640,17 @@ function openProject(id) {
       <div style="margin-bottom:8px;"><strong>Nome:</strong> ${project.name}</div>
       <div style="margin-bottom:8px;"><strong>Data:</strong> ${project.date}</div>
       <div style="margin-bottom:8px;"><strong>Frames:</strong> ${project.frames}</div>
-      <div style="margin-bottom:8px;"><strong>Pontos:</strong> 12.458</div>
       <div><strong>Status:</strong> <span style="color:var(--success);">✓ Pronto</span></div>
     </div>
   `;
   setTimeout(() => { resizeCanvas(); render(); }, 100);
 }
 
-// ========== UPLOAD ==========
 let selectedFile = null;
-
 function handleFileSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('video/')) { alert(' Selecione um vídeo!'); e.target.value = ''; return; }
+  if (!file.type.startsWith('video/')) { alert('❌ Selecione um vídeo!'); e.target.value = ''; return; }
   if (file.size > 2 * 1024 * 1024 * 1024) { alert('❌ Arquivo muito grande! Máximo 2GB.'); e.target.value = ''; return; }
   selectedFile = file;
   document.getElementById('uploadZone').classList.add('has-file');
@@ -713,7 +663,7 @@ function handleFileSelect(e) {
 }
 
 function simulateUpload() {
-  if (!selectedFile) { alert('️ Selecione um vídeo!'); return; }
+  if (!selectedFile) { alert('⚠️ Selecione um vídeo!'); return; }
   const fill = document.getElementById('progressFill');
   const text = document.getElementById('progressText');
   const btn = document.getElementById('uploadBtn');
@@ -762,7 +712,6 @@ function simulateProcessing(projectId) {
   }, 1000);
 }
 
-// ========== FERRAMENTAS ==========
 function setTool(tool, e) {
   e?.stopPropagation();
   document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
@@ -776,7 +725,7 @@ function setTool(tool, e) {
   const status = document.getElementById('scaleStatus');
   if (tool === 'measure' || tool === 'scale') {
     status.classList.add('active');
-    status.textContent = '📏 Clique no 1º ponto';
+    status.textContent = ' Clique no 1º ponto';
     status.style.background = 'rgba(245, 158, 11, 0.9)';
   } else { status.classList.remove('active'); }
 }
@@ -812,7 +761,6 @@ function resetCut() {
 function exportPLY() { alert('⬇️ Exportando PLY...'); }
 function exportCSV() { alert('📊 Exportando CSV...'); }
 
-// Inicializar
 setTimeout(resizeCanvas, 100);
 </script>
 
