@@ -164,7 +164,7 @@
                 Envie um vídeo gravado andando pelo ambiente. O sistema extrairá frames, criará a nuvem de pontos 3D e montará o tour automaticamente.
             </p>
             <div class="upload-zone" onclick="document.getElementById('videoFileInput').click()">
-                <div style="font-size: 32px; margin-bottom: 8px;"></div>
+                <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
                 <strong>Clique para selecionar vídeo</strong>
                 <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">MP4, MOV, AVI (até 500MB)</p>
                 <input type="file" id="videoFileInput" accept="video/*" onchange="handleVideoUpload(event)">
@@ -312,7 +312,6 @@
         const points = [];
         const colors = [];
         
-        // Para cada frame, extrair pontos densos
         extractedFrames.forEach((frameObj, frameIdx) => {
             const img = new Image();
             img.src = frameObj.data;
@@ -326,25 +325,21 @@
             const imageData = tempCtx.getImageData(0, 0, 320, 240);
             const data = imageData.data;
             
-            // Calcular posição da câmera (orbital)
             const cameraAngle = (frameIdx / extractedFrames.length) * Math.PI * 2;
             const cameraRadius = 3.0;
             const cameraX = Math.cos(cameraAngle) * cameraRadius;
             const cameraZ = Math.sin(cameraAngle) * cameraRadius;
-            const cameraY = 1.7; // Altura dos olhos
+            const cameraY = 1.7;
             
-            // Extrair pontos densos
             for (let y = 0; y < 240; y += 1) {
                 for (let x = 0; x < 320; x += 1) {
                     const idx = (y * 320 + x) * 4;
                     
-                    // Calcular brilho e cor
                     const r = data[idx] / 255;
                     const g = data[idx+1] / 255;
                     const b = data[idx+2] / 255;
                     const brightness = (r + g + b) / 3;
                     
-                    // Detectar bordas (gradiente)
                     const idxRight = (y * 320 + Math.min(x+1, 319)) * 4;
                     const idxDown = (Math.min(y+1, 239) * 320 + x) * 4;
                     
@@ -355,47 +350,35 @@
                     const edgeY = Math.abs(brightDown - brightness);
                     const edgeStrength = Math.sqrt(edgeX * edgeX + edgeY * edgeY);
                     
-                    // Aceitar pontos baseado em bordas e textura
                     const shouldAddPoint = edgeStrength > 0.05 || 
                                           brightness < 0.3 || 
                                           brightness > 0.8 ||
-                                          Math.random() < 0.1; // Adicionar alguns pontos aleatórios para densidade
+                                          Math.random() < 0.1;
                     
                     if (shouldAddPoint) {
-                        // Calcular ângulos de visão
-                        const fovX = Math.PI * 0.7; // Campo de visão horizontal
-                        const fovY = Math.PI * 0.5; // Campo de visão vertical
+                        const fovX = Math.PI * 0.7;
+                        const fovY = Math.PI * 0.5;
                         
                         const theta = (x / 320 - 0.5) * fovX;
                         const phi = (y / 240 - 0.5) * fovY;
                         
-                        // Estimar profundidade baseado em múltiplos fatores
-                        let depth = 4.0; // Profundidade base
+                        let depth = 4.0;
                         
-                        // Fator 1: Bordas mais fortes = objetos mais próximos
                         if (edgeStrength > 0.1) {
                             depth *= 0.7;
                         }
                         
-                        // Fator 2: Variação temporal entre frames
                         if (frameIdx > 0 && frameIdx < extractedFrames.length - 1) {
-                            const prevFrame = extractedFrames[frameIdx - 1];
-                            const nextFrame = extractedFrames[frameIdx + 1];
-                            
-                            // Simular disparidade (diferença de posição)
                             const disparity = Math.abs(Math.sin(cameraAngle) * 0.5);
                             depth = 2.0 + (disparity * 6.0);
                         }
                         
-                        // Fator 3: Ruído controlado para realismo
                         depth += (Math.random() - 0.5) * 0.3;
                         
-                        // Converter para coordenadas cartesianas
                         const nx = cameraX + depth * Math.sin(theta) * Math.cos(phi);
                         const ny = cameraY + depth * Math.sin(phi);
                         const nz = cameraZ + depth * Math.cos(theta) * Math.cos(phi);
                         
-                        // Filtrar pontos fora do ambiente
                         if (Math.abs(nx) < 8 && Math.abs(nz) < 8 && ny > 0 && ny < 4) {
                             points.push([nx, ny, nz]);
                             colors.push([r, g, b]);
@@ -415,7 +398,6 @@
 
     // ========== CONSTRUÇÃO DA CENA 3D ==========
     function build3DScene() {
-        // Limpar cena anterior
         while(scene.children.length > 0) { 
             scene.remove(scene.children[0]); 
         }
@@ -427,7 +409,6 @@
         
         camera.position.set(0, 1.7, 0);
         
-        // Adicionar nuvem de pontos
         if (pointCloudData.length > 0) {
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(pointCloudData.length * 3);
@@ -455,7 +436,6 @@
             scene.add(pointCloud);
         }
         
-        // Criar 4 paredes (malha sólida para medição)
         const wallMat = new THREE.MeshStandardMaterial({ 
             color: 0xe2e8f0, 
             roughness: 0.6, 
