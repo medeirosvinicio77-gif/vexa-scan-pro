@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vexa Scan Pro - Tour 3D Profissional</title>
+<title>Vexa Scan Pro - Tour 3D com Backend</title>
 <style>
     :root { --primary: #4f46e5; --bg: #0f172a; --surface: #1e293b; --surface-2: #334155; --text: #f1f5f9; --text-muted: #94a3b8; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; --radius: 8px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,29 +26,6 @@
     .hud-stats { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
     .hud-stats span { color: var(--text); font-weight: 600; }
     
-    .measure-panel { position: absolute; top: 20px; right: 20px; background: rgba(15, 23, 42, 0.95); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); backdrop-filter: blur(8px); z-index: 20; min-width: 280px; max-height: calc(100vh - 60px); overflow-y: auto; }
-    .measure-panel h3 { font-size: 13px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--warning); }
-    .measure-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
-    .measure-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; font-weight: 600; color: var(--success); font-size: 14px; }
-    .measure-row .label { color: var(--text-muted); }
-    .measure-row .value { color: var(--text); font-weight: 600; font-family: monospace; }
-    
-    .scale-control { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-    .scale-control label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-    .scale-control input { width: 100%; padding: 6px 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 12px; }
-    
-    .tools-bar { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border-radius: var(--radius); backdrop-filter: blur(8px); z-index: 20; }
-    .tool-btn { padding: 8px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
-    .tool-btn:hover { background: var(--primary); border-color: var(--primary); }
-    .tool-btn.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 10px rgba(79, 70, 229, 0.5); }
-    
-    .controls-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 30px; color: white; font-size: 12px; z-index: 20; pointer-events: none; display: flex; gap: 16px; }
-    .key { background: var(--surface-2); padding: 3px 7px; border-radius: 4px; font-weight: bold; border: 1px solid var(--border); font-size: 11px; }
-    
-    .crosshair { position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%, -50%); z-index: 15; pointer-events: none; transition: all 0.15s; }
-    .crosshair.measure-mode { border-color: var(--warning); background: rgba(245, 158, 11, 0.3); width: 16px; height: 16px; }
-    .crosshair.snap-active { border-color: var(--success); background: rgba(16, 185, 129, 0.6); width: 20px; height: 20px; box-shadow: 0 0 15px var(--success); }
-
     .upload-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface); padding: 32px; border-radius: 12px; border: 1px solid var(--border); z-index: 30; width: 480px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     .upload-modal h2 { margin-bottom: 16px; }
     .upload-zone { border: 2px dashed var(--border); padding: 30px; border-radius: var(--radius); cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }
@@ -59,11 +36,12 @@
     .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
     .hidden { display: none !important; }
     
-    .measure-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -140px); background: rgba(245, 158, 11, 0.95); color: #1a1a1a; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 600; z-index: 25; pointer-events: none; display: none; white-space: nowrap; }
-    .measure-status.active { display: block; }
+    .tools-bar { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border-radius: var(--radius); backdrop-filter: blur(8px); z-index: 20; }
+    .tool-btn { padding: 8px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .tool-btn:hover { background: var(--primary); border-color: var(--primary); }
     
-    .snap-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -170px); background: rgba(16, 185, 129, 0.95); color: white; padding: 8px 14px; border-radius: var(--radius); font-size: 12px; font-weight: 600; z-index: 25; pointer-events: none; display: none; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .snap-indicator.active { display: block; }
+    .controls-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); padding: 10px 20px; border-radius: 30px; color: white; font-size: 12px; z-index: 20; pointer-events: none; display: flex; gap: 16px; }
+    .key { background: var(--surface-2); padding: 3px 7px; border-radius: 4px; font-weight: bold; border: 1px solid var(--border); font-size: 11px; }
     
     .frames-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 6px; margin-top: 16px; max-height: 150px; overflow-y: auto; padding: 8px; background: var(--surface-2); border-radius: var(--radius); }
     .frame-thumb { border: 2px solid var(--border); border-radius: 4px; overflow: hidden; }
@@ -96,9 +74,7 @@
             <div class="nav-item">📊 Projetos</div>
             <div class="nav-item active" onclick="document.getElementById('uploadModal').classList.remove('hidden')">📹 Novo Scan</div>
             <div class="nav-item">🎯 Visualizar</div>
-            <div class="nav-item">⚙️ Configurações</div>
         </nav>
-        <div style="margin-top: auto;"><div class="nav-item">🚪 Sair</div></div>
     </aside>
 
     <main class="main-content">
@@ -111,43 +87,31 @@
                 Pontos 3D: <span id="polyCount">0</span><br>
                 Frames: <span id="frameCount">0</span><br>
                 Zoom: <span id="zoomLevel">100%</span><br>
-                Modo: <span id="modeText">Navegação</span><br>
-                Snap: <span id="snapStatus" style="color:var(--warning);">Desligado</span>
+                Modo: <span id="modeText">Navegação</span>
             </div>
         </div>
 
-        <div class="measure-panel">
-            <h3>📏 Medição 3D</h3>
-            <div class="measure-row"><span class="label">Ponto 1:</span><span class="value" id="point1">--</span></div>
-            <div class="measure-row"><span class="label">Ponto 2:</span><span class="value" id="point2">--</span></div>
-            <div class="measure-row"><span class="label">ΔX:</span><span class="value" id="dx">-- m</span></div>
-            <div class="measure-row"><span class="label">ΔY:</span><span class="value" id="dy">-- m</span></div>
-            <div class="measure-row"><span class="label">ΔZ:</span><span class="value" id="dz">-- m</span></div>
-            <div class="measure-row total"><span class="label">DISTÂNCIA:</span><span class="value" id="totalDist">-- m</span></div>
-            <div class="measure-row"><span class="label">Real:</span><span class="value" id="realDist">-- mm</span></div>
-            
-            <div class="scale-control">
-                <label>📐 Escala Real (mm por metro)</label>
-                <input type="number" id="scaleInput" value="1000" onchange="updateScale()">
-                <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">💡 1000 = 1m real</div>
+        <div class="upload-modal" id="uploadModal">
+            <h2>📹 Gerar Tour 3D</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
+                Envie um vídeo gravado andando pelo ambiente. O backend Python processará e criará o tour 3D real.
+            </p>
+            <div class="upload-zone" onclick="document.getElementById('videoFileInput').click()">
+                <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
+                <strong>Clique para selecionar vídeo</strong>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">MP4, MOV, AVI (até 100MB)</p>
+                <input type="file" id="videoFileInput" accept="video/*" onchange="handleVideoUpload(event)">
             </div>
-            
-            <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
-                <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">🎯 Pontos de Snap:</div>
-                <div style="font-size:11px;color:var(--success);font-weight:600;" id="snapCount">0 pontos</div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <p style="font-size: 12px; color: var(--text-muted);" id="progressText">Enviando vídeo...</p>
+                <div class="frames-preview" id="framesPreview"></div>
             </div>
         </div>
-
-        <div class="crosshair" id="crosshair"></div>
-        <div class="measure-status" id="measureStatus">📏 Clique no 1º ponto</div>
-        <div class="snap-indicator" id="snapIndicator">🎯 Canto detectado</div>
 
         <div class="tools-bar">
-            <button class="tool-btn" id="btnMeasure" onclick="toggleMeasure()">📏 Medir</button>
-            <button class="tool-btn" onclick="clearMeasurements()">🗑️ Limpar</button>
             <button class="tool-btn" onclick="toggleViewMode()">🎲 Vista Geral</button>
             <button class="tool-btn" onclick="resetCamera()">🔄 Reset</button>
-            <button class="tool-btn" onclick="exportMeasurements()">💾 Exportar</button>
         </div>
 
         <div class="controls-hint" id="controlsHint">
@@ -156,24 +120,6 @@
             <span><span class="key">Scroll</span> Zoom</span>
             <span><span class="key">Botão Dir</span> Pan</span>
             <span><span class="key">ESC</span> Sair</span>
-        </div>
-
-        <div class="upload-modal" id="uploadModal">
-            <h2>📹 Gerar Tour 3D</h2>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
-                Envie um vídeo gravado andando pelo ambiente. O sistema extrairá frames, criará a nuvem de pontos 3D e montará o tour automaticamente.
-            </p>
-            <div class="upload-zone" onclick="document.getElementById('videoFileInput').click()">
-                <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
-                <strong>Clique para selecionar vídeo</strong>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">MP4, MOV, AVI (até 500MB)</p>
-                <input type="file" id="videoFileInput" accept="video/*" onchange="handleVideoUpload(event)">
-            </div>
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                <p style="font-size: 12px; color: var(--text-muted);" id="progressText">Iniciando...</p>
-                <div class="frames-preview" id="framesPreview"></div>
-            </div>
         </div>
     </main>
 </div>
@@ -188,30 +134,15 @@
     const velocity = new THREE.Vector3();
     const direction = new THREE.Vector3();
     let isTourActive = false;
-    let isMeasureMode = false;
     let isOverviewMode = false;
     
     let isPanning = false;
     let panStartX = 0, panStartY = 0;
     
-    let measurePoints = [];
-    let measureLine = null;
-    let measureMarkers = [];
-    let snapMarkers = [];
-    let snapHighlight = null;
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    let clickableObjects = [];
-    
-    let snapPoints = [];
-    const SNAP_THRESHOLD = 0.6;
-    let scaleFactor = 1000;
-    let currentSnapPoint = null;
-    
     let extractedFrames = [];
     let pointCloudData = [];
 
-    // ========== PROCESSAMENTO DE VÍDEO ==========
+    // ========== UPLOAD PARA BACKEND PYTHON ==========
     window.handleVideoUpload = async function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -224,115 +155,135 @@
         const framesPreview = document.getElementById('framesPreview');
         
         try {
-            const video = document.createElement('video');
-            video.src = URL.createObjectURL(file);
-            video.muted = true;
-            video.playsInline = true;
-            
-            text.textContent = 'Carregando vídeo...';
-            fill.style.width = '10%';
-            
-            await new Promise((resolve, reject) => {
-                video.onloadedmetadata = resolve;
-                video.onerror = () => reject(new Error('Erro ao carregar vídeo'));
-                setTimeout(() => reject(new Error('Timeout')), 30000);
-            });
-            
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = Math.min(video.videoWidth, 640);
-            canvas.height = (canvas.width / video.videoWidth) * video.videoHeight;
-            
-            const duration = video.duration;
-            const interval = 1.0;
-            const totalFrames = Math.floor(duration / interval);
-            
-            text.textContent = `Extraindo frames (0/${totalFrames})...`;
+            // ENVIAR PARA BACKEND PYTHON
+            text.textContent = 'Enviando vídeo para backend...';
             fill.style.width = '20%';
             
-            extractedFrames = [];
-            framesPreview.innerHTML = '';
+            const formData = new FormData();
+            formData.append('video', file);
             
-            for (let t = 0; t < duration && extractedFrames.length < 40; t += interval) {
-                video.currentTime = t;
-                await new Promise(r => { video.onseeked = r; });
-                
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const frameData = canvas.toDataURL('image/jpeg', 0.8);
-                extractedFrames.push({ data: frameData, time: t });
-                
-                const thumb = document.createElement('div');
-                thumb.className = 'frame-thumb';
-                thumb.innerHTML = `<img src="${frameData}"><div class="num">#${extractedFrames.length}</div>`;
-                framesPreview.appendChild(thumb);
-                
-                const progress = 20 + (extractedFrames.length / totalFrames) * 30;
-                fill.style.width = progress + '%';
-                text.textContent = `Extraindo frames (${extractedFrames.length}/${totalFrames})...`;
-                
-                await new Promise(r => setTimeout(r, 50));
+            const response = await fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erro na resposta do servidor');
             }
             
-            document.getElementById('frameCount').textContent = extractedFrames.length;
+            const result = await response.json();
             
-            text.textContent = 'Gerando nuvem de pontos 3D...';
-            fill.style.width = '55%';
-            
-            await new Promise(r => setTimeout(r, 100));
-            pointCloudData = generatePointCloud();
-            
-            document.getElementById('polyCount').textContent = pointCloudData.length.toLocaleString('pt-BR');
-            
-            text.textContent = 'Construindo cena 3D...';
-            fill.style.width = '75%';
-            
-            await new Promise(r => setTimeout(r, 100));
-            build3DScene();
-            
-            text.textContent = '✓ Tour 3D pronto!';
-            fill.style.width = '100%';
-            document.getElementById('meshType').textContent = 'Nuvem de Pontos';
-            
-            setTimeout(() => {
-                document.getElementById('uploadModal').classList.add('hidden');
-                isTourActive = true;
-                updateCanvasSize();
-                alert(`✅ Tour 3D gerado!\n\n📹 ${extractedFrames.length} frames\n🎯 ${pointCloudData.length.toLocaleString('pt-BR')} pontos 3D\n\nControles:\n• WASD: Andar\n• Mouse: Olhar\n• Scroll: Zoom\n• Botão Direito: Pan`);
-            }, 500);
+            if (result.success) {
+                text.textContent = `✓ ${result.frames} frames extraídos!`;
+                fill.style.width = '60%';
+                
+                document.getElementById('frameCount').textContent = result.frames;
+                
+                // Carregar frames do backend
+                text.textContent = 'Carregando frames...';
+                await loadFramesFromBackend(result.filename, result.frames);
+                
+                fill.style.width = '80%';
+                text.textContent = 'Gerando nuvem de pontos 3D...';
+                
+                // Gerar nuvem de pontos dos frames reais
+                await new Promise(r => setTimeout(r, 1000));
+                pointCloudData = generatePointCloudFromRealFrames();
+                
+                document.getElementById('polyCount').textContent = pointCloudData.length.toLocaleString('pt-BR');
+                
+                text.textContent = 'Construindo cena 3D...';
+                fill.style.width = '95%';
+                
+                await new Promise(r => setTimeout(r, 500));
+                build3DScene();
+                
+                text.textContent = '✓ Tour 3D pronto!';
+                fill.style.width = '100%';
+                document.getElementById('meshType').textContent = 'Nuvem de Pontos (Real)';
+                
+                setTimeout(() => {
+                    document.getElementById('uploadModal').classList.add('hidden');
+                    isTourActive = true;
+                    updateCanvasSize();
+                    alert(`✅ Tour 3D gerado do seu vídeo!\n\n📹 ${result.frames} frames processados\n⏱️ Duração: ${result.duration}s\n🎯 ${pointCloudData.length.toLocaleString('pt-BR')} pontos 3D\n\nAgora você pode navegar pelo ambiente!`);
+                }, 500);
+            } else {
+                throw new Error(result.error || 'Erro no processamento');
+            }
             
         } catch (error) {
-            alert('❌ Erro: ' + error.message);
+            console.error('Erro:', error);
+            alert('❌ Erro: ' + error.message + '\n\nVerifique se:\n1. O backend está rodando (python app.py)\n2. O vídeo não é muito grande\n3. O formato é MP4, AVI ou MOV');
             document.querySelector('.upload-zone').classList.remove('hidden');
             document.getElementById('progressContainer').style.display = 'none';
         }
     };
 
-    // ========== GERAÇÃO DE NUVEM DE PONTOS (PROFISSIONAL) ==========
-    function generatePointCloud() {
+    // ========== CARREGAR FRAMES DO BACKEND ==========
+    async function loadFramesFromBackend(filename, totalFrames) {
+        const framesPreview = document.getElementById('framesPreview');
+        framesPreview.innerHTML = '';
+        
+        // Carregar alguns frames para preview (limitado a 20)
+        const framesToShow = Math.min(totalFrames, 20);
+        
+        for (let i = 1; i <= framesToShow; i++) {
+            try {
+                const frameUrl = `http://localhost:5000/uploads/frames/frame_${String(i).padStart(4, '0')}.jpg`;
+                
+                const thumb = document.createElement('div');
+                thumb.className = 'frame-thumb';
+                thumb.innerHTML = `<img src="${frameUrl}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2250%22><rect fill=%22%23333%22 width=%2280%22 height=%2250%22/><text fill=%22%23999%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22>Frame ${i}</text></svg>'"><div class="num">#${i}</div>`;
+                framesPreview.appendChild(thumb);
+                
+                // Criar objeto de frame
+                extractedFrames.push({
+                    url: frameUrl,
+                    time: (i * 2) // Assume 1 frame a cada 2 segundos
+                });
+                
+            } catch (error) {
+                console.error(`Erro ao carregar frame ${i}:`, error);
+            }
+        }
+    }
+
+    // ========== GERAÇÃO DE NUVEM DE PONTOS DOS FRAMES REAIS ==========
+    function generatePointCloudFromRealFrames() {
         const points = [];
         const colors = [];
         
+        // Para cada frame carregado
         extractedFrames.forEach((frameObj, frameIdx) => {
+            // Criar imagem temporária
             const img = new Image();
-            img.src = frameObj.data;
+            img.crossOrigin = "anonymous";
+            img.src = frameObj.url;
             
+            // Criar canvas para análise
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
             tempCanvas.width = 320;
             tempCanvas.height = 240;
             
+            // Desenhar imagem no canvas
             tempCtx.drawImage(img, 0, 0, 320, 240);
+            
+            // Pegar dados dos pixels
             const imageData = tempCtx.getImageData(0, 0, 320, 240);
             const data = imageData.data;
             
+            // Calcular posição da câmera (orbital)
             const cameraAngle = (frameIdx / extractedFrames.length) * Math.PI * 2;
             const cameraRadius = 3.0;
             const cameraX = Math.cos(cameraAngle) * cameraRadius;
             const cameraZ = Math.sin(cameraAngle) * cameraRadius;
             const cameraY = 1.7;
             
-            for (let y = 0; y < 240; y += 1) {
-                for (let x = 0; x < 320; x += 1) {
+            // Analisar cada pixel
+            for (let y = 0; y < 240; y += 2) {
+                for (let x = 0; x < 320; x += 2) {
                     const idx = (y * 320 + x) * 4;
                     
                     const r = data[idx] / 255;
@@ -340,6 +291,7 @@
                     const b = data[idx+2] / 255;
                     const brightness = (r + g + b) / 3;
                     
+                    // Detectar bordas
                     const idxRight = (y * 320 + Math.min(x+1, 319)) * 4;
                     const idxDown = (Math.min(y+1, 239) * 320 + x) * 4;
                     
@@ -350,12 +302,8 @@
                     const edgeY = Math.abs(brightDown - brightness);
                     const edgeStrength = Math.sqrt(edgeX * edgeX + edgeY * edgeY);
                     
-                    const shouldAddPoint = edgeStrength > 0.05 || 
-                                          brightness < 0.3 || 
-                                          brightness > 0.8 ||
-                                          Math.random() < 0.1;
-                    
-                    if (shouldAddPoint) {
+                    // Adicionar ponto se for borda ou área importante
+                    if (edgeStrength > 0.05 || brightness < 0.3 || brightness > 0.8) {
                         const fovX = Math.PI * 0.7;
                         const fovY = Math.PI * 0.5;
                         
@@ -388,7 +336,7 @@
             }
         });
         
-        console.log(`Pontos gerados: ${points.length}`);
+        console.log(`Pontos gerados dos frames reais: ${points.length}`);
         
         return points.map((p, i) => ({
             position: p,
@@ -401,14 +349,13 @@
         while(scene.children.length > 0) { 
             scene.remove(scene.children[0]); 
         }
-        clickableObjects = [];
-        snapMarkers = [];
         
         scene.background = new THREE.Color(0x111111);
         scene.fog = new THREE.Fog(0x111111, 0, 30);
         
         camera.position.set(0, 1.7, 0);
         
+        // Adicionar nuvem de pontos
         if (pointCloudData.length > 0) {
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(pointCloudData.length * 3);
@@ -436,118 +383,11 @@
             scene.add(pointCloud);
         }
         
-        const wallMat = new THREE.MeshStandardMaterial({ 
-            color: 0xe2e8f0, 
-            roughness: 0.6, 
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.2
-        });
-        
-        const wallBack = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
-        wallBack.position.set(0, 1.4, -5);
-        scene.add(wallBack);
-        clickableObjects.push(wallBack);
-        
-        const wallFront = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
-        wallFront.rotation.y = Math.PI;
-        wallFront.position.set(0, 1.4, 5);
-        scene.add(wallFront);
-        clickableObjects.push(wallFront);
-        
-        const wallLeft = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
-        wallLeft.rotation.y = Math.PI / 2;
-        wallLeft.position.set(-5, 1.4, 0);
-        scene.add(wallLeft);
-        clickableObjects.push(wallLeft);
-        
-        const wallRight = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.8), wallMat);
-        wallRight.rotation.y = -Math.PI / 2;
-        wallRight.position.set(5, 1.4, 0);
-        scene.add(wallRight);
-        clickableObjects.push(wallRight);
-        
-        const floor = new THREE.Mesh(
-            new THREE.PlaneGeometry(10, 10),
-            new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.8, transparent: true, opacity: 0.3 })
-        );
-        floor.rotation.x = -Math.PI / 2;
-        scene.add(floor);
-        clickableObjects.push(floor);
-        
-        const ceiling = new THREE.Mesh(
-            new THREE.PlaneGeometry(10, 10),
-            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, transparent: true, opacity: 0.3 })
-        );
-        ceiling.rotation.x = Math.PI / 2;
-        ceiling.position.y = 2.8;
-        scene.add(ceiling);
-        clickableObjects.push(ceiling);
-        
+        // Adicionar luzes
         scene.add(new THREE.AmbientLight(0xffffff, 0.8));
         const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
         dirLight.position.set(5, 5, 5);
         scene.add(dirLight);
-        
-        createSnapPoints();
-        createSnapHighlight();
-    }
-
-    function createSnapPoints() {
-        snapPoints = [
-            { x: -5, y: 0, z: -5, label: 'Canto chão esq (trás)' },
-            { x: 5, y: 0, z: -5, label: 'Canto chão dir (trás)' },
-            { x: -5, y: 2.8, z: -5, label: 'Canto teto esq (trás)' },
-            { x: 5, y: 2.8, z: -5, label: 'Canto teto dir (trás)' },
-            { x: -5, y: 0, z: 5, label: 'Canto chão esq (frente)' },
-            { x: 5, y: 0, z: 5, label: 'Canto chão dir (frente)' },
-            { x: -5, y: 2.8, z: 5, label: 'Canto teto esq (frente)' },
-            { x: 5, y: 2.8, z: 5, label: 'Canto teto dir (frente)' },
-            { x: 0, y: 0, z: -5, label: 'Meio rodapé (trás)' },
-            { x: 0, y: 2.8, z: -5, label: 'Meio teto (trás)' },
-            { x: 0, y: 1.4, z: -5, label: 'Meio parede (trás)' },
-            { x: -5, y: 0, z: 0, label: 'Meio rodapé (esq)' },
-            { x: -5, y: 2.8, z: 0, label: 'Meio teto (esq)' },
-            { x: -5, y: 1.4, z: 0, label: 'Meio parede (esq)' },
-            { x: 5, y: 0, z: 0, label: 'Meio rodapé (dir)' },
-            { x: 5, y: 2.8, z: 0, label: 'Meio teto (dir)' },
-            { x: 5, y: 1.4, z: 0, label: 'Meio parede (dir)' },
-            { x: 0, y: 0, z: 5, label: 'Meio rodapé (frente)' },
-            { x: 0, y: 2.8, z: 5, label: 'Meio teto (frente)' },
-            { x: 0, y: 1.4, z: 5, label: 'Meio parede (frente)' },
-        ];
-        
-        snapPoints.forEach((sp) => {
-            const markerGeo = new THREE.SphereGeometry(0.05, 12, 12);
-            const markerMat = new THREE.MeshBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.5 });
-            const marker = new THREE.Mesh(markerGeo, markerMat);
-            marker.position.set(sp.x, sp.y, sp.z);
-            scene.add(marker);
-            snapMarkers.push(marker);
-        });
-        
-        document.getElementById('snapCount').textContent = snapPoints.length + ' pontos';
-    }
-
-    function findNearestSnapPoint(point) {
-        let nearest = null;
-        let minDist = SNAP_THRESHOLD;
-        for (const sp of snapPoints) {
-            const dist = point.distanceTo(new THREE.Vector3(sp.x, sp.y, sp.z));
-            if (dist < minDist) {
-                minDist = dist;
-                nearest = sp;
-            }
-        }
-        return nearest;
-    }
-
-    function createSnapHighlight() {
-        const geo = new THREE.SphereGeometry(0.12, 16, 16);
-        const mat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.6 });
-        snapHighlight = new THREE.Mesh(geo, mat);
-        snapHighlight.visible = false;
-        scene.add(snapHighlight);
     }
 
     function init3DScene() {
@@ -562,13 +402,12 @@
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
         
         controls = new PointerLockControls(camera, renderer.domElement);
         
         renderer.domElement.addEventListener('click', () => {
-            if (!isTourActive || isMeasureMode || isPanning) return;
+            if (!isTourActive || isPanning) return;
             controls.lock();
         });
         
@@ -582,17 +421,17 @@
             document.getElementById('modeText').textContent = 'Navegação';
         });
         
+        // Cena inicial
         scene.add(new THREE.AmbientLight(0xffffff, 0.6));
         const gridHelper = new THREE.GridHelper(20, 20, 0x4f46e5, 0x334155);
         scene.add(gridHelper);
         
         window.addEventListener('resize', updateCanvasSize);
-        renderer.domElement.addEventListener('click', onCanvasClick);
         renderer.domElement.addEventListener('wheel', onWheelZoom, { passive: false });
-        renderer.domElement.addEventListener('mousemove', onMouseMoveSnap);
         renderer.domElement.addEventListener('mousedown', onMouseDown);
         renderer.domElement.addEventListener('mouseup', onMouseUp);
         renderer.domElement.addEventListener('mouseleave', onMouseUp);
+        renderer.domElement.addEventListener('mousemove', onMouseMove);
         renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
         document.addEventListener('keydown', onKeyDown);
         document.addEventListener('keyup', onKeyUp);
@@ -602,16 +441,13 @@
 
     function updateCanvasSize() {
         const container = document.getElementById('canvas-container');
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        camera.aspect = width / height;
+        camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
+        renderer.setSize(container.clientWidth, container.clientHeight);
     }
 
     function onMouseDown(event) {
         if (event.button === 2 || event.button === 1) {
-            if (isMeasureMode) return;
             isPanning = true;
             panStartX = event.clientX;
             panStartY = event.clientY;
@@ -625,18 +461,24 @@
         renderer.domElement.style.cursor = 'grab';
     }
 
-    function applyPan(deltaX, deltaY) {
-        const forward = new THREE.Vector3();
-        camera.getWorldDirection(forward);
-        forward.y = 0;
-        forward.normalize();
-        
-        const right = new THREE.Vector3();
-        right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
-        
-        const panSpeed = 0.01;
-        camera.position.add(right.multiplyScalar(-deltaX * panSpeed));
-        camera.position.add(forward.multiplyScalar(-deltaY * panSpeed));
+    function onMouseMove(event) {
+        if (isPanning) {
+            const deltaX = event.clientX - panStartX;
+            const deltaY = event.clientY - panStartY;
+            panStartX = event.clientX;
+            panStartY = event.clientY;
+            
+            const forward = new THREE.Vector3();
+            camera.getWorldDirection(forward);
+            forward.y = 0;
+            forward.normalize();
+            
+            const right = new THREE.Vector3();
+            right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+            
+            camera.position.add(right.multiplyScalar(-deltaX * 0.01));
+            camera.position.add(forward.multiplyScalar(-deltaY * 0.01));
+        }
     }
 
     function onWheelZoom(event) {
@@ -666,184 +508,6 @@
         }
     }
 
-    function onMouseMoveSnap(event) {
-        if (isPanning) {
-            const deltaX = event.clientX - panStartX;
-            const deltaY = event.clientY - panStartY;
-            panStartX = event.clientX;
-            panStartY = event.clientY;
-            applyPan(deltaX, deltaY);
-            return;
-        }
-        
-        if (!isMeasureMode) {
-            if (snapHighlight) snapHighlight.visible = false;
-            document.getElementById('crosshair').classList.remove('snap-active');
-            document.getElementById('snapIndicator').classList.remove('active');
-            currentSnapPoint = null;
-            return;
-        }
-        
-        const rect = renderer.domElement.getBoundingClientRect();
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(clickableObjects);
-        
-        const crosshair = document.getElementById('crosshair');
-        const snapIndicator = document.getElementById('snapIndicator');
-        
-        if (intersects.length > 0) {
-            const point = intersects[0].point;
-            const nearestSnap = findNearestSnapPoint(point);
-            
-            if (nearestSnap) {
-                currentSnapPoint = nearestSnap;
-                crosshair.classList.add('snap-active');
-                snapIndicator.classList.add('active');
-                snapIndicator.textContent = `🎯 ${nearestSnap.label}`;
-                
-                if (snapHighlight) {
-                    snapHighlight.position.set(nearestSnap.x, nearestSnap.y, nearestSnap.z);
-                    snapHighlight.visible = true;
-                }
-            } else {
-                currentSnapPoint = null;
-                crosshair.classList.remove('snap-active');
-                snapIndicator.classList.remove('active');
-                if (snapHighlight) snapHighlight.visible = false;
-            }
-        }
-    }
-
-    function onCanvasClick(event) {
-        if (!isMeasureMode || !isTourActive || isPanning) return;
-        if (controls.isLocked) return;
-        
-        const rect = renderer.domElement.getBoundingClientRect();
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(clickableObjects);
-        
-        if (intersects.length > 0) {
-            let point = intersects[0].point.clone();
-            let snapped = false;
-            let snapLabel = '';
-            
-            if (currentSnapPoint) {
-                point.set(currentSnapPoint.x, currentSnapPoint.y, currentSnapPoint.z);
-                snapped = true;
-                snapLabel = currentSnapPoint.label;
-            } else {
-                const nearestSnap = findNearestSnapPoint(point);
-                if (nearestSnap) {
-                    point.set(nearestSnap.x, nearestSnap.y, nearestSnap.z);
-                    snapped = true;
-                    snapLabel = nearestSnap.label;
-                }
-            }
-            
-            addMeasurePoint(point, snapped, snapLabel);
-        }
-    }
-
-    function addMeasurePoint(point3D, snapped, snapLabel) {
-        if (measurePoints.length >= 2) return;
-        measurePoints.push(point3D.clone());
-        
-        const marker = new THREE.Mesh(
-            new THREE.SphereGeometry(0.08, 16, 16),
-            new THREE.MeshBasicMaterial({ color: measurePoints.length === 1 ? 0xf59e0b : 0x10b981 })
-        );
-        marker.position.copy(point3D);
-        scene.add(marker);
-        measureMarkers.push(marker);
-        
-        const labelDiv = document.createElement('div');
-        labelDiv.style.cssText = `position: absolute; background: rgba(0,0,0,0.9); color: white; padding: 6px 10px; border-radius: 6px; font-size: 11px; pointer-events: none; z-index: 30; white-space: nowrap; border: 1px solid ${snapped ? 'var(--success)' : 'var(--border)'};`;
-        labelDiv.textContent = snapped ? `🎯 ${snapLabel}` : `P${measurePoints.length}`;
-        document.body.appendChild(labelDiv);
-        marker.userData.labelDiv = labelDiv;
-        
-        const status = document.getElementById('measureStatus');
-        const coordText = `(${point3D.x.toFixed(2)}, ${point3D.y.toFixed(2)}, ${point3D.z.toFixed(2)})`;
-        
-        if (measurePoints.length === 1) {
-            document.getElementById('point1').textContent = (snapped ? ' ' : '') + coordText;
-            status.textContent = '📏 Clique no 2º ponto';
-        } else if (measurePoints.length === 2) {
-            document.getElementById('point2').textContent = (snapped ? '🎯 ' : '') + coordText;
-            status.textContent = '✓ Medição completa!';
-            status.style.background = 'rgba(16, 185, 129, 0.95)';
-            drawMeasureLine();
-            calculateDistance();
-            setTimeout(() => status.classList.remove('active'), 2000);
-        }
-    }
-
-    function drawMeasureLine() {
-        if (measureLine) scene.remove(measureLine);
-        const geometry = new THREE.BufferGeometry().setFromPoints([measurePoints[0], measurePoints[1]]);
-        measureLine = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0xef4444, linewidth: 3 }));
-        scene.add(measureLine);
-    }
-
-    function calculateDistance() {
-        const p1 = measurePoints[0], p2 = measurePoints[1];
-        const dx = Math.abs(p2.x - p1.x), dy = Math.abs(p2.y - p1.y), dz = Math.abs(p2.z - p1.z);
-        const totalM = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        
-        document.getElementById('dx').textContent = dx.toFixed(3) + ' m';
-        document.getElementById('dy').textContent = dy.toFixed(3) + ' m';
-        document.getElementById('dz').textContent = dz.toFixed(3) + ' m';
-        document.getElementById('totalDist').textContent = totalM.toFixed(3) + ' m';
-        document.getElementById('realDist').textContent = (totalM * scaleFactor).toFixed(1) + ' mm';
-    }
-
-    window.updateScale = function() {
-        scaleFactor = parseFloat(document.getElementById('scaleInput').value) || 1000;
-        if (measurePoints.length === 2) calculateDistance();
-    };
-
-    window.toggleMeasure = function() {
-        isMeasureMode = !isMeasureMode;
-        const btn = document.getElementById('btnMeasure');
-        const crosshair = document.getElementById('crosshair');
-        const status = document.getElementById('measureStatus');
-        const snapStatus = document.getElementById('snapStatus');
-        
-        if (isMeasureMode) {
-            btn.classList.add('active');
-            crosshair.classList.add('measure-mode');
-            if (controls.isLocked) controls.unlock();
-            status.classList.add('active');
-            status.textContent = '📏 Clique no 1º ponto';
-            snapStatus.textContent = 'Ligado';
-            snapStatus.style.color = 'var(--success)';
-            clearMeasurements();
-        } else {
-            btn.classList.remove('active');
-            crosshair.classList.remove('measure-mode', 'snap-active');
-            status.classList.remove('active');
-            document.getElementById('snapIndicator').classList.remove('active');
-            if (snapHighlight) snapHighlight.visible = false;
-            snapStatus.textContent = 'Desligado';
-            snapStatus.style.color = 'var(--warning)';
-        }
-    };
-
-    window.clearMeasurements = function() {
-        measurePoints = [];
-        measureMarkers.forEach(m => { if (m.userData.labelDiv) m.userData.labelDiv.remove(); scene.remove(m); });
-        measureMarkers = [];
-        if (measureLine) { scene.remove(measureLine); measureLine = null; }
-        ['point1', 'point2', 'dx', 'dy', 'dz', 'totalDist', 'realDist'].forEach(id => document.getElementById(id).textContent = '--');
-        document.getElementById('measureStatus').classList.remove('active');
-    };
-
     window.toggleViewMode = function() {
         isOverviewMode = !isOverviewMode;
         if (isOverviewMode) {
@@ -865,27 +529,6 @@
         camera.updateProjectionMatrix();
         document.getElementById('modeText').textContent = 'Navegação';
         document.getElementById('zoomLevel').textContent = '100%';
-        clearMeasurements();
-    };
-
-    window.exportMeasurements = function() {
-        if (measurePoints.length < 2) {
-            alert('⚠️ Faça uma medição primeiro!');
-            return;
-        }
-        const p1 = measurePoints[0], p2 = measurePoints[1];
-        const dx = Math.abs(p2.x - p1.x), dy = Math.abs(p2.y - p1.y), dz = Math.abs(p2.z - p1.z);
-        const totalM = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        
-        const csv = `Ponto,X,Y,Z\nP1,${p1.x.toFixed(3)},${p1.y.toFixed(3)},${p1.z.toFixed(3)}\nP2,${p2.x.toFixed(3)},${p2.y.toFixed(3)},${p2.z.toFixed(3)}\n\nDistância (m),${totalM.toFixed(3)}\nDistância (mm),${(totalM * scaleFactor).toFixed(1)}\nΔX (m),${dx.toFixed(3)}\nΔY (m),${dy.toFixed(3)}\nΔZ (m),${dz.toFixed(3)}`;
-        
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `medicao_vexa_${Date.now()}.csv`;
-        a.click();
-        alert('💾 Medição exportada!');
     };
 
     function animate() {
@@ -908,16 +551,6 @@
             if (pos.z < -4.5) pos.z = -4.5; if (pos.z > 4.5) pos.z = 4.5;
             pos.y = 1.7;
         }
-        
-        measureMarkers.forEach(marker => {
-            if (marker.userData.labelDiv) {
-                const pos = marker.position.clone().project(camera);
-                const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
-                const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
-                marker.userData.labelDiv.style.left = x + 'px';
-                marker.userData.labelDiv.style.top = (y - 30) + 'px';
-            }
-        });
         
         prevTime = time;
         renderer.render(scene, camera);
